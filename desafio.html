@@ -1,0 +1,32 @@
+<pre>
+
+O desafio é o seguinte.
+
+1 - criar uma lista de links a partir do seu excel onde a URL conste os códigos
+do MLB e do SKU, conforme modelo abaixo, aí conforme voce clicar em cada um vai
+atualizar sozinho o cadastro no ML...
+Veja exemplo abaixo:
+
+<a href="prod_put_sku.php?MLB=1038874251&SKU=TESTEHTML">
+  prod_put_sku.php?MLB=1038874251&SKU=TESTEHTML
+</a>
+
+Se quiser dar um bizu, abra o arquivo "prod_put_sku.php"
+
+2 - Executar o arquivo "teste_magento.php" no browser (pelo PHP e tal e tal)
+e ver o Array que ele dá de produtos do Magento. (esse é um array "basico" de
+dados do catalogo magento)
+
+3 - execute o arquivo "prod_info.php", este são TODOS os dados do ML.
+Faça o Mapeamento do Magento ===> ML
+
+3(dica) - os dados em prod_info estão em formato de objeto, ou seja.
+objeto->sub-objeto->sub-objeto,
+então, id por exemplo é
+objeto->id
+preco
+objeto->price
+e por ai vai.....
+
+exemplo do mapeamento final
+$magento["product_id"] => $MLB->id

@@ -12,7 +12,7 @@ $result = $meli->get($url, $params);
 $atributos = $result["body"]->attributes;
 
 echo '<pre>';
-var_dump($result);
+var_dump($result["body"]);
 
 
 

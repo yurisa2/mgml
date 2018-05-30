@@ -1,6 +1,15 @@
 <?php
 require 'include/all_include.php';
 
+$MLB = $_GET["MLB"];
+$SKU = $_GET["SKU"];
+
+if(!isset($MLB) || !isset($SKU))
+{
+  echo "<h1>Faltando MLB ou SKU, Saindo Fora</h1>";
+  exit;
+}
+
 $meli = new Meli($appId, $secretKey);
 
 echo '<pre>';
@@ -10,7 +19,7 @@ $body = array(
   array(
     array(
     'id' => "MODEL",
-    'value_name' => $SKU) //Colocar aqui o certo
+    'value_name' => $SKU)
   ));
 
 $response = $meli->put('/items/MLB'.$MLB, $body, $params);

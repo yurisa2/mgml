@@ -25,11 +25,8 @@ echo '<pre>';
 // var_dump(magento_catalogInventoryStockItemList('EP-51-35051'));
 
 $produto = magento_product_summary('EP-51-60116');
-$resumo = array();
-$resumo["name"] = magento_product_summary('EP-51-60116')["name"];
-$resumo["name"] = magento_product_summary('EP-51-60116')["name"];
 
-var_dump($resumo);
+var_dump($produto);
 
 // var_dump(magento_catalogInventoryStockItemUpdate('EP-51-35051','665'));
 
