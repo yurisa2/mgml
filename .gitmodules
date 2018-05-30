@@ -1,3 +1,6 @@
 [submodule "include/ml/php-sdk"]
 	path = include/ml/php-sdk
 	url = https://github.com/mercadolibre/php-sdk.git
+[submodule "include/apimagentophp"]
+	path = include/apimagentophp
+	url = ../apimagentophp.git
