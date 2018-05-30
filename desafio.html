@@ -18,6 +18,7 @@ e ver o Array que ele dá de produtos do Magento. (esse é um array "basico" de
 dados do catalogo magento)
 
 3 - execute o arquivo "prod_info.php", este são TODOS os dados do ML.
+
 Faça o Mapeamento do Magento ===> ML
 
 3(dica) - os dados em prod_info estão em formato de objeto, ou seja.
@@ -29,4 +30,11 @@ objeto->price
 e por ai vai.....
 
 exemplo do mapeamento final
+
 $magento["product_id"] => $MLB->id
+$magento["name"]=> $MLB->title
+$magento["description"] => $MLB->???
+$magento["short_description"] => ???
+$magento["weight"] => $MLB->??
+$magento["price"] => $MLB->price
+$magento["qty_in_stock"] => $MLB->available_quantity

@@ -16,6 +16,4 @@ var_dump($result["body"]);
 
 
 
-
-
 echo '</pre>';
