@@ -3,12 +3,11 @@ session_start();
 require 'include/ml/php-sdk/Meli/meli.php';
 require 'include/ml/php-sdk/configApp.php';
 require 'include/config.php';
-
-$_GET['code'] = $code;
-
-unset($_SESSION);
+$redirectURI = "https://localhost:8443/mgml/callback.php";
 
 $meli = new Meli($appId, $secretKey);
+
+echo $_GET['code'];
 
 if(isset($_GET['code']) || isset($_SESSION['access_token'])) {
 
