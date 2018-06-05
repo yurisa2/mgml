@@ -6,9 +6,6 @@ function token()
   $access_token = $variavel->access_token;
   $refresh_token = $variavel->refresh_token;
 
-  // echo "time() " . time() . "<br>";  //DEBUG
-  // echo "variavel->time " . $variavel->time . "<br>"; //DEBUG
-
   if(time() > $variavel->time)
   {
     renova($access_token,$refresh_token);

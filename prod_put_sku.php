@@ -10,10 +10,10 @@ if(!isset($MLB) || !isset($SKU))
   exit;
 }
 
-$meli = new Meli($appId, $secretKey);
+$meli = new Meli($app_Id, $secret_Key);
 
 echo '<pre>';
-$params = array('access_token' => $access_token);
+$params = array('access_token' => token());
 $body = array(
   'attributes' =>
   array(
