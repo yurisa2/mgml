@@ -5,7 +5,7 @@ $meli = new Meli($appId, $secretKey);
 
 $params = array();
 
-$url = '/items/MLB1038874251?access_token=' . $ACCESS_TOKEN;
+$url = '/items/MLB1038882076?access_token=' . $ACCESS_TOKEN;
 
 $result = $meli->get($url, $params);
 

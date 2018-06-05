@@ -14,6 +14,7 @@ $meli = new Meli($app_Id, $secret_Key);
 
 echo '<pre>';
 $params = array('access_token' => token());
+
 $body = array(
   'attributes' =>
   array(

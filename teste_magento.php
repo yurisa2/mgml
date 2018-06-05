@@ -24,7 +24,7 @@ echo '<pre>';
 
 // var_dump(magento_catalogInventoryStockItemList('EP-51-35051'));
 
-$produto = magento_product_summary('EP-51-60116');
+$produto = magento_product_summary('EP-51-60106');
 
 var_dump($produto);
 
