@@ -1,12 +1,16 @@
 <?php
-require 'include/config.php';
+require 'include/all_include.php';
 
-$meli = new Meli($appId, $secretKey);
-echo '<pre>';
+function lista_MLB() {
+global $app_Id;
+global $secret_Key;
+global $user_id;
+
+
+$meli = new Meli($app_Id, $secret_Key);
 $url = '/users/' . $user_id . '/items/search';
-
 $params = array(
-  'access_token' => $access_token,
+  'access_token' => token(),
   'limit' => 100
 );
 $result = $meli->get($url, $params);
@@ -15,20 +19,16 @@ $limit = $result['body']->limit;
 if($result['body']->total > $result['body']->limit)
 {
   //Mandar e mail e o caralho pq nao fiz paginação (preguiça né)
+  return 0;
   exit;
-
 }
-//
-// $paginas = ((integer)($result['body']->paging->total / $result['body']->paging->limit)+1);
-// //Até aqui era só pra pegar as paginas
 
-$listagem = $result['body']->results;
+  // var_dump($result); //DEBUG 
+
+  $listagem = $result['body']->results;
   $listagem = array_unique($listagem);
 
-
-var_dump($listagem);
-
-
-
-print_r($result);
-echo '</pre>';
+return $listagem;
+}
+echo '<pre>';
+var_dump(lista_MLB());
