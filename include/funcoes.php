@@ -88,5 +88,125 @@ function proximo_MLB()
   else return $valor_proximo;
 }
 
+function atualizaProdMLB($SKU,$MLB)
+{
+  global $app_Id;
+  global $secret_Key;
+
+  $produto = magento_product_summary($SKU);
+  $title = $produto['name'];
+  $price = round($produto['price'],2);
+  $available_quantity = $produto['qty_in_stock'];
+
+  $meli = new Meli($app_Id, $secret_Key);
+
+  $params = array('access_token' => token());
+
+  $body = array
+  (
+    'title' => $title,
+    'price' => $price,
+    'available_quantity' => $available_quantity,
+    'attributes' =>
+      array(
+        array(
+          'name' => "Marca",
+          'value_name' => "Easypath"),
+          array(
+            'id' => "MODEL",
+            'value_name' => $SKU)
+          ),
+          array(
+            'warranty' => "Garantia de 3 meses")
+  );
+
+  $response = $meli->put('/items/MLB'.$MLB, $body, $params);
+
+  if($response["httpCode"] == 200)
+  {
+    return "1";
+  }
+  else
+  {
+    return "0";
+  }
+}
+
+function atualizaDescricaoMLB($SKU,$MLB)
+{
+  global $app_Id;
+  global $secret_Key;
+
+  $produto = magento_product_summary($SKU);
+
+  $description = $produto['description'];
+
+  $meli = new Meli($app_Id, $secret_Key);
+
+  $params = array('access_token' => token());
+
+  $body = array
+  (
+    'plain_text' => $description
+  );
+
+  $response = $meli->put('/items/MLB'.$MLB.'/description', $body, $params);
+
+  if($response["httpCode"] == 200)
+  {
+    return "1";
+  }
+  else
+  {
+    return "0";
+  }
+}
+
+function atualizaMLB($SKU,$MLB)
+{
+
+  $atualizaProd = atualizaProdMLB($SKU,$MLB);
+  $atualizaDesc = atualizaDescricaoMLB($SKU,$MLB);
+
+  if(!$atualizaProd and !$atualizaDesc)
+  {
+    return '0';
+  }
+  else
+  {
+    return '1';
+  }
+}
+
+function retorna_SKU($MLB)
+{
+  global $app_Id;
+  global $secret_Key;
+
+  $meli = new Meli($app_Id, $secret_Key);
+
+  $params = array('attributes' => "attributes",'attributes&include_internal_attributes'=>"true");
+
+  $response = $meli->get('/items/MLB'.$MLB,$params);
+echo "<pre>";
+  return $response['body']->attributes[2]->value_name;
+
+}
+
+function escreve_MLB($MLB)
+{
+
+    $conteudo_arquivo = file_put_contents("include/files/ultimo_MLB.json", json_encode($MLB));
+
+    if(!$conteudo_arquivo)
+    {
+      return "0";
+    }
+    else
+    {
+      return "1";
+    }
+
+}
 
 ?>
