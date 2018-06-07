@@ -35,7 +35,7 @@ function lista_MLB() {
   global $app_Id;
   global $secret_Key;
   global $user_id;
-
+  global $DEBUG;
 
   $meli = new Meli($app_Id, $secret_Key);
   $url = '/users/' . $user_id . '/items/search';
@@ -53,7 +53,7 @@ function lista_MLB() {
     exit;
   }
 
-  // var_dump($result); //DEBUG
+  if ($DEBUG == true) var_dump($result); //DEBUG
 
   $listagem = $result['body']->results;
   $listagem = array_unique($listagem);
@@ -92,11 +92,14 @@ function atualizaProdMLB($SKU,$MLB)
 {
   global $app_Id;
   global $secret_Key;
+  global $DEBUG;
 
   $produto = magento_product_summary($SKU);
   $title = $produto['name'];
   $price = round($produto['price'],2);
   $available_quantity = $produto['qty_in_stock'];
+
+if($available_quantity < 0) $available_quantity = 0;
 
   $meli = new Meli($app_Id, $secret_Key);
 
@@ -106,19 +109,16 @@ function atualizaProdMLB($SKU,$MLB)
   (
     'title' => $title,
     'price' => $price,
-    'available_quantity' => $available_quantity,
+    'available_quantity' => "2",
     'attributes' =>
       array(
         array(
           'name' => "Marca",
           'value_name' => "Easypath"),
-          array(
-            'id' => "MODEL",
-            'value_name' => $SKU)
-          )
-          // ,
-          // array(
-          //   'warranty' => "Garantia de 3 meses")  //DEBUG
+        array(
+          'id' => "MODEL",
+          'value_name' => $SKU),
+        )
   );
 
   $response = $meli->put('/items/MLB'.$MLB, $body, $params);
@@ -128,7 +128,7 @@ function atualizaProdMLB($SKU,$MLB)
   // echo "response: <br> "; var_dump($response); //DEBUG
 
   // echo "MLB: $MLB";
-
+ if ($DEBUG == true) var_dump($response); //DEBUG
 
   if($response["httpCode"] == 200)
   {
@@ -144,6 +144,7 @@ function atualizaDescricaoMLB($SKU,$MLB)
 {
   global $app_Id;
   global $secret_Key;
+  global $DEBUG;
 
   $produto = magento_product_summary($SKU);
 
@@ -160,6 +161,8 @@ function atualizaDescricaoMLB($SKU,$MLB)
 
   $response = $meli->put('/items/MLB'.$MLB.'/description', $body, $params);
 
+  if ($DEBUG == true) var_dump($response); //DEBUG
+
   if($response["httpCode"] == 200)
   {
     return "1";
@@ -175,13 +178,13 @@ function atualizaMLB($SKU,$MLB)
   $atualizaProd = atualizaProdMLB($SKU,$MLB);
   $atualizaDesc = atualizaDescricaoMLB($SKU,$MLB);
 
-  if(!$atualizaProd and !$atualizaDesc)
+  if($atualizaProd and $atualizaDesc)
   {
-    return '0';
+    return '1';
   }
   else
   {
-    return '1';
+    return '0';
   }
 }
 
@@ -189,6 +192,7 @@ function retorna_SKU($MLB)
 {
   global $app_Id;
   global $secret_Key;
+  global $DEBUG;
 
   $meli = new Meli($app_Id, $secret_Key);
 
@@ -199,6 +203,8 @@ function retorna_SKU($MLB)
 
   // echo "<pre>";
   // var_dump($response['body']->attributes); //DEBUG
+  if ($DEBUG == true) var_dump($response); //DEBUG
+
 
   //LUIGI, aqui precisei fazer isso pois voce assumiu que o SKU estaria sempre no indice 2 (o que nao é verdade)
   foreach ($response['body']->attributes as $key => $value) {
