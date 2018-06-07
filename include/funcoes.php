@@ -115,9 +115,10 @@ function atualizaProdMLB($SKU,$MLB)
           array(
             'id' => "MODEL",
             'value_name' => $SKU)
-          ),
-          array(
-            'warranty' => "Garantia de 3 meses")
+          )
+          // ,
+          // array(
+          //   'warranty' => "Garantia de 3 meses")  //DEBUG
   );
 
   $response = $meli->put('/items/MLB'.$MLB, $body, $params);
