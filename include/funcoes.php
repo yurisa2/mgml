@@ -122,6 +122,13 @@ function atualizaProdMLB($SKU,$MLB)
 
   $response = $meli->put('/items/MLB'.$MLB, $body, $params);
 
+  // echo "body: <br> "; var_dump($body); //DEBUG
+  //
+  // echo "response: <br> "; var_dump($response); //DEBUG
+
+  // echo "MLB: $MLB";
+
+
   if($response["httpCode"] == 200)
   {
     return "1";
@@ -164,7 +171,6 @@ function atualizaDescricaoMLB($SKU,$MLB)
 
 function atualizaMLB($SKU,$MLB)
 {
-
   $atualizaProd = atualizaProdMLB($SKU,$MLB);
   $atualizaDesc = atualizaDescricaoMLB($SKU,$MLB);
 
@@ -185,17 +191,26 @@ function retorna_SKU($MLB)
 
   $meli = new Meli($app_Id, $secret_Key);
 
-  $params = array('attributes' => "attributes",'attributes&include_internal_attributes'=>"true");
+  $params = array('attributes' => "attributes",
+  'attributes&include_internal_attributes'=>"true");
 
   $response = $meli->get('/items/MLB'.$MLB,$params);
-echo "<pre>";
-  return $response['body']->attributes[2]->value_name;
 
+  // echo "<pre>";
+  // var_dump($response['body']->attributes); //DEBUG
+
+  //LUIGI, aqui precisei fazer isso pois voce assumiu que o SKU estaria sempre no indice 2 (o que nao é verdade)
+  foreach ($response['body']->attributes as $key => $value) {
+    if($value->name == "Modelo") return $value->value_name;
+    // echo "<br>";
+  }
+  //ESSE FOREACH procura pelo value Modelo, e retorna o modelo. se nao tiver, continua a execucao e retorna 0
+
+  return 0;
 }
 
 function escreve_MLB($MLB)
 {
-
     $conteudo_arquivo = file_put_contents("include/files/ultimo_MLB.json", json_encode($MLB));
 
     if(!$conteudo_arquivo)
@@ -206,7 +221,6 @@ function escreve_MLB($MLB)
     {
       return "1";
     }
-
 }
 
 ?>
