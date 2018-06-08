@@ -7,6 +7,9 @@ require 'include/all_include.php';
 // 5 - Escrever o ultimo no json
 //
 // $lista_produto = lista_MLB();
+
+$DEBUG = true;
+
 $time_inicial = time();
 echo "<pre><br>";
 echo "TEMPO: ". (time() - $time_inicial);
@@ -29,7 +32,7 @@ echo "<h2>SKU: $SKU <BR>";
 echo "TEMPO: ". (time() - $time_inicial);
 echo "<br><br><br></h2>";
 
-if(isset($MLB) && isset($SKU))
+if((isset($MLB) && isset($SKU)) && ($MLB != 0 && $SKU != 0))
 {
 echo "<h2>4 - Rodar a função de atualização com os dois dados</h2>";
 echo "<br>";
