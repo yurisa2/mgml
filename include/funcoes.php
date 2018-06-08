@@ -95,11 +95,14 @@ function atualizaProdMLB($SKU,$MLB)
   global $DEBUG;
 
   $produto = magento_product_summary($SKU);
+
+  if(!$produto) return 0;
+
   $title = $produto['name'];
   $price = round($produto['price'],2);
   $available_quantity = $produto['qty_in_stock'];
 
-if($available_quantity < 0) $available_quantity = 0;
+  if($available_quantity < 0) $available_quantity = 0;
 
   $meli = new Meli($app_Id, $secret_Key);
 
@@ -109,17 +112,20 @@ if($available_quantity < 0) $available_quantity = 0;
   (
     'title' => $title,
     'price' => $price,
-    'available_quantity' => "2",
+    'available_quantity' => $available_quantity,
     'attributes' =>
       array(
         array(
           'name' => "Marca",
           'value_name' => "Easypath"),
-        array(
-          'id' => "MODEL",
-          'value_name' => $SKU),
+// DEBUG AQUI PRECISA TER O SKU CASO CONTRARIO ELE ESCREVE A MARCA E ANULA  $SKU
+//PROVAVELMENTE ESTARÃO SEM SKU ALGUNS DOS ANUNCIOS
+         array(
+           'id' => "MODEL",
+           'value_name' => $SKU)
         )
   );
+
 
   $response = $meli->put('/items/MLB'.$MLB, $body, $params);
 
@@ -128,7 +134,7 @@ if($available_quantity < 0) $available_quantity = 0;
   // echo "response: <br> "; var_dump($response); //DEBUG
 
   // echo "MLB: $MLB";
- if ($DEBUG == true) var_dump($response); //DEBUG
+  if ($DEBUG == true) var_dump($response); //DEBUG
 
   if($response["httpCode"] == 200)
   {
@@ -146,12 +152,13 @@ function atualizaDescricaoMLB($SKU,$MLB)
   global $secret_Key;
   global $DEBUG;
 
+
   $produto = magento_product_summary($SKU);
 
+  if(!$produto) return 0;
+
   $description = $produto['description'];
-
   $meli = new Meli($app_Id, $secret_Key);
-
   $params = array('access_token' => token());
 
   $body = array
@@ -178,7 +185,7 @@ function atualizaMLB($SKU,$MLB)
   $atualizaProd = atualizaProdMLB($SKU,$MLB);
   $atualizaDesc = atualizaDescricaoMLB($SKU,$MLB);
 
-  if($atualizaProd and $atualizaDesc)
+  if($atualizaProd && $atualizaDesc)
   {
     return '1';
   }

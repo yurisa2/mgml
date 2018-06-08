@@ -8,7 +8,7 @@ require 'include/all_include.php';
 //
 // $lista_produto = lista_MLB();
 
-$DEBUG = true;
+$DEBUG = FALSE;
 
 $time_inicial = time();
 echo "<pre><br>";
@@ -21,18 +21,19 @@ echo "<br>";
 echo "<h2>2 - Localizar ultimo (json) e o próximo da lista (array que vem do list)</h2>";
 echo "<br>";
 $MLB = proximo_MLB(); // 2 - Localizar ultimo (json) e o próximo da lista (array que vem do list)
-echo "<h2>MLB: $MLB <BR>";
+$next_MLB = ultimo_MLB();
+echo "<h2>ATUAL MLB: $MLB<BR>ANTERIOR MLB: $next_MLB  <BR>";
 echo "TEMPO:". (time() - $time_inicial);
 echo "<br><br><br></h2>";
 
 echo "<h2>3 - Descobrir o SKU através do MLB do próximo</h2>";
 $SKU = retorna_SKU($MLB); // 3 - Descobrir o SKU através do MLB do próximo
 echo "<br>";
-echo "<h2>SKU: $SKU <BR>";
+echo "<h2>ATUAL SKU: ". $SKU ."<BR>PROXIMO SKU:". retorna_SKU($next_MLB) ."<BR>";
 echo "TEMPO: ". (time() - $time_inicial);
 echo "<br><br><br></h2>";
 
-if((isset($MLB) && isset($SKU)) && ($MLB != 0 && $SKU != 0))
+if((isset($MLB) && isset($SKU)) || ($MLB != 0 && $SKU != 0))
 {
   echo "<h2>4 - Rodar a função de atualização com os dois dados</h2>";
   echo "<br>";
@@ -40,14 +41,13 @@ if((isset($MLB) && isset($SKU)) && ($MLB != 0 && $SKU != 0))
   echo "<h2>atualiza: $atualiza <BR>";
 }
 echo "TEMPO: ". (time() - $time_inicial);
-
-
-if($atualiza)
-{
-  echo "<h2>5 - Escrever o ultimo no json</h2>";
+echo "<br><br><br></h2>";
+// if($atualiza)
+// {
+  echo "<h2>5 - Escrever o ultimo MLB atualizado no json</h2>";
   echo "<br>";
   $escreveMLB = escreve_MLB($MLB); // 5 - Escrever o ultimo no json
   echo "<h2>escreveMLB: $escreveMLB <BR>";
-}
+// }
 echo "TEMPO: ". (time() - $time_inicial);
 echo "<br><br><br></h2>";
