@@ -34,20 +34,20 @@ echo "<br><br><br></h2>";
 
 if((isset($MLB) && isset($SKU)) && ($MLB != 0 && $SKU != 0))
 {
-echo "<h2>4 - Rodar a função de atualização com os dois dados</h2>";
-echo "<br>";
-$atualiza = atualizaMLB($SKU,$MLB); // 4 - Rodar a função de atualização com os dois dados
-echo "<h2>atualiza: $atualiza <BR>";
+  echo "<h2>4 - Rodar a função de atualização com os dois dados</h2>";
+  echo "<br>";
+  $atualiza = atualizaMLB($SKU,$MLB); // 4 - Rodar a função de atualização com os dois dados
+  echo "<h2>atualiza: $atualiza <BR>";
 }
 echo "TEMPO: ". (time() - $time_inicial);
 
 
 if($atualiza)
 {
-echo "<h2>5 - Escrever o ultimo no json</h2>";
-echo "<br>";
-$escreveMLB = escreve_MLB($MLB); // 5 - Escrever o ultimo no json
-echo "<h2>escreveMLB: $escreveMLB <BR>";
+  echo "<h2>5 - Escrever o ultimo no json</h2>";
+  echo "<br>";
+  $escreveMLB = escreve_MLB($MLB); // 5 - Escrever o ultimo no json
+  echo "<h2>escreveMLB: $escreveMLB <BR>";
 }
 echo "TEMPO: ". (time() - $time_inicial);
 echo "<br><br><br></h2>";
