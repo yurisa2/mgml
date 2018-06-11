@@ -107,6 +107,8 @@ function atualizaProdMLB($SKU,$MLB)
   $price = round($produto['price'] * $ajuste_preco,2);
   $available_quantity = $produto['qty_in_stock'];
 
+if ($DEBUG == true) var_dump($title); //DEBUG
+
   if($available_quantity < 0) $available_quantity = 0;
 
   $meli = new Meli($app_Id, $secret_Key);
