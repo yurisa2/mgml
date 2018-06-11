@@ -93,13 +93,18 @@ function atualizaProdMLB($SKU,$MLB)
   global $app_Id;
   global $secret_Key;
   global $DEBUG;
+  global $ajuste_preco;
+  global $sufixo_prod;
+  global $prefixo_prod;
+  global $marca;
+
 
   $produto = magento_product_summary($SKU);
 
   if(!$produto) return 0;
 
-  $title = $produto['name'];
-  $price = round($produto['price'],2);
+  $title = $prefixo_prod.$produto['name'].$sufixo_prod;
+  $price = round($produto['price'] * $ajuste_preco,2);
   $available_quantity = $produto['qty_in_stock'];
 
   if($available_quantity < 0) $available_quantity = 0;
@@ -117,7 +122,7 @@ function atualizaProdMLB($SKU,$MLB)
       array(
         array(
           'name' => "Marca",
-          'value_name' => "Easypath"),
+          'value_name' => $marca),
 // DEBUG AQUI PRECISA TER O SKU CASO CONTRARIO ELE ESCREVE A MARCA E ANULA  $SKU
 //PROVAVELMENTE ESTARÃO SEM SKU ALGUNS DOS ANUNCIOS
          array(

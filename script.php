@@ -8,7 +8,7 @@ require 'include/all_include.php';
 //
 // $lista_produto = lista_MLB();
 
-$DEBUG = FALSE;
+$DEBUG = TRUE;
 
 $time_inicial = time();
 echo "<pre><br>";

@@ -8,4 +8,10 @@ $secret_Key = "rUQOUH0NEbWcYugufRE3mHLKoHnR0IED";
 $user_id = "322193559";
 $site_id = "MLB";
 
+//Ajustes
+$ajuste_preco = "1.3";
+$sufixo_prod = " - EasyPath";
+$prefixo_prod = "";
+$marca = "EasyPath";
+
 ?>
