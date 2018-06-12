@@ -244,4 +244,95 @@ function escreve_MLB($MLB)
     }
 }
 
+function retornaDadosVenda($COD){
+  global $app_Id;
+  global $secret_Key;
+  global $DEBUG;
+
+
+  $meli = new Meli($app_Id, $secret_key);
+
+  $params = array('access_token' => token()
+  );
+
+  $response = $meli->get("/orders/$COD", $params);
+
+  echo "<pre>";
+
+if($DEBUG == true) var_dump($response); //DEBUG
+
+  $dadosVenda = new stdClass;
+
+  //------------PRODUTO--------
+  foreach ($response['body']->order_items as $key => $value) {
+    $dadosVenda->mlb_produto = $value->item->id;
+    $dadosVenda->sku_produto = retorna_SKU($dadosVenda->mlb);
+    $dadosVenda->nome_produto = $value->item->title;
+    $dadosVenda->qtd_produto = $value->quantity;
+    $dadosVenda->preco_unidade_produto = $value->unit_price;
+    $dadosVenda->preco_total_produto = $value->full_unit_price;
+  }
+
+  //--------------PAGAMENTO---------
+  foreach ($response['body']->payments as $key => $value) {
+  $dadosVenda->id_meio_pagamento = $value->payment_method_id;
+  $dadosVenda->tipo_pagamento = $value->payment_type;
+  $dadosVenda->custo_envio = $value->shipping_cost;
+  $dadosVenda->total_pagar = $value->total_paid_amount;
+  $dadosVenda->status_pagamento = $value->status;
+  }
+
+  //----- ------ENDEREÇO---------
+  $dadosVenda->rua = $response['body']->shipping->receiver_address->street_name;
+  $dadosVenda->numero =$response['body']->shipping->receiver_address->street_number;
+  $dadosVenda->bairro = $response['body']->shipping->receiver_address->neighborhood->name;
+  $dadosVenda->cep = $response['body']->shipping->receiver_address->zip_code;
+  $dadosVenda->cidade = $response['body']->shipping->receiver_address->city->name;
+  $dadosVenda->estado = $response['body']->shipping->receiver_address->state->name;
+  $dadosVenda->pais = $response['body']->shipping->receiver_address->country->name;
+
+  // -------USUARIO --------
+  $dadosVenda->id_comprador = $response['body']->buyer->id;
+  $dadosVenda->apelido_comprador = $response['body']->buyer->nickname;
+  $dadosVenda->email_comprador = $response['body']->buyer->email;
+  $dadosVenda->cod_area_comprador = $response['body']->buyer->phone->area_code;
+  $dadosVenda->telefone_comprador = $response['body']->buyer->phone->number;
+  $dadosVenda->nome_comprador = $response['body']->buyer->first_name;
+  $dadosVenda->sobrenome_comprador = $response['body']->buyer->last_name;
+  $dadosVenda->tipo_documento_comprador = $response['body']->buyer->billing_info->doc_type;
+  $dadosVenda->numero_documento_comprador = $response['body']->buyer->billing_info->doc_number;
+
+
+  return $dadosVenda;
+
+}
+
+
+function retornaOrders(){
+  global $app_Id;
+  global $secret_Key;
+  global $DEBUG;
+
+  $meli = new Meli($appId, $secretkey);
+
+  $params = array('access_token' => $accesstoken,
+  'seller' => "327485416"
+  );
+
+  // $params = array('access_token' => $accesstoken,
+  // 'seller' => "327485416",
+  // 'order.date_created.from' => "2018-06-11T00:00:00.000-00:00",
+  // 'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
+  // );
+  $response = $meli->get("/orders/search", $params);
+  if($DEBUG == true) var_dump($response);
+
+  $idOrders = new stdClass;
+
+  foreach ($response['body']->results as $key => $value) {
+    $i = "i".$key;
+    $idOrders->$i = $value->payments[0]->order_id;
+    return $idOrders;
+  }
+}
 ?>
