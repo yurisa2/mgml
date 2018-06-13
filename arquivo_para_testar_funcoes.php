@@ -1,30 +1,11 @@
 <?php
 include "include/all_include.php";
 
-$meli = new Meli($app_Id, $secret_Key);
+$SKU = "EP-51-40983";
 
-$params = array('access_token' => token());
-$MLB = "1040181530";
+$MLB = "1038933651";
 
-$body = array
-(
-  'attributes' =>
-    array(
-      array(
-        'name' => "Marca",
-        'value_name' => $marca),
-// DEBUG AQUI PRECISA TER O SKU CASO CONTRARIO ELE ESCREVE A MARCA E ANULA  $SKU
-//PROVAVELMENTE ESTARÃO SEM SKU ALGUNS DOS ANUNCIOS
-       array(
-         'id' => "MODEL",
-         'value_name' => "EP-51-40657")
-  )
-);
-
-
-$response = $meli->put('/items/MLB'.$MLB, $body, $params);
-
-var_dump($response);
+var_dump(atualizaProdMLB($SKU,$MLB));
 
 // USUARIO DE TESTES
 //  ["id"]=> int(327485416)
@@ -39,3 +20,6 @@ var_dump($response);
 //     ["password"]=> string(10) "qatest8331"
 //     ["site_status"]=> string(6) "active"
 //     ["email"]=> string(30) "test_user_2645635@testuser.com"
+
+
+//

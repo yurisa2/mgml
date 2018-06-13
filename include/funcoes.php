@@ -213,6 +213,8 @@ function retorna_SKU($MLB)
   $params = array('attributes' => "attributes",
   'attributes&include_internal_attributes'=>"true");
 
+  if(strpos($MLB, 'MLB') === 0) $MLB = substr($MLB, -10);
+
   $response = $meli->get('/items/MLB'.$MLB,$params);
 
   // echo "<pre>";
@@ -266,7 +268,7 @@ if($DEBUG == true) var_dump($response); //DEBUG
   //------------PRODUTO--------
   foreach ($response['body']->order_items as $key => $value) {
     $dadosVenda->mlb_produto = $value->item->id;
-    $dadosVenda->sku_produto = retorna_SKU($dadosVenda->mlb);
+    $dadosVenda->sku_produto = retorna_SKU($dadosVenda->mlb_produto);
     $dadosVenda->nome_produto = $value->item->title;
     $dadosVenda->qtd_produto = $value->quantity;
     $dadosVenda->preco_unidade_produto = $value->unit_price;
@@ -290,7 +292,7 @@ if($DEBUG == true) var_dump($response); //DEBUG
   $dadosVenda->cidade = $response['body']->shipping->receiver_address->city->name;
   $dadosVenda->estado = $response['body']->shipping->receiver_address->state->name;
   $dadosVenda->pais = $response['body']->shipping->receiver_address->country->name;
-
+//PEGAR O ID DO PAIS -- COUNTRY_ID
   // -------USUARIO --------
   $dadosVenda->id_comprador = $response['body']->buyer->id;
   $dadosVenda->apelido_comprador = $response['body']->buyer->nickname;
