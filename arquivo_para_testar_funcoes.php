@@ -20,6 +20,3 @@ var_dump(atualizaProdMLB($SKU,$MLB));
 //     ["password"]=> string(10) "qatest8331"
 //     ["site_status"]=> string(6) "active"
 //     ["email"]=> string(30) "test_user_2645635@testuser.com"
-
-
-//
