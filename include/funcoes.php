@@ -104,6 +104,7 @@ function atualizaProdMLB($SKU,$MLB)
   if(!$produto) return 0;
 
   $title = $prefixo_prod.$produto['name'].$sufixo_prod;
+  //CRIAR TESTES PARA O SUFIXO 
   $price = round($produto['price'] * $ajuste_preco,2);
   $available_quantity = $produto['qty_in_stock'];
 
