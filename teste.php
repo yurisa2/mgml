@@ -1,37 +1,6 @@
 <?php
 include "include/all_include.php";
 
-
-function retornar_SKU($MLB)
-{
-  global $appId;
-  global $secretKey;
-  global $DEBUG;
-
-  $meli = new Meli($appId, $secretKey);
-
-  $params = array('attributes' => "attributes",
-  'attributes&include_internal_attributes'=>"true");
-
-  if(strpos($MLB, 'MLB') === 0) $MLB = substr($MLB, -10);
-
-  $response = $meli->get('/items/MLB'.$MLB,$params);
-
-  // echo "<pre>";
-  // var_dump($response['body']->attributes); //DEBUG
-  if ($DEBUG == true) var_dump($response); //DEBUG
-
-
-  //LUIGI, aqui precisei fazer isso pois voce assumiu que o SKU estaria sempre no indice 2 (o que nao é verdade)
-  foreach ($response['body']->attributes as $key => $value) {
-    if($value->name == "Modelo") return $value->value_name;
-    // echo "<br>";
-  }
-  //ESSE FOREACH procura pelo value Modelo, e retorna o modelo. se nao tiver, continua a execucao e retorna 0
-
-  return 0;
-}
-
 $appId = "4946951783545211";
 $secretkey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
 $userId = "327485416";
