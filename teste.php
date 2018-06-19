@@ -1,30 +1,26 @@
 <?php
 include "include/all_include.php";
+//
+// $appId = "4946951783545211";
+// $secretkey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+// $userId = "327485416";
+// $accesstoken = "APP_USR-4946951783545211-061914-a85220cc2c343a925867a4624d524ccb-327485416";
 
-$appId = "4946951783545211";
-$secretkey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-$userId = "327485416";
-$accesstoken = "APP_USR-4946951783545211-061313-805c369368427433b53b7d9373bb63bf-327485416";
+global $app_Id;
+global $secret_Key;
+global $DEBUG;
 
-$COD = "1732349386";
-
-$meli = new Meli($appId, $secretKey);
-
-$params = array('access_token' => $accesstoken);
-
-
-$response = $meli->get("/orders/$COD", $params);
 
 echo "<pre>";
 
-// if($DEBUG == true) var_dump($response); //DEBUG
+
 
 $dadosVenda = new stdClass;
 
 //------------PRODUTO--------
 foreach ($response['body']->order_items as $key => $value) {
   $dadosVenda->mlb_produto = $value->item->id;
-  $dadosVenda->sku_produto = retornar_SKU($dadosVenda->mlb_produto);
+  $dadosVenda->sku_produto = retorna_SKU($dadosVenda->mlb_produto);
   $dadosVenda->nome_produto = $value->item->title;
   $dadosVenda->qtd_produto = $value->quantity;
   $dadosVenda->preco_unidade_produto = $value->unit_price;

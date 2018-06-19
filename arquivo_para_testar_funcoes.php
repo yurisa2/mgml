@@ -1,24 +1,28 @@
 <?php
 include "include/all_include.php";
-
-
+$media_de_cada_passe = 0;
+$i=1;
 do {
-  $média_de_cada_passe = 0;
+
   $tempo = time();
 
-  echo "lalalalala";
-  echo "Tempo :". (time() - $tempo);
-  echo "<h2>3 - Descobrir o SKU através do MLB do próximo</h2>";
 
- sleep(2);// 3 - Descobrir o SKU através do MLB do próximo
+  echo "QTD de vezes: ".$i;
+
+  echo "";
+
+
    echo "<br>";
    echo "TEMPO: ". (time() - $tempo);
    echo "<br><br><br></h2>";
- $tempo_até_agora = (time() - $tempo);
- $média_de_cada_passe =( $média_de_cada_passe+$tempo_até_agora)/2;
-echo $média_de_cada_passe;
+ $tempo_ate_agora = (time() - $tempo);
+ $media_de_cada_passe = ($media_de_cada_passe + $tempo_ate_agora)/2;
+
+
+ echo "<br>Media de cada lance: ".$media_de_cada_passe;
+ $i++;
 }
-while (($tempo_até_agora + 10) < 30);
+while (($tempo_ate_agora + $media_de_cada_passe) < 0);
 
 // do
 // {

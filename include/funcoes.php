@@ -104,7 +104,7 @@ function atualizaProdMLB($SKU,$MLB)
   if(!$produto) return 0;
 
   $title = $prefixo_prod.$produto['name'].$sufixo_prod;
-  //CRIAR TESTES PARA O SUFIXO 
+  //CRIAR TESTES PARA O SUFIXO
   $price = round($produto['price'] * $ajuste_preco,2);
   $available_quantity = $produto['qty_in_stock'];
 
@@ -314,13 +314,13 @@ if($DEBUG == true) var_dump($response); //DEBUG
 function retornaOrders(){
   global $app_Id;
   global $secret_Key;
+  global $user_id;
   global $DEBUG;
 
-  $meli = new Meli($appId, $secretkey);
+  $meli = new Meli($app_Id, $secret_Key);
 
-  $params = array('access_token' => $accesstoken,
-  'seller' => "327485416"
-  );
+  $params = array('access_token' => token(),
+  'seller' => $user_id);
 
   // $params = array('access_token' => $accesstoken,
   // 'seller' => "327485416",
@@ -335,7 +335,8 @@ function retornaOrders(){
   foreach ($response['body']->results as $key => $value) {
     $i = "i".$key;
     $idOrders->$i = $value->payments[0]->order_id;
-    return $idOrders;
+
   }
+  return $idOrders;
 }
 ?>
