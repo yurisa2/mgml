@@ -1,62 +1,48 @@
 <?php
 include "include/all_include.php";
 //
-// $appId = "4946951783545211";
-// $secretkey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-// $userId = "327485416";
-// $accesstoken = "APP_USR-4946951783545211-061914-a85220cc2c343a925867a4624d524ccb-327485416";
+$appId = "4946951783545211";
+$secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+$accesstoken = "APP_USR-4946951783545211-062013-44ff2c77c72f01da903dad3623758340-327485416";
+$userid = '327485416';
 
 global $app_Id;
 global $secret_Key;
 global $DEBUG;
+global $user_id;
 
+$DEBUG = TRUE;
 
 echo "<pre>";
 
+$meli = new Meli($app_Id, $secret_Key);
 
 
-$dadosVenda = new stdClass;
+ $params = array('access_token' => token(),
+'seller' => $user_id, 'order.status' => 'paid');
 
-//------------PRODUTO--------
-foreach ($response['body']->order_items as $key => $value) {
-  $dadosVenda->mlb_produto = $value->item->id;
-  $dadosVenda->sku_produto = retorna_SKU($dadosVenda->mlb_produto);
-  $dadosVenda->nome_produto = $value->item->title;
-  $dadosVenda->qtd_produto = $value->quantity;
-  $dadosVenda->preco_unidade_produto = $value->unit_price;
-  $dadosVenda->preco_total_produto = $value->full_unit_price;
-}
-
-var_dump($dadosVenda);
-
+$response = $meli->get("/orders/search", $params);
+//var_dump($response['body']->results);
+var_dump($response['body']->results[0]->buyer->id);
+var_dump($response['body']->results[0]->id);
+var_dump($response['body']->results[1]->buyer->id);
+var_dump($response['body']->results[1]->id);
+var_dump($response['body']->results[2]->buyer->id);
+var_dump($response['body']->results[2]->id);
 
 
 
+var_dump($listagem);
 //
+//  $buyer = new stdClass();
 //
+// foreach($response['body']->results as $key => $value){
 //
+//  $buyer->id = $value->buyer->id;
 //
-//   $meli = new Meli($appId, $secretkey);
-//
-//   $params = array('access_token' => $accesstoken,
-//   'seller' => "327485416"
-//   );
-//
-//
-//
-//   // $params = array('access_token' => $accesstoken,
-//   // 'seller' => "327485416",
-//   // 'order.date_created.from' => "2018-06-11T00:00:00.000-00:00",
-//   // 'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
-//   // );
-//   $response = $meli->get("/orders/search", $params);
-//
-//
-//   $idOrders = new stdClass;
-//
-//   foreach ($response['body']->results as $key => $value) {
-//     $i = "i".$key;
-//     $idOrders->$i = $value->payments[0]->order_id;
+//   if($buyer->id == $value->buyer->id){
+//     $buyer->$key = $value->id;
+//     var_dump($buyer);
 //   }
 //
-// var_dump($idOrders);
+// }

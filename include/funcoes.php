@@ -253,7 +253,7 @@ function retornaDadosVenda($COD){
   global $DEBUG;
 
 
-  $meli = new Meli($app_Id, $secret_key);
+  $meli = new Meli($app_Id, $secret_Key);
 
   $params = array('access_token' => token()
   );
@@ -262,7 +262,7 @@ function retornaDadosVenda($COD){
 
   echo "<pre>";
 
-if($DEBUG == true) var_dump($response); //DEBUG
+if($DEBUG == true) var_dump($response['body']); //DEBUG
 
   $dadosVenda = new stdClass;
 
@@ -286,6 +286,7 @@ if($DEBUG == true) var_dump($response); //DEBUG
   }
 
   //----- ------ENDEREÇO---------
+  $dadosVenda->id_shipping = $response['body']->shipping->id;
   $dadosVenda->rua = $response['body']->shipping->receiver_address->street_name;
   $dadosVenda->numero =$response['body']->shipping->receiver_address->street_number;
   $dadosVenda->bairro = $response['body']->shipping->receiver_address->neighborhood->name;
