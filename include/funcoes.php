@@ -278,6 +278,7 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
 
   //--------------PAGAMENTO---------
   foreach ($response['body']->payments as $key => $value) {
+  $dadosVenda->id_order = $value->id;
   $dadosVenda->id_meio_pagamento = $value->payment_method_id;
   $dadosVenda->tipo_pagamento = $value->payment_type;
   $dadosVenda->custo_envio = $value->shipping_cost;
@@ -286,14 +287,35 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
   }
 
   //----- ------ENDEREÇO---------
-  $dadosVenda->id_shipping = $response['body']->shipping->id;
-  $dadosVenda->rua = $response['body']->shipping->receiver_address->street_name;
-  $dadosVenda->numero =$response['body']->shipping->receiver_address->street_number;
-  $dadosVenda->bairro = $response['body']->shipping->receiver_address->neighborhood->name;
-  $dadosVenda->cep = $response['body']->shipping->receiver_address->zip_code;
-  $dadosVenda->cidade = $response['body']->shipping->receiver_address->city->name;
-  $dadosVenda->estado = $response['body']->shipping->receiver_address->state->name;
-  $dadosVenda->pais = $response['body']->shipping->receiver_address->country->name;
+
+
+  if(!isset($response['body']->shipping->receiver_address)){
+    $shipment_id = $response['body']->shipping->id;
+    $params = array('access_token' => token()
+    );
+
+    $dados_shipping = $meli->get("/shipments/$shipment_id", $params);
+// echo "<h1>AQUI ÒOOOOOO</h1>";
+//   var_dump($response)    ;
+    $dadosVenda->id_shipping = $dados_shipping['body']->id;
+    $dadosVenda->rua = $dados_shipping['body']->receiver_address->street_name;
+    $dadosVenda->numero =$dados_shipping['body']->receiver_address->street_number;
+    $dadosVenda->bairro = $dados_shipping['body']->receiver_address->neighborhood->name;
+    $dadosVenda->cep = $dados_shipping['body']->receiver_address->zip_code;
+    $dadosVenda->cidade = $dados_shipping['body']->receiver_address->city->name;
+    $dadosVenda->estado = $dados_shipping['body']->receiver_address->state->name;
+    $dadosVenda->pais = $dados_shipping['body']->receiver_address->country->name;
+  }else{
+    $dadosVenda->id_shipping = $response['body']->shipping->id;
+    $dadosVenda->rua = $response['body']->shipping->receiver_address->street_name;
+    $dadosVenda->numero =$response['body']->shipping->receiver_address->street_number;
+    $dadosVenda->bairro = $response['body']->shipping->receiver_address->neighborhood->name;
+    $dadosVenda->cep = $response['body']->shipping->receiver_address->zip_code;
+    $dadosVenda->cidade = $response['body']->shipping->receiver_address->city->name;
+    $dadosVenda->estado = $response['body']->shipping->receiver_address->state->name;
+    $dadosVenda->pais = $response['body']->shipping->receiver_address->country->name;
+  }
+
 //PEGAR O ID DO PAIS -- COUNTRY_ID
   // -------USUARIO --------
   $dadosVenda->id_comprador = $response['body']->buyer->id;
@@ -321,7 +343,7 @@ function retornaOrders(){
   $meli = new Meli($app_Id, $secret_Key);
 
   $params = array('access_token' => token(),
-  'seller' => $user_id);
+  'seller' => $user_id, 'order.status' => "paid");
 
   // $params = array('access_token' => $accesstoken,
   // 'seller' => "327485416",
@@ -334,7 +356,7 @@ function retornaOrders(){
   $idOrders = new stdClass;
 
   foreach ($response['body']->results as $key => $value) {
-    $i = "i".$key;
+    $i = "order_id_".$key;
     $idOrders->$i = $value->payments[0]->order_id;
 
   }
