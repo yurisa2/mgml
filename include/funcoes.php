@@ -209,6 +209,7 @@ function retorna_SKU($MLB)
   global $secret_Key;
   global $DEBUG;
 
+
   $meli = new Meli($app_Id, $secret_Key);
 
   $params = array('attributes' => "attributes",
@@ -252,15 +253,21 @@ function retornaDadosVenda($COD){
   global $secret_Key;
   global $DEBUG;
 
+  $appId = "4946951783545211";
+  $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+  $accesstoken = "APP_USR-4946951783545211-062213-b412750eeebd43bbfb6fd03db8127594-327485416";
+  $userid = '327485416';
 
-  $meli = new Meli($app_Id, $secret_Key);
-
-  $params = array('access_token' => token()
+  $meli = new Meli($appId, $secretKey);
+  //$meli = new Meli($app_Id, $secret_Key);
+  $params = array('access_token' => $accesstoken
   );
+  // $params = array('access_token' => token()
+  // );
 
   $response = $meli->get("/orders/$COD", $params);
 
-  echo "<pre>";
+  echo "<pre><h1>Aqui</h1>";
 
 if($DEBUG == true) var_dump($response['body']); //DEBUG
 
@@ -340,10 +347,18 @@ function retornaOrders(){
   global $user_id;
   global $DEBUG;
 
-  $meli = new Meli($app_Id, $secret_Key);
 
-  $params = array('access_token' => token(),
-  'seller' => $user_id, 'order.status' => "paid");
+  $appId = "4946951783545211";
+  $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+  $accesstoken = "APP_USR-4946951783545211-062213-b412750eeebd43bbfb6fd03db8127594-327485416";
+  $userid = '327485416';
+
+  $meli = new Meli($appId, $secretKey);
+  //$meli = new Meli($app_Id, $secret_Key);
+  $params = array('access_token' => $accesstoken,
+  'seller' => $userid, 'order.status' => "paid");
+  //$params = array('access_token' => token(),
+  //'seller' => $user_id, 'order.status' => "paid");
 
   // $params = array('access_token' => $accesstoken,
   // 'seller' => "327485416",
