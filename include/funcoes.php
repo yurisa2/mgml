@@ -253,21 +253,15 @@ function retornaDadosVenda($COD){
   global $secret_Key;
   global $DEBUG;
 
-  $appId = "4946951783545211";
-  $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-062213-b412750eeebd43bbfb6fd03db8127594-327485416";
-  $userid = '327485416';
 
-  $meli = new Meli($appId, $secretKey);
-  //$meli = new Meli($app_Id, $secret_Key);
-  $params = array('access_token' => $accesstoken
+  $meli = new Meli($app_Id, $secret_Key);
+
+  $params = array('access_token' => token()
   );
-  // $params = array('access_token' => token()
-  // );
 
   $response = $meli->get("/orders/$COD", $params);
 
-  echo "<pre><h1>Aqui</h1>";
+  // echo "<pre><h1>Aqui</h1>";
 
 if($DEBUG == true) var_dump($response['body']); //DEBUG
 
@@ -285,7 +279,7 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
 
   //--------------PAGAMENTO---------
   foreach ($response['body']->payments as $key => $value) {
-  $dadosVenda->id_order = $value->id;
+  $dadosVenda->id_order = $value->order_id;
   $dadosVenda->id_meio_pagamento = $value->payment_method_id;
   $dadosVenda->tipo_pagamento = $value->payment_type;
   $dadosVenda->custo_envio = $value->shipping_cost;
@@ -347,18 +341,10 @@ function retornaOrders(){
   global $user_id;
   global $DEBUG;
 
+  $meli = new Meli($app_Id, $secret_Key);
 
-  $appId = "4946951783545211";
-  $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-062213-b412750eeebd43bbfb6fd03db8127594-327485416";
-  $userid = '327485416';
-
-  $meli = new Meli($appId, $secretKey);
-  //$meli = new Meli($app_Id, $secret_Key);
-  $params = array('access_token' => $accesstoken,
-  'seller' => $userid, 'order.status' => "paid");
-  //$params = array('access_token' => token(),
-  //'seller' => $user_id, 'order.status' => "paid");
+  $params = array('access_token' => token(),
+  'seller' => $user_id, 'order.status' => "paid");
 
   // $params = array('access_token' => $accesstoken,
   // 'seller' => "327485416",
@@ -371,8 +357,8 @@ function retornaOrders(){
   $idOrders = new stdClass;
 
   foreach ($response['body']->results as $key => $value) {
-    $i = "order_id_".$key;
-    $idOrders->$i = $value->payments[0]->order_id;
+    // $i = "order_id_".$key;
+    $idOrders->$key = $value->payments[0]->order_id;
 
   }
   return $idOrders;

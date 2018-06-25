@@ -1,119 +1,68 @@
 <?php
 include "include/all_include.php";
-//
-// $appId = "4946951783545211";
-// $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-// $accesstoken = "APP_USR-4946951783545211-062213-b412750eeebd43bbfb6fd03db8127594-327485416";
-// $userid = '327485416';
-//
-//
-//
-// global $app_Id;
-// global $secret_Key;
-// global $DEBUG;
-// global $user_id;
-
+include "include/apimagentophp/orderAdd.php";
 
 
 echo "<pre>";
 
+
+function retornaDadosOrders(){
 $orders = retornaOrders();
 
+//var_dump($orders); //DEBUG
 
-var_dump($orders);
 
-
+$magento_orders = new stdClass;
 
 foreach ($orders as $key => $value) {
-  $dados_order = retornaDadosVenda($orders->$key);
+  $dados_order = retornaDadosVenda($value);
 
-  //$buyer = $dados_order->id_comprador;
-
-  $order_info['buyerid'] = $dados_order->id_comprador;
-  $order_info['orderid'] = $dados_order->id_order;
-
-  $aux = $dados_order->id_comprador;
-  $customer = '$customer_'.$aux;
-  //echo "Customer ID: ".$customer;
-
-$var = json_decode(file_get_contents('orderid.json'));
-$buyer = $var->buyerid;
-$order = $var->orderid;
-$customer = new stdClass;
-
-var_dump($dados_order->id_comprador);
-
-if($dados_order->id_comprador == $buyer){
-
-  $i = 0;
-  $id_order= "id_order".$i;
-  $mlb_produto = "mlb_produto".$i;
-  $sku_produto = "sku_produto".$i;
-  $nome_produto = "nome_produto".$i;
-  $qtd_produto = "qtd_produto".$i;
-
-  $customer->id_order = $dados_order->id_order;
-  $customer->$key = $order;
-  $customer->mlb_produto = $dados_order->mlb_produto;
-  $customer->sku_produto = $dados_order->sku_produto;
-  $customer->nome_produto = $dados_order->nome_produto;
-  $customer->id_comprador = $dados_order->id_comprador;
-  $customer->nome_comprador = $dados_order->nome_comprador;
-  $customer->sobrenome_comprador = $dados_order->sobrenome_comprador;
-  $customer->email_comprador = $dados_order->email_comprador;
-  $customer->numero_documento_comprador = $dados_order->numero_documento_comprador;
-  $customer->telefone_comprador = $dados_order->cod_area_comprador.$dados_order->telefone_comprador;
-  $customer->id_shipping = $dados_order->id_shipping;
-  $customer->rua = $dados_order->rua.", ".$dados_order->numero." - ".$dados_order->bairro;
-  $customer->cep = $dados_order->cep;
-  $customer->cidade = $dados_order->cidade;
-  $customer->estado = $dados_order->estado;
-  $customer->pais = $dados_order->pais;
-
-file_put_contents('orderid.json', json_encode($order_info));
-
-  $i++;
-}else{
-  $customer->id_order = $orders->$key;
-  $customer->mlb_produto = $dados_order->mlb_produto;
-  $customer->sku_produto = $dados_order->sku_produto;
-  $customer->nome_produto = $dados_order->nome_produto;
-  $customer->qtd_produto = $dados_order->qtd_produto;
-  $customer->id_comprador = $dados_order->id_comprador;
-  $customer->nome_comprador = $dados_order->nome_comprador;
-  $customer->sobrenome_comprador = $dados_order->sobrenome_comprador;
-  $customer->email_comprador = $dados_order->email_comprador;
-  $customer->numero_documento_comprador = $dados_order->numero_documento_comprador;
-  $customer->telefone_comprador = $dados_order->cod_area_comprador.$dados_order->telefone_comprador;
-  $customer->id_shipping = $dados_order->id_shipping;
-  $customer->rua = $dados_order->rua.", ".$dados_order->numero." - ".$dados_order->bairro;
-  $customer->cep = $dados_order->cep;
-  $customer->cidade = $dados_order->cidade;
-  $customer->estado = $dados_order->estado;
-  $customer->pais = $dados_order->pais;
-
-
+  $buyerid = $dados_order->id_comprador;
+  $magento_orders->$buyerid->order_id[] = $dados_order->id_order;
+  $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
+  $magento_orders->$buyerid->sku_produto[] = $dados_order->sku_produto;
+  $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
+  $magento_orders->$buyerid->qtd_produto[] = $dados_order->qtd_produto;
+}
+return $magento_orders;
 }
 
 
-file_put_contents('orderid.json', json_encode($order_info));
+$orders = retornaOrders();
 
-var_dump($customer);
+$dadosVenda = retornaDadosOrders();
+
+foreach ($orders as $key => $value) {
+  $dados_order = retornaDadosVenda($value);
+  $buyerid = $dados_order->id_comprador;
+  $dadosVenda->$buyerid->preco_unidade_produto[] = $dados_order->preco_unidade_produto;
+  $dadosVenda->$buyerid->preco_total_produto[] = $dados_order->preco_total_produto;
+
+  $dadosVenda->$buyerid->id_meio_pagamento = $dados_order->id_meio_pagamento;
+  $dadosVenda->$buyerid->tipo_pagamento = $dados_order->tipo_pagamento;
+  $dadosVenda->$buyerid->custo_envio = $dados_order->custo_envio;
+  $dadosVenda->$buyerid->total_pagar = $dados_order->total_pagar;
+  $dadosVenda->$buyerid->status_pagamento = $dados_order->status_pagamento;
+
+
+  $dadosVenda->$buyerid->id_shipping = $dados_order->id_shipping;
+  $dadosVenda->$buyerid->rua = $dados_order->rua;
+  $dadosVenda->$buyerid->numero = $dados_order->numero;
+  $dadosVenda->$buyerid->bairro = $dados_order->bairro;
+  $dadosVenda->$buyerid->cep = $dados_order->cep;
+  $dadosVenda->$buyerid->cidade = $dados_order->cidade;
+  $dadosVenda->$buyerid->estado = $dados_order->estado;
+  $dadosVenda->$buyerid->pais = $dados_order->pais;
+
+  $dadosVenda->$buyerid->id_comprador = $dados_order->id_comprador;
+  $dadosVenda->$buyerid->apelido_comprador = $dados_order->apelido_comprador;
+  $dadosVenda->$buyerid->email_comprador = $dados_order->email_comprador;
+  $dadosVenda->$buyerid->cod_area_comprador = $dados_order->cod_area_comprador;
+  $dadosVenda->$buyerid->telefone_comprador = $dados_order->cod_area_comprador.$dados_order->telefone_comprador;
+  $dadosVenda->$buyerid->nome_comprador = $dados_order->nome_comprador;
+  $dadosVenda->$buyerid->sobrenome_comprador = $dados_order->sobrenome_comprador;
+  $dadosVenda->$buyerid->tipo_documento_comprador = $dados_order->tipo_documento_comprador;
+  $dadosVenda->$buyerid->numero_documento_comprador = $dados_order->numero_documento_comprador;
 }
 
-// $customer->id_order = $orders->$key;
-// $customer->mlb_produto = $dados_order->mlb_produto;
-// $customer->sku_produto = $dados_order->sku_produto;
-// $customer->nome_produto = $dados_order->nome_produto;
-// $customer->qtd_produto = $dados_order->qtd_produto;
-// $customer->nome_comprador = $dados_order->nome_comprador;
-// $customer->sobrenome_comprador = $dados_order->sobrenome_comprador;
-// $customer->email_comprador = $dados_order->email_comprador;
-// $customer->numero_documento_comprador = $dados_order->numero_documento_comprador;
-// $customer->telefone_comprador = $dados_order->cod_area_comprador.$dados_order->telefone_comprador;
-// $customer->id_shipping = $dados_order->id_shipping;
-// $customer->rua = $dados_order->rua.", ".$dados_order->numero." - ".$dados_order->bairro;
-// $customer->cep = $dados_order->cep;
-// $customer->cidade = $dados_order->cidade;
-// $customer->estado = $dados_order->estado;
-// $customer->pais = $dados_order->pais;
+var_dump($dadosVenda);
