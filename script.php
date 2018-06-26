@@ -21,15 +21,15 @@ echo "<br>";
 echo "<h2>2 - Localizar ultimo (json) e o próximo da lista (array que vem do list)</h2>";
 echo "<br>";
 $MLB = proximo_MLB(); // 2 - Localizar ultimo (json) e o próximo da lista (array que vem do list)
-$next_MLB = ultimo_MLB();
-echo "<h2>ATUAL MLB: $MLB<BR>ANTERIOR MLB: $next_MLB  <BR>";
+$ultimo_MLB = ultimo_MLB();
+echo "<h2>ATUAL MLB: $MLB<BR>ANTERIOR MLB: $ultimo_MLB  <BR>";
 echo "TEMPO:". (time() - $time_inicial);
 echo "<br><br><br></h2>";
 
 echo "<h2>3 - Descobrir o SKU através do MLB do próximo</h2>";
 $SKU = retorna_SKU($MLB); // 3 - Descobrir o SKU através do MLB do próximo
 echo "<br>";
-echo "<h2>ATUAL SKU: ". $SKU ."<BR>PROXIMO SKU:". retorna_SKU($next_MLB) ."<BR>";
+echo "<h2>ATUAL SKU: ". $SKU ."<BR>PROXIMO SKU:". retorna_SKU($ultimo_MLB) ."<BR>";
 echo "TEMPO: ". (time() - $time_inicial);
 echo "<br><br><br></h2>";
 

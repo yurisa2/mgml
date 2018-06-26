@@ -73,6 +73,7 @@ function ultimo_MLB()
 
 function proximo_MLB()
 {
+  global $DEBUG;
   $ultimo = ultimo_MLB();
   $ultimo = "MLB".$ultimo;
   $lista = lista_MLB();
@@ -83,7 +84,12 @@ function proximo_MLB()
   $valor_proximo = substr($lista[$indice_proximo], 3);
   $valor_zero = substr($lista["0"], 3);
 
-
+if ($DEBUG == true) var_dump($valor_zero); //$DEBUG
+if ($DEBUG == true) var_dump($valor_proximo); //$DEBUG
+//CREIO QUE SE FOR if($indice_proximo+1 > count($lista)) return $valor_zero;
+//else return $valor_proximo; PORQUE CASO O INDICE PROXIMO SEJA 49 +1 = 50 E O INDICE 50 EXISTE
+//ENTAO ELE RETORNA O INDICE 50. UMA VEZ QUE O 50 SEJA ATUALIZADO, 50+1 = 51 E A LISTA TEM 50 REGISTROS
+//ENTAO RETORNA O INDICE 1.
   if($indice_proximo+1 == count($lista)) return $valor_zero;
   else return $valor_proximo;
 }
@@ -108,7 +114,7 @@ function atualizaProdMLB($SKU,$MLB)
   $price = round($produto['price'] * $ajuste_preco,2);
   $available_quantity = $produto['qty_in_stock'];
 
-if ($DEBUG == true) var_dump($title); //DEBUG
+if ($DEBUG == true) var_dump($produto); //DEBUG
 
   if($available_quantity < 0) $available_quantity = 0;
 
@@ -249,15 +255,27 @@ function escreve_MLB($MLB)
 }
 
 function retornaDadosVenda($COD){
-  global $app_Id;
-  global $secret_Key;
+  // global $app_Id;
+  // global $secret_Key;
+  // global $DEBUG;
+  //
+  // $meli = new Meli($app_Id, $secret_Key);
+  //
+  // $params = array('access_token' => token()
+  // );
+
+//BLOCO PARA USAR AS ORDERS DE TESTE----
   global $DEBUG;
+  $appId = "4946951783545211";
+  $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+  $accesstoken = "APP_USR-4946951783545211-062613-e512bd2717f82eb16eb143eb18085bfe-327485416";
+  $userid = '327485416';
 
+  $meli = new Meli($appId, $secretKey);
 
-  $meli = new Meli($app_Id, $secret_Key);
-
-  $params = array('access_token' => token()
+  $params = array('access_token' => $accesstoken
   );
+//--------------------------------------------
 
   $response = $meli->get("/orders/$COD", $params);
 
@@ -336,16 +354,30 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
 
 
 function retornaOrders(){
-  global $app_Id;
-  global $secret_Key;
-  global $user_id;
+  // global $app_Id;
+  // global $secret_Key;
+  // global $user_id;
+  // global $DEBUG;
+  //
+  // $meli = new Meli($app_Id, $secret_Key);
+  //
+  // $params = array('access_token' => token(),
+  // 'seller' => $user_id, 'order.status' => "paid");
+
+//BLOCO PARA USAR AS ORDERS DE TESTE----
   global $DEBUG;
+  $appId = "4946951783545211";
+  $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+  $accesstoken = "APP_USR-4946951783545211-062613-e512bd2717f82eb16eb143eb18085bfe-327485416";
+  $userid = '327485416';
 
-  $meli = new Meli($app_Id, $secret_Key);
+  $meli = new Meli($appId, $secretKey);
 
-  $params = array('access_token' => token(),
-  'seller' => $user_id, 'order.status' => "paid");
+  $params = array('access_token' => $accesstoken,
+  'seller' => $userid, 'order.status' => "paid");
+//--------------------------------------------------
 
+  // PARAMETRO DE DATA PARA PROCURAR ORDERS
   // $params = array('access_token' => $accesstoken,
   // 'seller' => "327485416",
   // 'order.date_created.from' => "2018-06-11T00:00:00.000-00:00",
