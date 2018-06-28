@@ -1,10 +1,10 @@
 <?php
 include "include/all_include.php";
-//include "include/apimagentophp/orderAdd.php";
+include "include/apimagentophp/orderAdd.php";
 
 echo "<pre>";
 
-
+//$DEBUG = true;
 function retornaDadosOrders(){
 $orders = retornaOrders();
 
@@ -17,7 +17,7 @@ foreach ($orders as $key => $value) {
   $dados_order = retornaDadosVenda($value);
 
   $buyerid = $dados_order->id_comprador;
-  $magento_orders->$buyerid->order_id[] = $dados_order->id_order;
+  $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
   $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
   $magento_orders->$buyerid->sku_produto[] = $dados_order->sku_produto;
   $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
@@ -28,6 +28,8 @@ return $magento_orders;
 
 
 $orders = retornaOrders();
+
+var_dump($orders); 
 
 $dadosVenda = retornaDadosOrders();
 
@@ -65,3 +67,66 @@ foreach ($orders as $key => $value) {
 }
 
 var_dump($dadosVenda);
+
+
+$Magento_order = new stdClass();
+
+foreach($dadosVenda as $key => $value){
+
+$Magento_order->order_id = $dadosVenda->$key->id_order;
+  $Magento_order->mlb_produto = $dadosVenda->$key->mlb_produto;
+  $Magento_order->sku_produto = $dadosVenda->$key->sku_produto;
+  $Magento_order->nome_produto = $dadosVenda->$key->nome_produto;
+  $Magento_order->qtd_produto = $dadosVenda->$key->qtd_produto;
+  $Magento_order->preco_unidade_produto =$dadosVenda->$key->preco_unidade_produto;
+  $Magento_order->preco_total_produto = $dadosVenda->$key->preco_total_produto;
+
+  //--------------PAGAMENTO---------
+  $Magento_order->id_meio_pagamento = $dadosVenda->$key->id_meio_pagamento;
+  $Magento_order->tipo_pagamento = $dadosVenda->$key->tipo_pagamento;
+  $Magento_order->custo_envio = $dadosVenda->$key->custo_envio;
+  $Magento_order->total_pagar = $dadosVenda->$key->total_pagar;
+  $Magento_order->status_pagamento = $dadosVenda->$key->status_pagamento;
+
+  //-----------ENDEREÇO---------
+  $Magento_order->rua = $dadosVenda->$key->rua;
+  $Magento_order->numero = $dadosVenda->$key->numero;
+  $Magento_order->bairro = $dadosVenda->$key->bairro;
+  $Magento_order->cep = $dadosVenda->$key->cep;
+  $Magento_order->cidade = $dadosVenda->$key->cidade;
+  $Magento_order->estado = $dadosVenda->$key->estado;
+  $Magento_order->pais = $dadosVenda->$key->pais;
+
+  // ---------USUARIO---------
+  $Magento_order->id_comprador = $dadosVenda->$key->id_comprador;
+  $Magento_order->apelido_comprador = $dadosVenda->$key->apelido_comprador;
+  $Magento_order->email_comprador = $dadosVenda->$key->email_comprador;
+  $Magento_order->cod_area_comprador = $dadosVenda->$key->cod_area_comprador;
+  $Magento_order->telefone_comprador = $dadosVenda->$key->telefone_comprador;
+  $Magento_order->nome_comprador = $dadosVenda->$key->nome_comprador;
+  $Magento_order->sobrenome_comprador = $dadosVenda->$key->sobrenome_comprador;
+  $Magento_order->tipo_documento_comprador = $dadosVenda->$key->tipo_documento_comprador;
+  $Magento_order->numero_documento_comprador = $dadosVenda->$key->numero_documento_comprador;
+
+}
+var_dump($Magento_order);
+
+
+$prods = array(
+    array($Magento_order->sku_produto, $Magento_order->qtd_produto)
+    );
+
+//var_dump($prods);
+
+	foreach ($Magento_order->sku_produto as $key => $value) {
+          
+        $shoppingCartProductEntity[$key] = array($Magento_order->sku_produto[$key],$Magento_order->qtd_produto[$key]);
+        
+        
+}
+    var_dump($shoppingCartProductEntity);
+
+  
+
+
+//$e = new Magento_order($Magento_order);
