@@ -268,7 +268,7 @@ function retornaDadosVenda($COD){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-062813-8435cd0c84dfbbd6f1275e92c83ba305-327485416";
+  $accesstoken = "APP_USR-4946951783545211-062913-42460b123c965056ba45fb6c8cbc60b0-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -368,7 +368,7 @@ function retornaOrders(){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-062813-8435cd0c84dfbbd6f1275e92c83ba305-327485416";
+  $accesstoken = "APP_USR-4946951783545211-062913-42460b123c965056ba45fb6c8cbc60b0-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);

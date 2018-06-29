@@ -26,6 +26,7 @@ foreach ($orders as $key => $value) {
 return $magento_orders;
 }
 
+$DEBUG = true;
 
 $orders = retornaOrders();
 
@@ -112,21 +113,35 @@ $Magento_order->order_id = $dadosVenda->$key->id_order;
 var_dump($Magento_order);
 
 
-$prods = array(
-    array($Magento_order->sku_produto, $Magento_order->qtd_produto)
-    );
-
-//var_dump($prods);
-
-	foreach ($Magento_order->sku_produto as $key => $value) {
-          
-        $shoppingCartProductEntity[$key] = array($Magento_order->sku_produto[$key],$Magento_order->qtd_produto[$key]);
-        
-        
-}
-    var_dump($shoppingCartProductEntity);
-
+//$prods = array(
+//    array($Magento_order->sku_produto, $Magento_order->qtd_produto)
+//    );
+//
+////var_dump($prods);
+//
+//	foreach ($Magento_order->sku_produto as $key => $value) {
+//          
+//        $shoppingCartProductEntity[$key] = array($Magento_order->sku_produto[$key],$Magento_order->qtd_produto[$key]);
+//        
+//        
+//}
+//    var_dump($shoppingCartProductEntity);
+global $magento_soap_user;
+  global $magento_soap_password;
+  global $store_id;
+  global $DEBUG;
+  global $shipping_method;
   
+$obj_magento = magento_obj();
+  $session = magento_session();
 
 
+$cart_id = $obj_magento->shoppingCartCreate($session, $store_id);
+    echo "<h1>INFORMAÇÕES DA LOJA-PAYMENT:</h1> <BR>";
+        var_dump($obj_magento->shoppingCartPaymentList($session, $cart_id));
+
+
+//
 //$e = new Magento_order($Magento_order);
+//
+//var_dump($e);
