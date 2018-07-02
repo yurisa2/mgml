@@ -1,10 +1,9 @@
 <?php
-include "include/all_include.php";
-include "include/apimagentophp/orderAdd.php";
+require_once "include/all_include.php";
 
 echo "<pre>";
 
-//$DEBUG = true;
+$DEBUG = true;
 function retornaDadosOrders(){
 $orders = retornaOrders();
 
@@ -22,15 +21,15 @@ foreach ($orders as $key => $value) {
   $magento_orders->$buyerid->sku_produto[] = $dados_order->sku_produto;
   $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
   $magento_orders->$buyerid->qtd_produto[] = $dados_order->qtd_produto;
+
 }
 return $magento_orders;
 }
 
-$DEBUG = true;
 
-$orders = retornaOrders();
+ $orders = retornaOrders();
 
-var_dump($orders); 
+//var_dump($orders);
 
 $dadosVenda = retornaDadosOrders();
 
@@ -112,36 +111,10 @@ $Magento_order->order_id = $dadosVenda->$key->id_order;
 }
 var_dump($Magento_order);
 
-
-//$prods = array(
-//    array($Magento_order->sku_produto, $Magento_order->qtd_produto)
-//    );
-//
-////var_dump($prods);
-//
-//	foreach ($Magento_order->sku_produto as $key => $value) {
-//          
-//        $shoppingCartProductEntity[$key] = array($Magento_order->sku_produto[$key],$Magento_order->qtd_produto[$key]);
-//        
-//        
-//}
-//    var_dump($shoppingCartProductEntity);
-global $magento_soap_user;
-  global $magento_soap_password;
-  global $store_id;
-  global $DEBUG;
-  global $shipping_method;
-  
-$obj_magento = magento_obj();
-  $session = magento_session();
+require_once 'include/apimagentophp/orderAdd.php';
+require 'include/apimagentophp/include/all_include.php';
 
 
-$cart_id = $obj_magento->shoppingCartCreate($session, $store_id);
-    echo "<h1>INFORMAÇÕES DA LOJA-PAYMENT:</h1> <BR>";
-        var_dump($obj_magento->shoppingCartPaymentList($session, $cart_id));
+$teste = new Magento_order($Magento_order);
 
-
-//
-//$e = new Magento_order($Magento_order);
-//
-//var_dump($e);
+var_dump($teste);

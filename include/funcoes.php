@@ -268,7 +268,7 @@ function retornaDadosVenda($COD){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-062913-42460b123c965056ba45fb6c8cbc60b0-327485416";
+  $accesstoken = "APP_USR-4946951783545211-070213-bb79171b4522cef2155c31ce8dd851fb-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -368,23 +368,26 @@ function retornaOrders(){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-062913-42460b123c965056ba45fb6c8cbc60b0-327485416";
+  $accesstoken = "APP_USR-4946951783545211-070213-bb79171b4522cef2155c31ce8dd851fb-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
 
   $params = array('access_token' => $accesstoken,
-  'seller' => $userid, 'order.status' => "paid");
+  'seller' => $userid, 'order.status' => "paid",
+  'order.date_created.from' => "2018-06-12T00:00:00.000-00:00",
+  'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
+);
 //--------------------------------------------------
 
   // PARAMETRO DE DATA PARA PROCURAR ORDERS
   // $params = array('access_token' => $accesstoken,
   // 'seller' => "327485416",
-  // 'order.date_created.from' => "2018-06-11T00:00:00.000-00:00",
+  // 'order.date_created.from' => "2018-06-12T00:00:00.000-00:00",
   // 'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
   // );
   $response = $meli->get("/orders/search", $params);
-  if($DEBUG == true) echo "<h1>DEBUG retornaOrders</h1><br>".var_dump($response);
+  if($DEBUG == true) echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']->results);
 
   $idOrders = new stdClass;
 
