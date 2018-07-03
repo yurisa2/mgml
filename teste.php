@@ -11,17 +11,17 @@ $orders = retornaOrders();
 
 
 $magento_orders = new stdClass;
-
+$teste = "EP-51-40971";
 foreach ($orders as $key => $value) {
   $dados_order = retornaDadosVenda($value);
 
   $buyerid = $dados_order->id_comprador;
   $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
   $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
-  $magento_orders->$buyerid->sku_produto[] = $dados_order->sku_produto;
+  $magento_orders->$buyerid->sku_produto[] = $teste;
   $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
   $magento_orders->$buyerid->qtd_produto[] = $dados_order->qtd_produto;
-
+$teste++;
 }
 return $magento_orders;
 }

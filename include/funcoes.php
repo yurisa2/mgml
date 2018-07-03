@@ -268,7 +268,7 @@ function retornaDadosVenda($COD){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-070213-bb79171b4522cef2155c31ce8dd851fb-327485416";
+  $accesstoken = "APP_USR-4946951783545211-070312-b95d86940d68e0faa5ac1b56314872ca-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -281,8 +281,8 @@ function retornaDadosVenda($COD){
 
   // echo "<pre><h1>Aqui</h1>";
 
-if($DEBUG == true) echo "<h1>DEBUG retornaDadosVenda</h1><br>".var_dump($response['body']); //DEBUG
-
+if($DEBUG == true) echo "<h1>DEBUG retornaDadosVenda</h1><br>";
+if($DEBUG == true) var_dump($response['body']); //DEBUG
   $dadosVenda = new stdClass;
 
   //------------PRODUTO--------
@@ -331,8 +331,8 @@ if($DEBUG == true) echo "<h1>DEBUG retornaDadosVenda</h1><br>".var_dump($respons
     $dadosVenda->bairro = $response['body']->shipping->receiver_address->neighborhood->name;
     $dadosVenda->cep = $response['body']->shipping->receiver_address->zip_code;
     $dadosVenda->cidade = $response['body']->shipping->receiver_address->city->name;
-    $dadosVenda->estado = $response['body']->shipping->receiver_address->state->name;
-    $dadosVenda->pais = $response['body']->shipping->receiver_address->country->name;
+    $dadosVenda->estado = $response['body']->shipping->receiver_address->state->id;
+    $dadosVenda->pais = $response['body']->shipping->receiver_address->country->id;
   }
 
 //PEGAR O ID DO PAIS -- COUNTRY_ID
@@ -368,7 +368,7 @@ function retornaOrders(){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-070213-bb79171b4522cef2155c31ce8dd851fb-327485416";
+  $accesstoken = "APP_USR-4946951783545211-070312-b95d86940d68e0faa5ac1b56314872ca-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
