@@ -1,23 +1,21 @@
 <?php
 
 include "include/all_include.php";
+require 'include/apimagentophp/include/all_include.php';
+global $magento_soap_user;
+global $magento_soap_password;
+global $store_id;
+global $DEBUG;
+global $shipping_method;
 
-global $app_Id;
-global $secret_Key;
-global $ajuste_preco;
-global $sufixo_prod;
-global $prefixo_prod;
-global $marca;
-
- $DEBUG = true;
-
-$MLB = "1040290239";
-
-
+$obj_magento = magento_obj();
+$session = magento_session();
 echo "<pre>";
-var_dump(ultimo_MLB());
-var_dump(proximo_MLB());
-
+$cart_id = $obj_magento->shoppingCartCreate($session, $store_id);
+echo "<h1>INFORMAÇÕES DA LOJA-PAYMENT:</h1> <BR>";
+var_dump($obj_magento->shoppingCartPaymentList($session, $cart_id, $store_id));
+echo "<h1>INFORMAÇÕES DA LOJA-SHIPPING:</h1> <BR>";
+var_dump($obj_magento->shoppingCartShippingList($session, $cart_id, $store_id));
 
 
 // include "include/all_include.php";

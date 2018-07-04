@@ -90,7 +90,7 @@ if ($DEBUG == true) var_dump($valor_proximo); //$DEBUG
 //else return $valor_proximo; PORQUE CASO O INDICE PROXIMO SEJA 49 +1 = 50 E O INDICE 50 EXISTE
 //ENTAO ELE RETORNA O INDICE 50. UMA VEZ QUE O 50 SEJA ATUALIZADO, 50+1 = 51 E A LISTA TEM 50 REGISTROS
 //ENTAO RETORNA O INDICE 1.
-  if($indice_proximo+1 == count($lista)) return $valor_zero;
+  if($indice_proximo+1 > count($lista)) return $valor_zero;
   else return $valor_proximo;
 }
 
@@ -227,7 +227,7 @@ function retorna_SKU($MLB)
 
   // echo "<pre>";
   // var_dump($response['body']->attributes); //DEBUG
-  if ($DEBUG == true) var_dump($response); //DEBUG
+  if ($DEBUG == true) var_dump($response['body']); //DEBUG
 
 
   //LUIGI, aqui precisei fazer isso pois voce assumiu que o SKU estaria sempre no indice 2 (o que nao é verdade)
@@ -268,7 +268,7 @@ function retornaDadosVenda($COD){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-070312-b95d86940d68e0faa5ac1b56314872ca-327485416";
+  $accesstoken = "APP_USR-4946951783545211-070415-c2b5c84af6990b6ca73cb4f4ffe46eb0-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -322,8 +322,9 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
     $dadosVenda->bairro = $dados_shipping['body']->receiver_address->neighborhood->name;
     $dadosVenda->cep = $dados_shipping['body']->receiver_address->zip_code;
     $dadosVenda->cidade = $dados_shipping['body']->receiver_address->city->name;
-    $dadosVenda->estado = $dados_shipping['body']->receiver_address->state->name;
-    $dadosVenda->pais = $dados_shipping['body']->receiver_address->country->name;
+    $estado = $dados_shipping['body']->receiver_address->state->id;
+    $dadosVenda->estado = substr($estado,-2);
+    $dadosVenda->pais = $dados_shipping['body']->receiver_address->country->id;
   }else{
     $dadosVenda->id_shipping = $response['body']->shipping->id;
     $dadosVenda->rua = $response['body']->shipping->receiver_address->street_name;
@@ -331,7 +332,8 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
     $dadosVenda->bairro = $response['body']->shipping->receiver_address->neighborhood->name;
     $dadosVenda->cep = $response['body']->shipping->receiver_address->zip_code;
     $dadosVenda->cidade = $response['body']->shipping->receiver_address->city->name;
-    $dadosVenda->estado = $response['body']->shipping->receiver_address->state->id;
+    $estado = $response['body']->shipping->receiver_address->state->id;
+    $dadosVenda->estado = substr($estado,-2);
     $dadosVenda->pais = $response['body']->shipping->receiver_address->country->id;
   }
 
@@ -342,7 +344,7 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
   $dadosVenda->email_comprador = $response['body']->buyer->email;
   $dadosVenda->cod_area_comprador = $response['body']->buyer->phone->area_code;
   $dadosVenda->telefone_comprador = $response['body']->buyer->phone->number;
-  $dadosVenda->nome_comprador = $response['body']->buyer->first_name;
+  $dadosVenda->nome_comprador = "MLB-".$response['body']->buyer->first_name;
   $dadosVenda->sobrenome_comprador = $response['body']->buyer->last_name;
   $dadosVenda->tipo_documento_comprador = $response['body']->buyer->billing_info->doc_type;
   $dadosVenda->numero_documento_comprador = $response['body']->buyer->billing_info->doc_number;
@@ -368,7 +370,7 @@ function retornaOrders(){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-070312-b95d86940d68e0faa5ac1b56314872ca-327485416";
+  $accesstoken = "APP_USR-4946951783545211-070415-c2b5c84af6990b6ca73cb4f4ffe46eb0-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);

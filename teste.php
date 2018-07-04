@@ -98,15 +98,26 @@ $Magento_order->order_id = $dadosVenda->$key->id_order;
   $Magento_order->pais = $dadosVenda->$key->pais;
 
   // ---------USUARIO---------
-  $Magento_order->id_comprador = $dadosVenda->$key->id_comprador;
-  $Magento_order->apelido_comprador = $dadosVenda->$key->apelido_comprador;
-  $Magento_order->email_comprador = $dadosVenda->$key->email_comprador;
-  $Magento_order->cod_area_comprador = $dadosVenda->$key->cod_area_comprador;
-  $Magento_order->telefone_comprador = $dadosVenda->$key->telefone_comprador;
-  $Magento_order->nome_comprador = $dadosVenda->$key->nome_comprador;
-  $Magento_order->sobrenome_comprador = $dadosVenda->$key->sobrenome_comprador;
-  $Magento_order->tipo_documento_comprador = $dadosVenda->$key->tipo_documento_comprador;
-  $Magento_order->numero_documento_comprador = $dadosVenda->$key->numero_documento_comprador;
+  // $Magento_order->id_comprador = $dadosVenda->$key->id_comprador;
+  // $Magento_order->apelido_comprador = $dadosVenda->$key->apelido_comprador;
+  // $Magento_order->email_comprador = "teste@mail.com.br";
+  // $Magento_order->cod_area_comprador = $dadosVenda->$key->cod_area_comprador;
+  // $Magento_order->telefone_comprador = $dadosVenda->$key->telefone_comprador;
+  // $Magento_order->nome_comprador = "MLB-Novo Teste";
+  // $Magento_order->sobrenome_comprador = $dadosVenda->$key->sobrenome_comprador;
+  // $Magento_order->tipo_documento_comprador = $dadosVenda->$key->tipo_documento_comprador;
+  // $Magento_order->numero_documento_comprador = "26526526500";
+
+
+  $Magento_order->id_comprador = "129384756";
+  $Magento_order->apelido_comprador = "Tetezinho";
+  $Magento_order->email_comprador = "testemag@mail.com.br";
+  $Magento_order->cod_area_comprador = "053";
+  $Magento_order->telefone_comprador = "032523322";
+  $Magento_order->nome_comprador = "MLB-New Teste";
+  $Magento_order->sobrenome_comprador = "Again";
+  $Magento_order->tipo_documento_comprador = "CPF";
+  $Magento_order->numero_documento_comprador = "24526526500";
 
 }
 var_dump($Magento_order);
