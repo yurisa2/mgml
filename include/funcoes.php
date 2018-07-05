@@ -268,7 +268,7 @@ function retornaDadosVenda($COD){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-070415-c2b5c84af6990b6ca73cb4f4ffe46eb0-327485416";
+  $accesstoken = "APP_USR-4946951783545211-070513-4a4f243f4b81caaaa0796ba2462b7c31-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -370,7 +370,7 @@ function retornaOrders(){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-070415-c2b5c84af6990b6ca73cb4f4ffe46eb0-327485416";
+  $accesstoken = "APP_USR-4946951783545211-070513-4a4f243f4b81caaaa0796ba2462b7c31-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -389,7 +389,7 @@ function retornaOrders(){
   // 'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
   // );
   $response = $meli->get("/orders/search", $params);
-  if($DEBUG == true) echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']->results);
+  if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']->results);}
 
   $idOrders = new stdClass;
 

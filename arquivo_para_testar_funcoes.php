@@ -1,22 +1,29 @@
 <?php
+ini_set("error_reporting",E_ALL);
+ include "include/all_include.php";
 
-include "include/all_include.php";
-require 'include/apimagentophp/include/all_include.php';
-global $magento_soap_user;
-global $magento_soap_password;
-global $store_id;
-global $DEBUG;
-global $shipping_method;
+// require 'include/apimagentophp/include/all_include.php';
+// global $DEBUG;
+// global $app_Id;
+// global $secret_Key;
+// global $user_id;
 
-$obj_magento = magento_obj();
-$session = magento_session();
-echo "<pre>";
-$cart_id = $obj_magento->shoppingCartCreate($session, $store_id);
-echo "<h1>INFORMAÇÕES DA LOJA-PAYMENT:</h1> <BR>";
-var_dump($obj_magento->shoppingCartPaymentList($session, $cart_id, $store_id));
-echo "<h1>INFORMAÇÕES DA LOJA-SHIPPING:</h1> <BR>";
-var_dump($obj_magento->shoppingCartShippingList($session, $cart_id, $store_id));
+ $meli = new Meli($app_Id, $secret_Key);
 
+  $params = array('access_token' => token());
+
+  $body = array('id' => "811281-MLB27695604871_072018");
+
+  $response = $meli->put('items/MLB1040177366/pictures', $body, $params);
+
+  // echo "body: <br> "; var_dump($body); //DEBUG
+  //
+  // echo "response: <br> "; var_dump($response); //DEBUG
+
+   echo "<pre>";
+  var_dump($response); //DEBUG
+
+// $idimg = "811281-MLB27695604871_072018";
 
 // include "include/all_include.php";
 // $media_de_cada_passe = 0;

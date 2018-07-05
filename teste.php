@@ -3,33 +3,33 @@ require_once "include/all_include.php";
 
 echo "<pre>";
 
-$DEBUG = true;
+
+//LEMBRAR DE ARRUMAR CAMPO SKU E O RESTO DESTE ARQUIVO
+//$DEBUG = true;
 function retornaDadosOrders(){
+  $orders = retornaOrders();
+
+  //var_dump($orders); //DEBUG
+
+
+  $magento_orders = new stdClass;
+  $teste = "EP-51-40971";
+  foreach ($orders as $key => $value) {
+    $dados_order = retornaDadosVenda($value);
+
+    $buyerid = $dados_order->id_comprador;
+    $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
+    $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
+    $magento_orders->$buyerid->sku_produto[] = $teste;
+    $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
+    $magento_orders->$buyerid->qtd_produto[] = $dados_order->qtd_produto;
+    $teste++;
+  }
+  return $magento_orders;
+}
+
+
 $orders = retornaOrders();
-
-//var_dump($orders); //DEBUG
-
-
-$magento_orders = new stdClass;
-$teste = "EP-51-40971";
-foreach ($orders as $key => $value) {
-  $dados_order = retornaDadosVenda($value);
-
-  $buyerid = $dados_order->id_comprador;
-  $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
-  $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
-  $magento_orders->$buyerid->sku_produto[] = $teste;
-  $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
-  $magento_orders->$buyerid->qtd_produto[] = $dados_order->qtd_produto;
-$teste++;
-}
-return $magento_orders;
-}
-
-
- $orders = retornaOrders();
-
-//var_dump($orders);
 
 $dadosVenda = retornaDadosOrders();
 
@@ -66,14 +66,14 @@ foreach ($orders as $key => $value) {
   $dadosVenda->$buyerid->numero_documento_comprador = $dados_order->numero_documento_comprador;
 }
 
-var_dump($dadosVenda);
+//if($DEBUG == TRUE) {echo "Estrutura do OBJ $dadosVenda";var_dump($dadosVenda);}
 
 
 $Magento_order = new stdClass();
 
 foreach($dadosVenda as $key => $value){
 
-$Magento_order->order_id = $dadosVenda->$key->id_order;
+  $Magento_order->order_id = $dadosVenda->$key->id_order;
   $Magento_order->mlb_produto = $dadosVenda->$key->mlb_produto;
   $Magento_order->sku_produto = $dadosVenda->$key->sku_produto;
   $Magento_order->nome_produto = $dadosVenda->$key->nome_produto;
@@ -108,19 +108,18 @@ $Magento_order->order_id = $dadosVenda->$key->id_order;
   // $Magento_order->tipo_documento_comprador = $dadosVenda->$key->tipo_documento_comprador;
   // $Magento_order->numero_documento_comprador = "26526526500";
 
-
-  $Magento_order->id_comprador = "129384756";
-  $Magento_order->apelido_comprador = "Tetezinho";
-  $Magento_order->email_comprador = "testemag@mail.com.br";
-  $Magento_order->cod_area_comprador = "053";
-  $Magento_order->telefone_comprador = "032523322";
-  $Magento_order->nome_comprador = "MLB-New Teste";
-  $Magento_order->sobrenome_comprador = "Again";
+  $Magento_order->id_comprador = "01198765432";
+  $Magento_order->apelido_comprador = "Tezinho";
+  $Magento_order->email_comprador = "testezinhomag@mail.com.br";
+  $Magento_order->cod_area_comprador = "53";
+  $Magento_order->telefone_comprador = "232523322";
+  $Magento_order->nome_comprador = "MLB-Teste Nome";
+  $Magento_order->sobrenome_comprador = "nome";
   $Magento_order->tipo_documento_comprador = "CPF";
-  $Magento_order->numero_documento_comprador = "24526526500";
+  $Magento_order->numero_documento_comprador = "11222333444";
 
 }
-var_dump($Magento_order);
+//var_dump($Magento_order);
 
 require_once 'include/apimagentophp/orderAdd.php';
 require 'include/apimagentophp/include/all_include.php';
