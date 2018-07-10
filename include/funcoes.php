@@ -268,7 +268,7 @@ function retornaDadosVenda($COD){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-070513-4a4f243f4b81caaaa0796ba2462b7c31-327485416";
+  $accesstoken = "APP_USR-4946951783545211-071012-2f02666e8cf6ff78f6a8292579e95a93-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -370,7 +370,7 @@ function retornaOrders(){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-070513-4a4f243f4b81caaaa0796ba2462b7c31-327485416";
+  $accesstoken = "APP_USR-4946951783545211-071012-2f02666e8cf6ff78f6a8292579e95a93-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -400,4 +400,110 @@ function retornaOrders(){
   }
   return $idOrders;
 }
+//LEMBRAR DE ARRUMAR CAMPO SKU E O RESTO DESTE ARQUIVO
+function retornaDadosOrders()
+{
+  $orders = retornaOrders();
+
+  $magento_orders = new stdClass;
+  foreach ($orders as $key => $value) {
+    $dados_order = retornaDadosVenda($value);
+
+    $buyerid = $dados_order->id_comprador;
+    $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
+    $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
+    $magento_orders->$buyerid->sku_produto[] = $dados_order->sku_produto;
+    $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
+    $magento_orders->$buyerid->qtd_produto[] = $dados_order->qtd_produto;
+
+    $magento_orders->$buyerid->preco_unidade_produto[] = $dados_order->preco_unidade_produto;
+    $magento_orders->$buyerid->preco_total_produto[] = $dados_order->preco_total_produto;
+    $magento_orders->$buyerid->id_meio_pagamento = $dados_order->id_meio_pagamento;
+    $magento_orders->$buyerid->tipo_pagamento = $dados_order->tipo_pagamento;
+    $magento_orders->$buyerid->custo_envio = $dados_order->custo_envio;
+    $magento_orders->$buyerid->total_pagar = $dados_order->total_pagar;
+    $magento_orders->$buyerid->status_pagamento = $dados_order->status_pagamento;
+
+
+    $magento_orders->$buyerid->id_shipping = $dados_order->id_shipping;
+    $magento_orders->$buyerid->rua = $dados_order->rua;
+    $magento_orders->$buyerid->numero = $dados_order->numero;
+    $magento_orders->$buyerid->bairro = $dados_order->bairro;
+    $magento_orders->$buyerid->cep = $dados_order->cep;
+    $magento_orders->$buyerid->cidade = $dados_order->cidade;
+    $magento_orders->$buyerid->estado = $dados_order->estado;
+    $magento_orders->$buyerid->pais = $dados_order->pais;
+
+    $magento_orders->$buyerid->id_comprador = $dados_order->id_comprador;
+    $magento_orders->$buyerid->apelido_comprador = $dados_order->apelido_comprador;
+    $magento_orders->$buyerid->email_comprador = $dados_order->email_comprador;
+    $magento_orders->$buyerid->cod_area_comprador = $dados_order->cod_area_comprador;
+    $magento_orders->$buyerid->telefone_comprador = $dados_order->cod_area_comprador.$dados_order->telefone_comprador;
+    $magento_orders->$buyerid->nome_comprador = $dados_order->nome_comprador;
+    $magento_orders->$buyerid->sobrenome_comprador = $dados_order->sobrenome_comprador;
+    $magento_orders->$buyerid->tipo_documento_comprador = $dados_order->tipo_documento_comprador;
+    $magento_orders->$buyerid->numero_documento_comprador = $dados_order->numero_documento_comprador;
+  }
+  return $magento_orders;
+}
+
+function retornaObjMl()
+{
+global $DEBUG;
+
+  $dadosVenda = retornaDadosOrders();
+  $Magento_order = new stdClass();
+
+  foreach($dadosVenda as $key => $value){
+
+    $Magento_order->order_id = $dadosVenda->$key->id_order;
+    $Magento_order->mlb_produto = $dadosVenda->$key->mlb_produto;
+    $Magento_order->sku_produto = $dadosVenda->$key->sku_produto;
+    $Magento_order->nome_produto = $dadosVenda->$key->nome_produto;
+    $Magento_order->qtd_produto = $dadosVenda->$key->qtd_produto;
+    $Magento_order->preco_unidade_produto =$dadosVenda->$key->preco_unidade_produto;
+    $Magento_order->preco_total_produto = $dadosVenda->$key->preco_total_produto;
+
+    //--------------PAGAMENTO---------
+    $Magento_order->id_meio_pagamento = $dadosVenda->$key->id_meio_pagamento;
+    $Magento_order->tipo_pagamento = $dadosVenda->$key->tipo_pagamento;
+    $Magento_order->custo_envio = $dadosVenda->$key->custo_envio;
+    $Magento_order->total_pagar = $dadosVenda->$key->total_pagar;
+    $Magento_order->status_pagamento = $dadosVenda->$key->status_pagamento;
+
+    //-----------ENDEREÇO---------
+    $Magento_order->rua = $dadosVenda->$key->rua;
+    $Magento_order->numero = $dadosVenda->$key->numero;
+    $Magento_order->bairro = $dadosVenda->$key->bairro;
+    $Magento_order->cep = $dadosVenda->$key->cep;
+    $Magento_order->cidade = $dadosVenda->$key->cidade;
+    $Magento_order->estado = $dadosVenda->$key->estado;
+    $Magento_order->pais = $dadosVenda->$key->pais;
+
+    // ---------USUARIO---------
+    $Magento_order->id_comprador = $dadosVenda->$key->id_comprador;
+    $Magento_order->apelido_comprador = $dadosVenda->$key->apelido_comprador;
+    $Magento_order->email_comprador = $dadosVenda->$key->email_comprador;
+    $Magento_order->cod_area_comprador = $dadosVenda->$key->cod_area_comprador;
+    $Magento_order->telefone_comprador = $dadosVenda->$key->telefone_comprador;
+    $Magento_order->nome_comprador = $dadosVenda->$key->nome_comprador;
+    $Magento_order->sobrenome_comprador = $dadosVenda->$key->sobrenome_comprador;
+    $Magento_order->tipo_documento_comprador = $dadosVenda->$key->tipo_documento_comprador;
+    $Magento_order->numero_documento_comprador = $dadosVenda->$key->numero_documento_comprador;
+
+    // $Magento_order->id_comprador = "01198765432";
+    // $Magento_order->apelido_comprador = "Tezinho";
+    // $Magento_order->email_comprador = "testezinhomag@mail.com.br";
+    // $Magento_order->cod_area_comprador = "53";
+    // $Magento_order->telefone_comprador = "232523322";
+    // $Magento_order->nome_comprador = "MLB-Teste Nome";
+    // $Magento_order->sobrenome_comprador = "nome";
+    // $Magento_order->tipo_documento_comprador = "CPF";
+    // $Magento_order->numero_documento_comprador = "11222333444";
+
+  }
+  return $Magento_order;
+  if($DEBUG == TRUE) {echo "Estrutura do OBJ Magento_order";var_dump($Magento_order);}
+}
+
 ?>
