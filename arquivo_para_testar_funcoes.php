@@ -7,18 +7,17 @@ ini_set("error_reporting",E_ALL);
 // global $app_Id;
 // global $secret_Key;
 // global $user_id;
-
+//
  $meli = new Meli($app_Id, $secret_Key);
-
-  $params = array('access_token' => token());
-
-  $body = array('id' => "811281-MLB27695604871_072018");
-
-  $response = $meli->put('items/MLB1040177366/pictures', $body, $params);
-
-  // echo "body: <br> "; var_dump($body); //DEBUG
+ $params = array('access_token' => token());
+//$body = array('source' => "imagens/ep-51-40096_1.jpg");
+$response = $meli->get('/pictures/635428-MLB27723429812_072018' ,$params);
   //
-  // echo "response: <br> "; var_dump($response); //DEBUG
+  // $body = array('source' => "imagens/ep-51-40096_1.jpg");
+  // $response = $meli->post('/pictures', $body, $params);
+
+  // $body = array('id' => "635428-MLB27723429812_072018");
+  // $response = $meli->post('/items/MLB1040177366/pictures', $body, $params);
 
    echo "<pre>";
   var_dump($response); //DEBUG
