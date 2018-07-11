@@ -8,19 +8,19 @@ ini_set("error_reporting",E_ALL);
 // global $secret_Key;
 // global $user_id;
 //
- $meli = new Meli($app_Id, $secret_Key);
- $params = array('access_token' => token());
+ //$meli = new Meli($app_Id, $secret_Key);
+ //$params = array('access_token' => token());
 //$body = array('source' => "imagens/ep-51-40096_1.jpg");
-$response = $meli->get('/pictures/635428-MLB27723429812_072018' ,$params);
+//$response = $meli->get('/pictures/630052-MLB27727936061_072018' ,$params);
   //
-  // $body = array('source' => "imagens/ep-51-40096_1.jpg");
+  // $body = array('source' => "imagens/ep-51-40742.jpg");
   // $response = $meli->post('/pictures', $body, $params);
+var_dump(atualizaProdMLB("EP-51-40734","1039710106"));
+  // $body = array('id' => "630052-MLB27727936061_072018");
+  // $response = $meli->post('/items/MLB1039710106/pictures', $body, $params);
 
-  // $body = array('id' => "635428-MLB27723429812_072018");
-  // $response = $meli->post('/items/MLB1040177366/pictures', $body, $params);
-
-   echo "<pre>";
-  var_dump($response); //DEBUG
+  //  echo "<pre>";
+  // var_dump($response); //DEBUG
 
 // $idimg = "811281-MLB27695604871_072018";
 

@@ -99,7 +99,8 @@ function atualizaProdMLB($SKU,$MLB)
   global $app_Id;
   global $secret_Key;
   global $DEBUG;
-  global $ajuste_preco;
+  global $ajuste_preco_multiplicacao;
+  global $ajuste_preco_soma;
   global $sufixo_prod;
   global $prefixo_prod;
   global $marca;
@@ -108,10 +109,9 @@ function atualizaProdMLB($SKU,$MLB)
   $produto = magento_product_summary($SKU);
 
   if(!$produto) return 0;
-
   $title = $prefixo_prod.$produto['name'].$sufixo_prod;
   //CRIAR TESTES PARA O SUFIXO
-  $price = round($produto['price'] * $ajuste_preco,2);
+  $price = round(($produto['price'] * $ajuste_preco_multiplicacao)+$ajuste_preco_soma,2);
   $available_quantity = $produto['qty_in_stock'];
 
 if ($DEBUG == true) var_dump($produto); //DEBUG

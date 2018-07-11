@@ -9,9 +9,9 @@ $user_id = "322193559";
 $site_id = "MLB";
 
 //Ajustes
-$ajuste_preco = "1.3";
+$ajuste_preco_multiplicacao = "1.3";
 $sufixo_prod = " - EasyPath";
 $prefixo_prod = "";
 $marca = "EasyPath";
-
+$ajuste_preco_soma = "5.0";
 ?>
