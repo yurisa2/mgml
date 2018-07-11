@@ -4,8 +4,14 @@ require_once 'include/apimagentophp/orderAdd.php';
 
 echo "<pre>";
 
+$mlb = proximoPedidoMLB();
+$mgnt = "210000496877";
 
-$Magento_order = retornaObjMl();
+var_dump(escrevePedidoMGML($mlb, $mgnt));
 
-$teste = new Magento_orders($Magento_order);
-var_dump($teste);
+
+//$teste = new Magento_order($Magento_order);
+//var_dump($teste);
+
+$tempo_inicial = (time() - $tempo_inicial);
+echo $tempo_inicial;

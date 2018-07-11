@@ -268,7 +268,7 @@ function retornaDadosVenda($COD){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-071012-2f02666e8cf6ff78f6a8292579e95a93-327485416";
+  $accesstoken = "APP_USR-4946951783545211-071114-ccaa4f74c9f64a19fb16b5ffa150d40b-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -370,7 +370,7 @@ function retornaOrders(){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-071012-2f02666e8cf6ff78f6a8292579e95a93-327485416";
+  $accesstoken = "APP_USR-4946951783545211-071114-ccaa4f74c9f64a19fb16b5ffa150d40b-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -381,13 +381,6 @@ function retornaOrders(){
   'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
 );
 //--------------------------------------------------
-
-  // PARAMETRO DE DATA PARA PROCURAR ORDERS
-  // $params = array('access_token' => $accesstoken,
-  // 'seller' => "327485416",
-  // 'order.date_created.from' => "2018-06-12T00:00:00.000-00:00",
-  // 'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
-  // );
   $response = $meli->get("/orders/search", $params);
   if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']->results);}
 
@@ -404,7 +397,7 @@ function retornaOrders(){
 function retornaDadosOrders()
 {
   $orders = retornaOrders();
-
+  $sku_debug = "EP-51-40971";
   $magento_orders = new stdClass;
   foreach ($orders as $key => $value) {
     $dados_order = retornaDadosVenda($value);
@@ -412,7 +405,7 @@ function retornaDadosOrders()
     $buyerid = $dados_order->id_comprador;
     $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
     $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
-    $magento_orders->$buyerid->sku_produto[] = $dados_order->sku_produto;
+    $magento_orders->$buyerid->sku_produto[] = $sku_debug;
     $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
     $magento_orders->$buyerid->qtd_produto[] = $dados_order->qtd_produto;
 
@@ -443,13 +436,14 @@ function retornaDadosOrders()
     $magento_orders->$buyerid->sobrenome_comprador = $dados_order->sobrenome_comprador;
     $magento_orders->$buyerid->tipo_documento_comprador = $dados_order->tipo_documento_comprador;
     $magento_orders->$buyerid->numero_documento_comprador = $dados_order->numero_documento_comprador;
+    $sku_debug++;
   }
   return $magento_orders;
 }
 
 function retornaObjMl()
 {
-global $DEBUG;
+  global $DEBUG;
 
   $dadosVenda = retornaDadosOrders();
   $Magento_order = new stdClass();
@@ -504,6 +498,82 @@ global $DEBUG;
   }
   return $Magento_order;
   if($DEBUG == TRUE) {echo "Estrutura do OBJ Magento_order";var_dump($Magento_order);}
+}
+
+function listaPedidoMLB()
+{
+  global $DEBUG;
+  $listaPedido = (array) retornaOrders();
+  $listagem = array_unique($listaPedido);
+
+  return $listagem;
+}
+
+function escrevePedidoMLB($MLB)
+{
+    $conteudo_arquivo = file_put_contents("include/files/ultimoPedidoMLB.json", json_encode($MLB));
+
+    if(!$conteudo_arquivo)
+    {
+      return "Não deu pra escrever o pedido do mlb";
+    }
+    else
+    {
+      return "1";
+    }
+}
+
+function ultimoPedidoMLB()
+{
+  if(!file_exists("include/files/ultimoPedidoMLB.json")) return "Arquivo json não existente!";
+  else {
+    $conteudo_arquivo = file_get_contents("include/files/ultimoPedidoMLB.json");
+    $retorno = json_decode($conteudo_arquivo);
+    return $retorno;
+  }
+}
+
+function proximoPedidoMLB()
+{
+  global $DEBUG;
+  $ultimo = ultimoPedidoMLB();
+  $lista = listaPedidoMLB();
+
+  $indice_ultimo = array_search($ultimo, $lista);
+  var_dump($lista);
+
+  $indice_proximo = $indice_ultimo+1;
+
+  $valor_proximo = $lista[$indice_proximo];
+  $valor_zero = substr($lista["0"]);
+
+
+  if($indice_proximo+1 > count($lista)) return $valor_zero;
+  else return $valor_proximo;
+}
+
+function retornaPedidosfeitosMGML()
+{
+  if(!file_exists("include/files/PedidosFeitosMLB.json")) return "Arquivo json não existente!";
+  else {
+    $conteudo_arquivo = file_get_contents("include/files/PedidosFeitosMLB.json");
+    $retorno = json_decode($conteudo_arquivo);
+    return $retorno;
+  }
+}
+
+function escrevePedidoMGML($mlb, $mgnt)
+{
+  $listapedido = retornaPedidosfeitosMGML();
+  $pos = array_search($mlb, $listapedido);
+  if($pos == false)
+  {
+    $listapedido[] = $mlb;
+    $conteudo_arquivo = file_put_contents("include/files/PedidosFeitosMLB.json", json_encode($listapedido));
+
+    if(!$conteudo_arquivo) echo "Não foi possível escrever/criar JSON com o pedido";
+    else echo "Criado/escrito JSON pedido";
+  }
 }
 
 ?>
