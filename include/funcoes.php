@@ -268,7 +268,7 @@ function retornaDadosVenda($COD){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-071114-ccaa4f74c9f64a19fb16b5ffa150d40b-327485416";
+  $accesstoken = "APP_USR-4946951783545211-071213-0a698ec74dc128ccc5b53413a525aa4c-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -370,16 +370,17 @@ function retornaOrders(){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-071114-ccaa4f74c9f64a19fb16b5ffa150d40b-327485416";
+  $accesstoken = "APP_USR-4946951783545211-071213-0a698ec74dc128ccc5b53413a525aa4c-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
-
   $params = array('access_token' => $accesstoken,
-  'seller' => $userid, 'order.status' => "paid",
-  'order.date_created.from' => "2018-06-12T00:00:00.000-00:00",
-  'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
-);
+  'seller' => $userid, 'order.status' => "paid");
+//   $params = array('access_token' => $accesstoken,
+//   'seller' => $userid, 'order.status' => "paid",
+//   'order.date_created.from' => "2018-06-12T00:00:00.000-00:00",
+//   'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
+// );
 //--------------------------------------------------
   $response = $meli->get("/orders/search", $params);
   if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']->results);}
@@ -504,9 +505,12 @@ function listaPedidoMLB()
 {
   global $DEBUG;
   $listaPedido = (array) retornaOrders();
-  $listagem = array_unique($listaPedido);
+  $listagem = json_encode($listaPedido);
 
-  return $listagem;
+  $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
+
+  if(!$conteudo_arquivo) return "Não deu pra escrever a lista de pedidos do mlb";
+  else return "Deu pra escrever a lista de pedidos do mlb";
 }
 
 function escrevePedidoMLB($MLB)
@@ -535,19 +539,16 @@ function ultimoPedidoMLB()
 
 function proximoPedidoMLB()
 {
-  global $DEBUG;
   $ultimo = ultimoPedidoMLB();
-  $lista = listaPedidoMLB();
+  $lista = (array)json_decode(file_get_contents("include/files/listaPedidoMLB.json"));
 
   $indice_ultimo = array_search($ultimo, $lista);
-  var_dump($lista);
-
   $indice_proximo = $indice_ultimo+1;
 
   $valor_proximo = $lista[$indice_proximo];
-  $valor_zero = substr($lista["0"]);
+  $valor_zero = $lista["0"];
 
-
+var_dump($lista); //$DEBUG
   if($indice_proximo+1 > count($lista)) return $valor_zero;
   else return $valor_proximo;
 }
@@ -557,7 +558,7 @@ function retornaPedidosfeitosMGML()
   if(!file_exists("include/files/PedidosFeitosMLB.json")) return "Arquivo json não existente!";
   else {
     $conteudo_arquivo = file_get_contents("include/files/PedidosFeitosMLB.json");
-    $retorno = json_decode($conteudo_arquivo);
+    $retorno = $conteudo_arquivo;
     return $retorno;
   }
 }
@@ -565,10 +566,12 @@ function retornaPedidosfeitosMGML()
 function escrevePedidoMGML($mlb, $mgnt)
 {
   $listapedido = retornaPedidosfeitosMGML();
-  $pos = array_search($mlb, $listapedido);
+  $pos = strpos($listapedido, $mlb["0"]);
+
   if($pos == false)
   {
-    $listapedido[] = $mlb;
+    $listapedido = (array) json_decode($listapedido);
+    $listapedido[] =  array('MLB' => $mlb,'MGNT' => $mgnt);
     $conteudo_arquivo = file_put_contents("include/files/PedidosFeitosMLB.json", json_encode($listapedido));
 
     if(!$conteudo_arquivo) echo "Não foi possível escrever/criar JSON com o pedido";
