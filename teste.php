@@ -6,18 +6,18 @@ echo "<pre>";
 
  var_dump(listaPedidoMLB());
 //
-// $dadosOrder = retornaObjMl();
+$Magento_order = retornaObjMl();
 //
-// $mlb = $dadosOrder->order_id;
-// var_dump($mlb);
+$mlb = $Magento_order->order_id;
+var_dump($mlb);
 
-$mlb = array("1732210033","1732210066");
+$teste = new Magento_order($Magento_order);
 
-$mgnt = "210000496823";
+if($teste == true)
+{
+  var_dump(escrevePedidoMGML($mlb));
 
-var_dump(escrevePedidoMGML($mlb, $mgnt));
+  var_dump(escrevePedidoMLB($mlb));
+}
 
-var_dump(escrevePedidoMLB($mlb));
-
-//$teste = new Magento_order($Magento_order);
-//var_dump($teste);
+var_dump($teste);

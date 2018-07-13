@@ -268,7 +268,7 @@ function retornaDadosVenda($COD){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-071213-0a698ec74dc128ccc5b53413a525aa4c-327485416";
+  $accesstoken = "APP_USR-4946951783545211-071316-d70ed5160f935720e42dccbb25fea71a-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -370,7 +370,7 @@ function retornaOrders(){
   global $DEBUG;
   $appId = "4946951783545211";
   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-071213-0a698ec74dc128ccc5b53413a525aa4c-327485416";
+  $accesstoken = "APP_USR-4946951783545211-071316-d70ed5160f935720e42dccbb25fea71a-327485416";
   $userid = '327485416';
 
   $meli = new Meli($appId, $secretKey);
@@ -563,7 +563,7 @@ function retornaPedidosfeitosMGML()
   }
 }
 
-function escrevePedidoMGML($mlb, $mgnt)
+function escrevePedidoMGML($mlb)
 {
   $listapedido = retornaPedidosfeitosMGML();
   $pos = strpos($listapedido, $mlb["0"]);
@@ -571,7 +571,7 @@ function escrevePedidoMGML($mlb, $mgnt)
   if($pos == false)
   {
     $listapedido = (array) json_decode($listapedido);
-    $listapedido[] =  array('MLB' => $mlb,'MGNT' => $mgnt);
+    $listapedido[] =  array('MLB' => $mlb);
     $conteudo_arquivo = file_put_contents("include/files/PedidosFeitosMLB.json", json_encode($listapedido));
 
     if(!$conteudo_arquivo) echo "Não foi possível escrever/criar JSON com o pedido";

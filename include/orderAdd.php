@@ -289,5 +289,7 @@ class Magento_order{
 //       echo "<h1>salesOrderAddComment</h1>";
 //       var_dump($return);
 //     }
+  // if($order_id == string) return TRUE;
+  if($return==true) echo "true";
   }
 }
