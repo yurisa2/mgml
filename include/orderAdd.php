@@ -5,6 +5,7 @@ class Magento_order{
   * Construtor. Set properties in Magento_order
   * @param object $dadosVenda;
   */
+
   public function Magento_order($dadosVenda)
   {
     $this->data = new stdClass();
@@ -48,6 +49,7 @@ class Magento_order{
     global $store_id;
     global $DEBUG;
     global $shipping_method;
+    global $nome;
 
     $obj_magento = magento_obj();
     $session = magento_session();
@@ -233,7 +235,7 @@ class Magento_order{
       $return = $obj_magento->shoppingCartCustomerAddresses($session, $cart_id, $billing, $store_id);
 
       if ($return) echo "<br/>Setado Customer Addresses no carrinho";
-      else //Mandar email do erro
+      else echo "nao deu";//Mandar email do erro
 
       if($DEBUG == TRUE) var_dump($return);
 
@@ -262,34 +264,36 @@ class Magento_order{
 
       $return =  $obj_magento->shoppingCartPaymentMethod($session, $cart_id, $payment, $store_id);
 
-      if ($return) echo "<br/>Setado Payment Method para o carrinho<br/>";
-      else //Mandar email do erro
-
-      if($DEBUG == TRUE) {echo "<h1>ShoppingCartPaymentMetod</h1>";var_dump($return);}
+      if ($return == true) echo "<br/>Setado Payment Method para o carrinho<br/>";
+      else{ echo "Problema meio de pagamento";//Mandar email do erro
+    }
+      if($DEBUG == TRUE)
+      {
+        echo "<h1>ShoppingCartPaymentMetod</h1>";
+        var_dump($return);
+      }
 
 //function magento_shoppingCartOrder($cart_id, $store_id)
-//     $order_id = $obj_magento->shoppingCartOrder($session, $cart_id, $store_id);
-//
-//     if($order_id !== "") echo "Order criado - ".$order_id;
-//     else //mandar email;
-//
-//     if($DEBUG == TRUE) {echo "<h1>shoppingCartOrder</h1>";var_dump($order_id);}
-//
-// //function magento_salesOrderAddComment($order_id, $status, $comment)
-//     $comment="";
-//     foreach ($this->data->id_order as $key =>$value)
-//     {
-//       $comment .= "Id do Pedido MLB: ".$this->data->id_order[$key]."\t";
-//     }
-//
-//     $return = $obj_magento->salesOrderAddComment($session, $order_id, 'pending', $comment, null);
-//     if($return) echo "Comentário criado";
-//     if($DEBUG == TRUE)
-//     {
-//       echo "<h1>salesOrderAddComment</h1>";
-//       var_dump($return);
-//     }
-  // if($order_id == string) return TRUE;
-  if($return==true) echo "true";
+    $order_id = $obj_magento->shoppingCartOrder($session, $cart_id, $store_id);
+
+    if(gettype($order_id) == 'integer') echo "Order criado - ".$order_id;
+    else echo $order_id;//mandar email;
+
+    if($DEBUG == TRUE) {echo "<h1>shoppingCartOrder</h1>";var_dump($order_id);}
+
+//function magento_salesOrderAddComment($order_id, $status, $comment)
+    $comment="";
+    foreach ($this->data->id_order as $key =>$value)
+    {
+      $comment .= "Id do Pedido MLB: ".$this->data->id_order[$key]."\t";
+    }
+
+    $return = $obj_magento->salesOrderAddComment($session, $order_id, 'pending', $comment, null);
+    if($return) echo "Comentário criado";
+    if($DEBUG == TRUE)
+    {
+      echo "<h1>salesOrderAddComment</h1>";
+      var_dump($return);
+    }
   }
 }
