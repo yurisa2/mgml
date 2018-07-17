@@ -256,26 +256,26 @@ function escreve_MLB($MLB)
 }
 
 function retornaDadosVenda($COD){
-  // global $app_Id;
-  // global $secret_Key;
-  // global $DEBUG;
-  //
-  // $meli = new Meli($app_Id, $secret_Key);
-  //
-  // $params = array('access_token' => token()
-  // );
+  global $app_Id;
+  global $secret_Key;
+  global $DEBUG;
+
+  $meli = new Meli($app_Id, $secret_Key);
+
+  $params = array('access_token' => token()
+  );
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
-  global $DEBUG;
-  $appId = "4946951783545211";
-  $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-071613-74aa04eef7a6100dd2197601d93eb937-327485416";
-  $userid = '327485416';
-
-  $meli = new Meli($appId, $secretKey);
-
-  $params = array('access_token' => $accesstoken
-  );
+  // global $DEBUG;
+  // $appId = "4946951783545211";
+  // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+  // $accesstoken = "APP_USR-4946951783545211-071714-1980baff77464e4cfdcdb2cba2a865c9-327485416";
+  // $userid = '327485416';
+  //
+  // $meli = new Meli($appId, $secretKey);
+  //
+  // $params = array('access_token' => $accesstoken
+  // );
 //--------------------------------------------
 
   $response = $meli->get("/orders/$COD", $params);
@@ -357,31 +357,31 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
 
 
 function retornaOrders(){
-  // global $app_Id;
-  // global $secret_Key;
-  // global $user_id;
-  // global $DEBUG;
-  //
-  // $meli = new Meli($app_Id, $secret_Key);
-  //
-  // $params = array('access_token' => token(),
-  // 'seller' => $user_id, 'order.status' => "paid");
+  global $app_Id;
+  global $secret_Key;
+  global $user_id;
+  global $DEBUG;
+
+  $meli = new Meli($app_Id, $secret_Key);
+
+  $params = array('access_token' => token(),
+  'seller' => $user_id, 'order.status' => "paid");
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
-  global $DEBUG;
-  $appId = "4946951783545211";
-  $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-071613-74aa04eef7a6100dd2197601d93eb937-327485416";
-  $userid = '327485416';
-
-  $meli = new Meli($appId, $secretKey);
-  $params = array('access_token' => $accesstoken,
-  'seller' => $userid, 'order.status' => "paid");
-  $params = array('access_token' => $accesstoken,
-  'seller' => $userid, 'order.status' => "paid",
-  'order.date_created.from' => "2018-06-12T00:00:00.000-00:00",
-  'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
-);
+//   global $DEBUG;
+//   $appId = "4946951783545211";
+//   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+//   $accesstoken = "APP_USR-4946951783545211-071714-1980baff77464e4cfdcdb2cba2a865c9-327485416";
+//   $userid = '327485416';
+//
+//   $meli = new Meli($appId, $secretKey);
+//   $params = array('access_token' => $accesstoken,
+//   'seller' => $userid, 'order.status' => "paid");
+//   // $params = array('access_token' => $accesstoken,
+//   // 'seller' => $userid, 'order.status' => "paid",
+//   // 'order.date_created.from' => "2018-06-12T00:00:00.000-00:00",
+//   // 'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
+// // );
 //--------------------------------------------------
   $response = $meli->get("/orders/search", $params);
   if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']->results);}
@@ -399,7 +399,7 @@ function retornaOrders(){
 function retornaDadosOrders()
 {
   $orders = retornaOrders();
-  $sku_debug = "EP-51-40971";
+  //$sku_debug = "EP-51-40971";
   $magento_orders = new stdClass;
   foreach ($orders as $key => $value) {
     $dados_order = retornaDadosVenda($value);
@@ -407,7 +407,7 @@ function retornaDadosOrders()
     $buyerid = $dados_order->id_comprador;
     $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
     $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
-    $magento_orders->$buyerid->sku_produto[] = $sku_debug;
+    $magento_orders->$buyerid->sku_produto[] = $dados_order->sku_produto;
     $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
     $magento_orders->$buyerid->qtd_produto[] = $dados_order->qtd_produto;
 
@@ -438,7 +438,7 @@ function retornaDadosOrders()
     $magento_orders->$buyerid->sobrenome_comprador = $dados_order->sobrenome_comprador;
     $magento_orders->$buyerid->tipo_documento_comprador = $dados_order->tipo_documento_comprador;
     $magento_orders->$buyerid->numero_documento_comprador = $dados_order->numero_documento_comprador;
-    $sku_debug++;
+    //$sku_debug++;
   }
   return $magento_orders;
 }
@@ -505,9 +505,12 @@ function retornaObjMl()
 function listaPedidoMLB()
 {
   global $DEBUG;
-  $listaPedido = retornaObjMl();
+  $Magento_order = retornaDadosOrders();
+  foreach ($Magento_order as $key => $value) {
+    $json[] = $Magento_order->$key->id_order;
 
-  $listaPedido = $listaPedido->order_id;
+    $listaPedido = $json;
+  }
   $listagem = json_encode($listaPedido);
 
   $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
@@ -515,6 +518,16 @@ function listaPedidoMLB()
   if(!$conteudo_arquivo) return "Não deu pra escrever a lista de pedidos do mlb";
   else return "Deu pra escrever a lista de pedidos do mlb";
 }
+//   $listaPedido = retornaObjMl();
+//
+//   $listaPedido = $listaPedido->order_id;
+//   $listagem = json_encode($listaPedido);
+//
+//   $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
+//
+//   if(!$conteudo_arquivo) return "Não deu pra escrever a lista de pedidos do mlb";
+//   else return "Deu pra escrever a lista de pedidos do mlb";
+// }
 
 function escrevePedidoMLB($MLB)
 {
@@ -526,7 +539,7 @@ function escrevePedidoMLB($MLB)
     }
     else
     {
-      return "1";
+      return "Escrito ultimo MLB com sucesso";
     }
 }
 
@@ -542,20 +555,18 @@ function ultimoPedidoMLB()
 
 function proximoPedidoMLB()
 {
-  $ultimo = ultimoPedidoMLB();
+  $ultimo = json_decode(ultimoPedidoMLB());
   $lista = file_get_contents("include/files/listaPedidoMLB.json");
   $lista = json_decode($lista);
 
   $indice_ultimo = array_search($ultimo, $lista);
-var_dump($ultimo); //$DEBUG
   $indice_proximo = $indice_ultimo+1;
 
   $valor_proximo = $lista[$indice_proximo];
   $valor_zero = $lista["0"];
 
-
-  if($indice_proximo+1 > count($lista)) return $valor_zero;
-  else return $valor_proximo;
+  if($indice_proximo+1 < count($lista)) return $valor_proximo;
+  else return $valor_zero;
 }
 
 function retornaPedidosfeitosMGML()

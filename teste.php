@@ -4,19 +4,20 @@ require_once "include/all_include.php";
 require_once 'testeclasse.php';
 echo "<pre>";
 
-//var_dump(listaPedidoMLB());
+var_dump(listaPedidoMLB());
 //
 $Magento_order = retornaObjMl();
+$mlb = proximoPedidoMLB();
+var_dump($mlb);
 
-$mlb = $Magento_order->order_id;
+//$mlb = $Magento_order->order_id;
 // var_dump($mlb);
 //
 $teste = new Magento_order($Magento_order);
 
 $pedidosFeitos = retornaPedidosfeitosMGML();
 $string = implode(",",$mlb);
-
-if(!strpos($pedidosFeitos,$string)){
+if(!strpos($pedidosFeitos, $string)){
   $id_customer = $teste->magento1_customerCustomerCreate();
   var_dump($id_customer);
   $customer_address = $teste->magento2_customerAddressCreate($id_customer);
@@ -35,11 +36,11 @@ if(!strpos($pedidosFeitos,$string)){
   var_dump($customerEntregaSet);
   $customerPagamentoSet = $teste->magento9_shoppingCartPaymentMethod($id_carrinho);
   var_dump($customerPagamentoSet);
-  $order = $teste->magento10_shoppingCartOrder($id_carrinho);
-  var_dump($order);
+  //$order = $teste->magento10_shoppingCartOrder($id_carrinho);
+  // var_dump($order);
 
-  if($order == true) var_dump(escrevePedidoMGML($mlb));
+  // if($order == true) var_dump(escrevePedidoMGML($mlb));
 
 }
 
-var_dump(escrevePedidoMLB($mlb));
+//var_dump(escrevePedidoMLB($mlb));

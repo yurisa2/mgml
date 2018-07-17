@@ -2,15 +2,23 @@
 ini_set("error_reporting",E_ALL);
  include "include/all_include.php";
 
-// require 'include/apimagentophp/include/all_include.php';
-// global $DEBUG;
-// global $app_Id;
-// global $secret_Key;
-// global $user_id;
-//
 
- //$meli = new Meli($app_Id, $secret_Key);
- //$params = array('access_token' => token());
+echo "<pre>";
+// echo listaPedidoMLB();
+
+var_dump(listaPedidoMLB());
+$mlb = proximoPedidoMLB();
+var_dump($mlb);
+$r = escrevePedidoMLB($mlb);
+var_dump($r);
+// $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
+//
+// if(!$conteudo_arquivo) return "Não deu pra escrever a lista de pedidos do mlb";
+// else return "Deu pra escrever a lista de pedidos do mlb";
+
+
+
+// require 'include/apimagentophp/include/all_include.php';
 //$body = array('source' => "imagens/ep-51-40096_1.jpg");
 //$response = $meli->get('/pictures/630052-MLB27727936061_072018' ,$params);
   //

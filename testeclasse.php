@@ -83,7 +83,7 @@ class Magento_order{
     {
       // function magento_customerCustomerCreate()
       $id_customer = $obj_magento->customerCustomerCreate($session, $customer);
-      if($id_customer) echo "Id Customer: ".$id_customer;
+      if($id_customer) echo "Customer Cadastradocom sucesso->ID: ".$id_customer;
 
       if($DEBUG == TRUE)
       {
@@ -106,12 +106,14 @@ class Magento_order{
         if($DEBUG == TRUE) var_dump($customer_address);
 
         $return = $obj_magento->customerAddressCreate($session, $id_customer, $customer_address);
+        echo "Criado customer Address: ";
         return $return;
         if($DEBUG == TRUE) echo "<br/><h1>AddressesCreate ".$return."</h1>";
       }
       else
       {
         $id_customer = $return[0]->customer_id;
+        echo "Id customer::: ";
         return $id_customer;
         if($DEBUG == TRUE) echo "<h1>Customer</h1>";
         if($DEBUG == TRUE) var_dump($id_customer);
@@ -125,7 +127,6 @@ class Magento_order{
       $session = magento_session();
 
       $obj_mag = $obj_magento->customerAddressList($session, $id_customer);
-
       if($DEBUG == TRUE) {echo "<h1>addressesList</h1>";var_dump($obj_mag);}
 
       $obj_mag_email = $obj_magento->customerCustomerInfo($session, $id_customer);
@@ -190,7 +191,7 @@ class Magento_order{
 
         $result_prod_add = $obj_magento->shoppingCartProductAdd($session, $cart_id, $shoppingCartProductEntity, $store_id);
 
-        if ($result_prod_add)
+        if ($result_prod_add === true)
         {
           echo "<br/>Itens adicionados no Carrinho: ";
           var_dump($shoppingCartProductEntity);
@@ -203,20 +204,23 @@ class Magento_order{
       }
 
       public function magento5_shoppingCartProductList($cart_id)
-      {global $DEBUG;
+      {
+        global $DEBUG;
         global $store_id;
         $obj_magento = magento_obj();
         $session = magento_session();
         $result = $obj_magento->shoppingCartProductList($session, $cart_id, $store_id);
-        return "Produtos adicionados no carrinho:";var_dump($result);
+
         if($DEBUG == TRUE)
         {
           echo "<h1>Produtos adicionados no carrinho: </h1>";
           var_dump($result);
         }
+        return "Produtos adicionados no carrinho";
       }
       public function magento6_shoppingCartCustomerSet($cart_id, $id_customer)
-      {global $DEBUG;
+      {
+        global $DEBUG;
         global $store_id;
         $obj_magento = magento_obj();
         $session = magento_session();
@@ -229,7 +233,7 @@ class Magento_order{
         $return = $obj_magento->shoppingCartCustomerSet($session, $cart_id, $customer, $store_id);
         if ($return == true)
         {
-          return "<br/>Setado Customer com sucesso: ";var_dump($customer);
+          return "Setado Customer com sucesso: ";
 
         }
         else
@@ -240,7 +244,8 @@ class Magento_order{
         if($DEBUG == TRUE) echo "<h1>CartCustomerSet: ".$return."</h1>";
       }
       public function magento7_shoppingCartCustomerAddresses($cart_id)
-      {global $DEBUG;
+      {
+        global $DEBUG;
         global $store_id;
         $obj_magento = magento_obj();
         $session = magento_session();
@@ -273,11 +278,11 @@ class Magento_order{
             );
 
             $return = $obj_magento->shoppingCartCustomerAddresses($session, $cart_id, $billing, $store_id);
+  var_dump($return);
+            if ($return == true) return "Setado Customer Addresses no carrinho";
+            else echo "nao deu".var_dump($return);//Mandar email do erro
 
-            if ($return == true) return "<br/>Setado Customer Addresses no carrinho".var_dump($billing);
-            else echo "nao deu";//Mandar email do erro
 
-            var_dump($return);
           }
           public function magento8_shoppingCartShippingMethod($cart_id)
           {global $DEBUG;
@@ -285,11 +290,10 @@ class Magento_order{
             global $shipping_method;
             $obj_magento = magento_obj();
             $session = magento_session();
-            var_dump($shipping_method);
             $return = $obj_magento->shoppingCartShippingMethod($session, $cart_id, $shipping_method, $store_id);
 
-            if ($return) return "<br/>Setado Shipping Method para o carrinho".var_dump($return);
-            else //Mandar email do erro
+            if ($return == true) return "Setado Shipping Method para o carrinho".var_dump($return);
+            else return "Não foi possivel acionar o metodo de entrega".var_dump($return);//Mandar email do erro
 
             if($DEBUG == TRUE)
             {
@@ -317,7 +321,7 @@ class Magento_order{
 
             $return =  $obj_magento->shoppingCartPaymentMethod($session, $cart_id, $payment, $store_id);
 
-            if ($return == true) return "<br/>Setado Payment Method para o carrinho<br/>";
+            if ($return == true) return "Setado Payment Method para o carrinho<br/>";
             else{ echo "Problema meio de pagamento";//Mandar email do erro
             }
             if($DEBUG == TRUE)
