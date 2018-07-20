@@ -365,7 +365,9 @@ function retornaOrders(){
   $meli = new Meli($app_Id, $secret_Key);
 
   $params = array('access_token' => token(),
-  'seller' => $user_id, 'order.status' => "paid");
+    'seller' => $user_id, 'order.status' => "paid",
+    'order.date_created.from' => "2018-07-18T00:00:00.000-00:00"
+  );
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
 //   global $DEBUG;
@@ -487,16 +489,6 @@ function retornaObjMl()
     $Magento_order->tipo_documento_comprador = $dadosVenda->$key->tipo_documento_comprador;
     $Magento_order->numero_documento_comprador = $dadosVenda->$key->numero_documento_comprador;
 
-    // $Magento_order->id_comprador = "01198765432";
-    // $Magento_order->apelido_comprador = "Tezinho";
-    // $Magento_order->email_comprador = "testezinhomag@mail.com.br";
-    // $Magento_order->cod_area_comprador = "53";
-    // $Magento_order->telefone_comprador = "232523322";
-    // $Magento_order->nome_comprador = "MLB-Teste Nome";
-    // $Magento_order->sobrenome_comprador = "nome";
-    // $Magento_order->tipo_documento_comprador = "CPF";
-    // $Magento_order->numero_documento_comprador = "11222333444";
-
   }
   return $Magento_order;
   if($DEBUG == TRUE) {echo "Estrutura do OBJ Magento_order";var_dump($Magento_order);}
@@ -518,16 +510,6 @@ function listaPedidoMLB()
   if(!$conteudo_arquivo) return "Não deu pra escrever a lista de pedidos do mlb";
   else return "Deu pra escrever a lista de pedidos do mlb";
 }
-//   $listaPedido = retornaObjMl();
-//
-//   $listaPedido = $listaPedido->order_id;
-//   $listagem = json_encode($listaPedido);
-//
-//   $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
-//
-//   if(!$conteudo_arquivo) return "Não deu pra escrever a lista de pedidos do mlb";
-//   else return "Deu pra escrever a lista de pedidos do mlb";
-// }
 
 function escrevePedidoMLB($MLB)
 {

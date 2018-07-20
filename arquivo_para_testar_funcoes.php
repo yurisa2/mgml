@@ -6,17 +6,17 @@ ini_set("error_reporting",E_ALL);
 echo "<pre>";
 // echo listaPedidoMLB();
 
-var_dump(listaPedidoMLB());
-$mlb = proximoPedidoMLB();
-var_dump($mlb);
-$r = escrevePedidoMLB($mlb);
-var_dump($r);
+// var_dump(listaPedidoMLB());
+// $mlb = proximoPedidoMLB();
+// var_dump($mlb);
+// $r = escrevePedidoMLB($mlb);
+// var_dump($r);
 // $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
 //
 // if(!$conteudo_arquivo) return "Não deu pra escrever a lista de pedidos do mlb";
 // else return "Deu pra escrever a lista de pedidos do mlb";
 
-
+var_dump(retornaOrders());
 
 // require 'include/apimagentophp/include/all_include.php';
 //$body = array('source' => "imagens/ep-51-40096_1.jpg");
