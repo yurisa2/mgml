@@ -331,7 +331,8 @@ class Magento_order{
             }
           }
           public function magento10_shoppingCartOrder($cart_id)
-          {global $DEBUG;
+          {
+            global $DEBUG;
             global $store_id;
             $obj_magento = magento_obj();
             $session = magento_session();
@@ -361,7 +362,8 @@ class Magento_order{
               var_dump($return);
             }
             if((strlen($order_id) < 11) && ($return == true)){
-              return true;
+              return $order_id;
             }
+            else return 0;
           }
         }

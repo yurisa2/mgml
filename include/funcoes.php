@@ -256,26 +256,26 @@ function escreve_MLB($MLB)
 }
 
 function retornaDadosVenda($COD){
-  global $app_Id;
-  global $secret_Key;
-  global $DEBUG;
-
-  $meli = new Meli($app_Id, $secret_Key);
-
-  $params = array('access_token' => token()
-  );
+  // global $app_Id;
+  // global $secret_Key;
+  // global $DEBUG;
+  //
+  // $meli = new Meli($app_Id, $secret_Key);
+  //
+  // $params = array('access_token' => token()
+  // );
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
-  // global $DEBUG;
-  // $appId = "4946951783545211";
-  // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  // $accesstoken = "APP_USR-4946951783545211-071714-1980baff77464e4cfdcdb2cba2a865c9-327485416";
-  // $userid = '327485416';
-  //
-  // $meli = new Meli($appId, $secretKey);
-  //
-  // $params = array('access_token' => $accesstoken
-  // );
+  global $DEBUG;
+  $appId = "4946951783545211";
+  $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+  $accesstoken = "APP_USR-4946951783545211-072014-db73b552b667b4cfa876ffd59d3ef82c-327485416";
+  $userid = '327485416';
+
+  $meli = new Meli($appId, $secretKey);
+
+  $params = array('access_token' => $accesstoken
+  );
 //--------------------------------------------
 
   $response = $meli->get("/orders/$COD", $params);
@@ -357,33 +357,33 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
 
 
 function retornaOrders(){
-  global $app_Id;
-  global $secret_Key;
-  global $user_id;
-  global $DEBUG;
-
-  $meli = new Meli($app_Id, $secret_Key);
-
-  $params = array('access_token' => token(),
-    'seller' => $user_id, 'order.status' => "paid",
-    'order.date_created.from' => "2018-07-18T00:00:00.000-00:00"
-  );
+  // global $app_Id;
+  // global $secret_Key;
+  // global $user_id;
+  // global $DEBUG;
+  //
+  // $meli = new Meli($app_Id, $secret_Key);
+  //
+  // $params = array('access_token' => token(),
+  //   'seller' => $user_id, 'order.status' => "paid",
+  //   'order.date_created.from' => "2018-07-18T00:00:00.000-00:00"
+  // );
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
-//   global $DEBUG;
-//   $appId = "4946951783545211";
-//   $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-//   $accesstoken = "APP_USR-4946951783545211-071714-1980baff77464e4cfdcdb2cba2a865c9-327485416";
-//   $userid = '327485416';
-//
-//   $meli = new Meli($appId, $secretKey);
-//   $params = array('access_token' => $accesstoken,
-//   'seller' => $userid, 'order.status' => "paid");
-//   // $params = array('access_token' => $accesstoken,
-//   // 'seller' => $userid, 'order.status' => "paid",
-//   // 'order.date_created.from' => "2018-06-12T00:00:00.000-00:00",
-//   // 'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
-// // );
+  global $DEBUG;
+  $appId = "4946951783545211";
+  $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+  $accesstoken = "APP_USR-4946951783545211-072014-db73b552b667b4cfa876ffd59d3ef82c-327485416";
+  $userid = '327485416';
+
+  $meli = new Meli($appId, $secretKey);
+  $params = array('access_token' => $accesstoken,
+  'seller' => $userid, 'order.status' => "paid");
+  // $params = array('access_token' => $accesstoken,
+  // 'seller' => $userid, 'order.status' => "paid",
+  // 'order.date_created.from' => "2018-06-12T00:00:00.000-00:00",
+  // 'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
+// );
 //--------------------------------------------------
   $response = $meli->get("/orders/search", $params);
   if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']->results);}
@@ -401,7 +401,7 @@ function retornaOrders(){
 function retornaDadosOrders()
 {
   $orders = retornaOrders();
-  //$sku_debug = "EP-51-40971";
+  $sku_debug = "EP-51-40971";//$dados_order->sku_produto;
   $magento_orders = new stdClass;
   foreach ($orders as $key => $value) {
     $dados_order = retornaDadosVenda($value);
@@ -409,7 +409,7 @@ function retornaDadosOrders()
     $buyerid = $dados_order->id_comprador;
     $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
     $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
-    $magento_orders->$buyerid->sku_produto[] = $dados_order->sku_produto;
+    $magento_orders->$buyerid->sku_produto[] =$sku_debug;//$dados_order->sku_produto;
     $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
     $magento_orders->$buyerid->qtd_produto[] = $dados_order->qtd_produto;
 
@@ -440,7 +440,7 @@ function retornaDadosOrders()
     $magento_orders->$buyerid->sobrenome_comprador = $dados_order->sobrenome_comprador;
     $magento_orders->$buyerid->tipo_documento_comprador = $dados_order->tipo_documento_comprador;
     $magento_orders->$buyerid->numero_documento_comprador = $dados_order->numero_documento_comprador;
-    //$sku_debug++;
+    $sku_debug++;
   }
   return $magento_orders;
 }
@@ -470,6 +470,7 @@ function retornaObjMl()
     $Magento_order->status_pagamento = $dadosVenda->$key->status_pagamento;
 
     //-----------ENDEREÇO---------
+    $Magento_order->id_shipping = $dadosVenda->$key->id_shipping;
     $Magento_order->rua = $dadosVenda->$key->rua;
     $Magento_order->numero = $dadosVenda->$key->numero;
     $Magento_order->bairro = $dadosVenda->$key->bairro;
@@ -553,7 +554,11 @@ function proximoPedidoMLB()
 
 function retornaPedidosfeitosMGML()
 {
-  if(!file_exists("include/files/PedidosFeitosMLB.json")) return "Arquivo json não existente!";
+  if(!file_exists("include/files/PedidosFeitosMLB.json"))
+  {
+    file_put_contents('include/files/PedidosFeitosMLB.json', "");
+    return "Arquivo json não existente! Criado Novo arquivo";
+  }
   else {
     $conteudo_arquivo = file_get_contents("include/files/PedidosFeitosMLB.json");
     $retorno = $conteudo_arquivo;
@@ -575,6 +580,22 @@ function escrevePedidoMGML($mlb)
     if(!$conteudo_arquivo) echo "Não foi possível escrever/criar JSON com o pedido";
     else echo "Criado/escrito JSON pedido<br/>";
   }
+}
+
+function criaEtiqueta($shipment_ids, $mlb, $nome, $order_id)
+{
+  $token = token();
+  $mlb = json_encode($mlb);
+  $curl_url =  "https://api.mercadolibre.com/shipment_labels?shipment_ids=$shipment_ids&response_type=pdf&access_token=$token";
+  $out = fopen("$mlb-$order_id-$nome.pdf","wb");
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_FILE, $out);
+  curl_setopt($ch, CURLOPT_HEADER, 0);
+  curl_setopt($ch, CURLOPT_URL, $curl_url);
+  curl_exec($ch);
+  curl_close($ch);
+
+  return "Sucesso!!";
 }
 
 ?>

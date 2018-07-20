@@ -5,20 +5,42 @@ ini_set("error_reporting",E_ALL);
 
 echo "<pre>";
 // echo listaPedidoMLB();
-
-// var_dump(listaPedidoMLB());
+// global $app_Id;
+// global $secret_Key;
+// global $user_id;
+// global $DEBUG;
+// $DEBUG = true;
+// $meli = new Meli($app_Id, $secret_Key);
+ // var_dump(retornaOrders());
 // $mlb = proximoPedidoMLB();
 // var_dump($mlb);
 // $r = escrevePedidoMLB($mlb);
-// var_dump($r);
+ var_dump(json_decode(ultimoPedidoMLB()));
 // $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
 //
 // if(!$conteudo_arquivo) return "Não deu pra escrever a lista de pedidos do mlb";
 // else return "Deu pra escrever a lista de pedidos do mlb";
+//
+// $params = array('access_token' => token(),
+//                 'shipment_ids' => "27651542114",
+//                 'response_type' => "pdf");
+//
+// $response = $meli->get('/shipment_labels', $params);
+//
+//
+// $shipment_ids = "27651542114";
+// $token = token();
+//
+// $curl_url =  "https://api.mercadolibre.com/shipment_labels?shipment_ids=$shipment_ids&response_type=pdf&access_token=$token";
+// $out = fopen("etiqueta.pdf","wb");
+// $ch = curl_init();
+// curl_setopt($ch, CURLOPT_FILE, $out);
+//     curl_setopt($ch, CURLOPT_HEADER, 0);
+//     curl_setopt($ch, CURLOPT_URL, $curl_url);
+//     curl_exec($ch);
+//     curl_close($ch);
 
-var_dump(retornaOrders());
 
-// require 'include/apimagentophp/include/all_include.php';
 //$body = array('source' => "imagens/ep-51-40096_1.jpg");
 //$response = $meli->get('/pictures/630052-MLB27727936061_072018' ,$params);
   //
