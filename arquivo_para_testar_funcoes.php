@@ -15,7 +15,7 @@ echo "<pre>";
 // $mlb = proximoPedidoMLB();
 // var_dump($mlb);
 // $r = escrevePedidoMLB($mlb);
- var_dump(send_error_email("Function xxxx", "fjdhsfudhsfuhdsfiuashfuisfdfhsiufhsuifhasiufhsduifhdfkosfjkosdfjsdfsdfsdf"));
+ var_dump(json_decode(ultimoPedidoMLB()));
 // $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
 //
 // if(!$conteudo_arquivo) return "Não deu pra escrever a lista de pedidos do mlb";
