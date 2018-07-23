@@ -84,7 +84,13 @@ class Magento_order{
       // function magento_customerCustomerCreate()
       $id_customer = $obj_magento->customerCustomerCreate($session, $customer);
       if($id_customer) echo "Customer Cadastradocom sucesso->ID: ".$id_customer;
-
+      else{
+        $error = "function magento1_customerCustomerCreate";
+        $debug = var_dump($id_customer);
+        $corpo = send_error_email($error, $debug);
+        $assunto = "Problemas na inserção de Pedido - MaGento";
+        manda_mail($assunto,$corpo,$e_mail = 'yuri@sa2.com.br');
+      }
       if($DEBUG == TRUE)
       {
         echo "<br/><h1>id Customer Novo</h1>";
@@ -106,7 +112,14 @@ class Magento_order{
         if($DEBUG == TRUE) var_dump($customer_address);
 
         $return = $obj_magento->customerAddressCreate($session, $id_customer, $customer_address);
-        echo "Criado customer Address: ";
+        if ($return) echo "Criado customer Address: ";
+        else{
+          $error = "function magento1_customerCustomerCreate";
+          $debug = var_dump($id_customer);
+          $corpo = send_error_email($error, $debug);
+          $assunto = "Problemas na inserção de Pedido - MaGento";
+          manda_mail($assunto,$corpo,$e_mail = 'yuri@sa2.com.br');
+        }
         return $return;
         if($DEBUG == TRUE) echo "<br/><h1>AddressesCreate ".$return."</h1>";
       }
@@ -170,14 +183,21 @@ class Magento_order{
       $session = magento_session();
 
       $cart_id = $obj_magento->shoppingCartCreate($session, $store_id);
-
-      echo "<br/>ID do Carrinho de Compras: ".$cart_id;
+      if($cart_id) echo "<br/>ID do Carrinho de Compras: ".$cart_id;
+      else{
+        $error = "function magento3_shoppingCartCreate";
+        $debug = var_dump($cart_id);
+        $corpo = send_error_email($error, $debug);
+        $assunto = "Problemas na inserção de Pedido - MaGento";
+        manda_mail($assunto,$corpo,$e_mail = 'yuri@sa2.com.br');
+      }
       return $cart_id;
       if($DEBUG == TRUE) {echo "<h1>shoppingCartCreate</h1>";var_dump($cart_id);}
     }
 
     public function magento4_shoppingCartProductAdd($cart_id)
-    {global $DEBUG;
+    {
+      global $DEBUG;
       global $store_id;
       $obj_magento = magento_obj();
       $session = magento_session();
@@ -198,7 +218,11 @@ class Magento_order{
         }
         else
         {
-          //MANDAR EMAIL
+          $error = "function magento4_shoppingCartProductAdd";
+          $debug = var_dump($result_prod_add);
+          $corpo = send_error_email($error, $debug);
+          $assunto = "Problemas na inserção de Pedido - MaGento";
+          manda_mail($assunto,$corpo,$e_mail = 'yuri@sa2.com.br');
           echo "<br/>Produtos não puderam ser adicionados".var_dump($result_prod_add);
         }
       }
@@ -238,7 +262,11 @@ class Magento_order{
         }
         else
         {
-          //MANDAR EMAIL
+          $error = "magento6_shoppingCartCustomerSet";
+          $debug = var_dump($return);
+          $corpo = send_error_email($error, $debug);
+          $assunto = "Problemas na inserção de Pedido - MaGento";
+          manda_mail($assunto,$corpo,$e_mail = 'yuri@sa2.com.br');
           echo "<br/>Não foi possível Setar Customer";
         }
         if($DEBUG == TRUE) echo "<h1>CartCustomerSet: ".$return."</h1>";
@@ -278,14 +306,21 @@ class Magento_order{
             );
 
             $return = $obj_magento->shoppingCartCustomerAddresses($session, $cart_id, $billing, $store_id);
-  var_dump($return);
+            var_dump($return);
             if ($return == true) return "Setado Customer Addresses no carrinho";
-            else echo "nao deu".var_dump($return);//Mandar email do erro
-
+            else{
+              $error = "magento7_shoppingCartCustomerAddresses";
+              $debug = var_dump($return);
+              $corpo = send_error_email($error, $debug);
+              $assunto = "Problemas na inserção de Pedido - MaGento";
+              manda_mail($assunto,$corpo,$e_mail = 'yuri@sa2.com.br');
+              echo "nao deu".var_dump($return);//Mandar email do erro
+            }
 
           }
           public function magento8_shoppingCartShippingMethod($cart_id)
-          {global $DEBUG;
+          {
+            global $DEBUG;
             global $store_id;
             global $shipping_method;
             $obj_magento = magento_obj();
@@ -293,8 +328,14 @@ class Magento_order{
             $return = $obj_magento->shoppingCartShippingMethod($session, $cart_id, $shipping_method, $store_id);
 
             if ($return == true) return "Setado Shipping Method para o carrinho".var_dump($return);
-            else return "Não foi possivel acionar o metodo de entrega".var_dump($return);//Mandar email do erro
-
+            else {
+              $error = "magento8_shoppingCartShippingMethod";
+              $debug = var_dump($return);
+              $corpo = send_error_email($error, $debug);
+              $assunto = "Problemas na inserção de Pedido - MaGento";
+              manda_mail($assunto,$corpo,$e_mail = 'yuri@sa2.com.br');
+              return "Não foi possivel acionar o metodo de entrega".var_dump($return);//Mandar email do erro
+            }
             if($DEBUG == TRUE)
             {
               echo "<h1>shoppingCartShippingMethod</h1>";
@@ -303,7 +344,8 @@ class Magento_order{
 
           }
           public function magento9_shoppingCartPaymentMethod($cart_id)
-          {global $DEBUG;
+          {
+            global $DEBUG;
             global $store_id;
             $obj_magento = magento_obj();
             $session = magento_session();
@@ -322,7 +364,13 @@ class Magento_order{
             $return =  $obj_magento->shoppingCartPaymentMethod($session, $cart_id, $payment, $store_id);
 
             if ($return == true) return "Setado Payment Method para o carrinho<br/>";
-            else{ echo "Problema meio de pagamento";//Mandar email do erro
+            else{
+              $error = "magento9_shoppingCartPaymentMethod";
+              $debug = var_dump($return);
+              $corpo = send_error_email($error, $debug);
+              $assunto = "Problemas na inserção de Pedido - MaGento";
+              manda_mail($assunto,$corpo,$e_mail = 'yuri@sa2.com.br');
+              echo "Problema meio de pagamento";//Mandar email do erro
             }
             if($DEBUG == TRUE)
             {
@@ -338,9 +386,14 @@ class Magento_order{
             $session = magento_session();
 
             $order_id = $obj_magento->shoppingCartOrder($session, $cart_id, $store_id);
-            if($DEBUG == true){
-              if(strlen($order_id) < 11) echo "<br/>Order criado - ".$order_id;else echo '<br/>Deu problema no final--> '.$order_id;
-              //  else echo $order_id;//mandar email;
+            if(strlen($order_id) < 11) echo "<br/>Order criado - ".$order_id;
+            else {
+              $error = "magento10_shoppingCartOrder";
+              $debug = var_dump($order_id);
+              $corpo = send_error_email($error, $debug);
+              $assunto = "Problemas na inserção de Pedido - MaGento";
+              manda_mail($assunto,$corpo,$e_mail = 'yuri@sa2.com.br');
+              echo '<br/>Deu problema no final--> '.$order_id;
             }
             if($DEBUG == TRUE) {echo "<h1>shoppingCartOrder</h1>";var_dump($order_id);}
 
@@ -354,7 +407,14 @@ class Magento_order{
             $return = $obj_magento->salesOrderAddComment($session, $order_id, 'pending', $comment, null);
             if($DEBUG == TRUE)
             {
-              if($return == true) echo "<br/>Comentário criado<br/>";else echo "Não foi possivel adicionar comentario<br/>";
+              if($return == true) echo "<br/>Comentário criado<br/>";
+              else {
+                $error = "magento10_shoppingCartOrder";
+                $debug = var_dump($return);
+                $corpo = send_error_email($error, $debug);
+                $assunto = "Problemas na inserção de Pedido - MaGento";
+                manda_mail($assunto,$corpo,$e_mail = 'yuri@sa2.com.br');
+                echo "Não foi possivel adicionar comentario<br/>";
             }
             if($DEBUG == TRUE)
             {
@@ -367,3 +427,4 @@ class Magento_order{
             else return 0;
           }
         }
+}
