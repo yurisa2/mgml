@@ -10,6 +10,7 @@ $site_id = "MLB";
 
 //Ajustes
 $ajuste_preco_multiplicacao = "1.3";
+$ajuste_estoque = "0.2";
 $sufixo_prod = " - EasyPath";
 $prefixo_prod = "";
 $marca = "EasyPath";

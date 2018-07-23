@@ -1,6 +1,6 @@
 <?php
 ini_set("error_reporting",E_ALL);
- include "include/all_include.php";
+ // include "include/all_include.php";
 
 
 echo "<pre>";
@@ -15,7 +15,10 @@ echo "<pre>";
 // $mlb = proximoPedidoMLB();
 // var_dump($mlb);
 // $r = escrevePedidoMLB($mlb);
- var_dump(json_decode(ultimoPedidoMLB()));
+ var_dump(56 - (56*0.2));
+ echo "<br>";
+ var_dump(floor(56 - (56*0.2)));
+
 // $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
 //
 // if(!$conteudo_arquivo) return "Não deu pra escrever a lista de pedidos do mlb";
