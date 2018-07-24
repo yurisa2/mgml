@@ -15,7 +15,7 @@ echo "<pre>";
 // $mlb = proximoPedidoMLB();
 // var_dump($mlb);
 // $r = escrevePedidoMLB($mlb);
- var_dump(56 - (56*0.2));
+ var_dump(56 + (56*(-0.2)));
  echo "<br>";
  var_dump(floor(56 - (56*0.2)));
 
