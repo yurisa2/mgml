@@ -114,7 +114,7 @@ function atualizaProdMLB($SKU,$MLB)
 if (strlen($title) > 60) $title = $prefixo_prod.$produto['name'];
 
   $price = round(($produto['price'] * $ajuste_preco_multiplicacao)+$ajuste_preco_soma,2);
-  $available_quantity = floor($produto['qty_in_stock'] - ($produto['qty_in_stock']*$ajuste_estoque));
+  $available_quantity = floor($produto['qty_in_stock'] + ($produto['qty_in_stock']*$ajuste_estoque));
 
 if ($DEBUG == true) var_dump($produto); //DEBUG
 
