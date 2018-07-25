@@ -1,6 +1,6 @@
 <?php
 ini_set("error_reporting",E_ALL);
- // include "include/all_include.php";
+include "include/all_include.php";
 
 
 echo "<pre>";
@@ -15,9 +15,10 @@ echo "<pre>";
 // $mlb = proximoPedidoMLB();
 // var_dump($mlb);
 // $r = escrevePedidoMLB($mlb);
- var_dump(56 + (56*(-0.2)));
- echo "<br>";
- var_dump(floor(56 - (56*0.2)));
+$e = send_error_email("Error 1", "Mensagem de DEBUG");
+echo "ola";
+var_dump($e);
+ // var_dump(manda_mail($e,"teste"));
 
 // $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
 //

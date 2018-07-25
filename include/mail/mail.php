@@ -1,9 +1,9 @@
 <?php
 require 'include/PHPMailer/PHPMailerAutoload.php';
 
-function manda_mail($assunto,$corpo,$e_mail = 'yuri@sa2.com.br')
+function manda_mail($assunto,$corpo,$e_mail = 'luigifracalanza@gmail.com')
 {
-$from_mail = 'mlmg@sa2.com.br';
+$from_mail = 'mercomagento@sa2.com.br';
 $from_name = 'BOT - Integração Mercado Livre Magento Sa2 - BOT';
 
 $mail = new PHPMailer;
