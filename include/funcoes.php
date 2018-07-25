@@ -86,10 +86,7 @@ function proximo_MLB()
 
 if ($DEBUG == true) var_dump($valor_zero); //$DEBUG
 if ($DEBUG == true) var_dump($valor_proximo); //$DEBUG
-//CREIO QUE SE FOR if($indice_proximo+1 > count($lista)) return $valor_zero;
-//else return $valor_proximo; PORQUE CASO O INDICE PROXIMO SEJA 49 +1 = 50 E O INDICE 50 EXISTE
-//ENTAO ELE RETORNA O INDICE 50. UMA VEZ QUE O 50 SEJA ATUALIZADO, 50+1 = 51 E A LISTA TEM 50 REGISTROS
-//ENTAO RETORNA O INDICE 1.
+
   if($indice_proximo+1 > count($lista)) return $valor_zero;
   else return $valor_proximo;
 }
@@ -152,12 +149,14 @@ if ($DEBUG == true) var_dump($produto); //DEBUG
   // echo "MLB: $MLB";
   if ($DEBUG == true) var_dump($response); //DEBUG
 
-  if($response["httpCode"] == 200)
-  {
-    return "1";
-  }
+  if($response["httpCode"] == 200) return "1";
   else
   {
+    $error = "atualizaProdMLB";
+    $debug = var_dump($response);
+    $corpo = send_error_email($error, $debug);
+    $assunto = "Erro no Script Mercado Livre";
+    manda_mail($assunto, $corpo);
     return "0";
   }
 }
@@ -186,12 +185,14 @@ function atualizaDescricaoMLB($SKU,$MLB)
 
   if ($DEBUG == true) var_dump($response); //DEBUG
 
-  if($response["httpCode"] == 200)
-  {
-    return "1";
-  }
+  if($response["httpCode"] == 200) return "1";
   else
   {
+    $error = "atualizaDescricaoMLB";
+    $debug = var_dump($response);
+    $corpo = send_error_email($error, $debug);
+    $assunto = "Erro no Script Mercado Livre";
+    manda_mail($assunto, $corpo);
     return "0";
   }
 }
@@ -227,8 +228,13 @@ function retorna_SKU($MLB)
 
   $response = $meli->get('/items/MLB'.$MLB,$params);
 
-  // echo "<pre>";
-  // var_dump($response['body']->attributes); //DEBUG
+  if(!$response){
+    $error = "retorna_SKU";
+    $debug = var_dump($response);
+    $corpo = send_error_email($error, $debug);
+    $assunto = "Erro no Script Mercado Livre";
+    manda_mail($assunto, $corpo);
+  }
   if ($DEBUG == true) var_dump($response['body']); //DEBUG
 
 

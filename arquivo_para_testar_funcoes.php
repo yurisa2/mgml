@@ -1,24 +1,17 @@
 <?php
 ini_set("error_reporting",E_ALL);
-include "include/all_include.php";
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
+require "include/all_include.php";
+require 'include/Error_handling.php';
 
 echo "<pre>";
-// echo listaPedidoMLB();
-// global $app_Id;
-// global $secret_Key;
-// global $user_id;
-// global $DEBUG;
-// $DEBUG = true;
-// $meli = new Meli($app_Id, $secret_Key);
- // var_dump(retornaOrders());
-// $mlb = proximoPedidoMLB();
-// var_dump($mlb);
-// $r = escrevePedidoMLB($mlb);
+
 $e = send_error_email("Error 1", "Mensagem de DEBUG");
-echo "ola";
 var_dump($e);
- // var_dump(manda_mail($e,"teste"));
+$r = new event_base;
+$r->mail("teste",$e);
 
 // $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
 //

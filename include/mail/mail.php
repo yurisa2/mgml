@@ -1,7 +1,7 @@
 <?php
-require 'include/PHPMailer/PHPMailerAutoload.php';
-
-function manda_mail($assunto,$corpo,$e_mail = 'luigifracalanza@gmail.com')
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+function manda_mail($assunto, $corpo, $e_mail = 'luigifracalanza@gmail.com')
 {
 $from_mail = 'mercomagento@sa2.com.br';
 $from_name = 'BOT - Integração Mercado Livre Magento Sa2 - BOT';
@@ -40,9 +40,9 @@ $mail->addBCC('bcc@example.com');
 $mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
 $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
 */
-escreve_log_mail($assunto,$corpo,$e_mail);
-
-$mail->isHTML(true);                                  // Set email format to HTML
+//escreve_log_mail($assunto,$corpo,$e_mail);
+$mail->addAttachment('etiqueta.pdf');
+//$mail->isHTML(true);                                  // Set email format to HTML
 
 $mail->Subject = $assunto;
 $mail->Body    = $corpo;
