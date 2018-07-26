@@ -153,7 +153,7 @@ if ($DEBUG == true) var_dump($produto); //DEBUG
   else
   {
     $error = "atualizaProdMLB";
-    $debug = var_dump($response);
+    $debug = serialize($response);
     $corpo = send_error_email($error, $debug);
     $assunto = "Erro no Script Mercado Livre";
     manda_mail($assunto, $corpo);
@@ -189,7 +189,7 @@ function atualizaDescricaoMLB($SKU,$MLB)
   else
   {
     $error = "atualizaDescricaoMLB";
-    $debug = var_dump($response);
+    $debug = serialize($response);
     $corpo = send_error_email($error, $debug);
     $assunto = "Erro no Script Mercado Livre";
     manda_mail($assunto, $corpo);
@@ -230,7 +230,7 @@ function retorna_SKU($MLB)
 
   if(!$response){
     $error = "retorna_SKU";
-    $debug = var_dump($response);
+    $debug = serialize($response);
     $corpo = send_error_email($error, $debug);
     $assunto = "Erro no Script Mercado Livre";
     manda_mail($assunto, $corpo);

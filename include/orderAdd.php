@@ -86,7 +86,7 @@ class Magento_order{
       if($id_customer) echo "Customer Cadastradocom sucesso->ID: ".$id_customer;
       else{
         $error = "magento1_customerCustomerCreate";
-        $debug = var_dump($id_customer);
+        $debug = serialize($id_customer);
         $corpo = send_error_email($error, $debug);
         $assunto = "Erro no Script Integração Mercado Livre Magento";
         manda_mail($assunto, $corpo);
@@ -115,7 +115,7 @@ class Magento_order{
         if($return) echo "Criado customer Address: ";
         else {
           $error = "magento1_customerCustomerCreate";
-          $debug = var_dump($return);
+          $debug = serialize($return);
           $corpo = send_error_email($error, $debug);
           $assunto = "Erro no Script Integração Mercado Livre Magento";
           manda_mail($assunto, $corpo);
@@ -186,7 +186,7 @@ class Magento_order{
       if($cart_id) echo "<br/>ID do Carrinho de Compras: ".$cart_id;
       else{
         $error = "magento3_shoppingCartCreate";
-        $debug = var_dump($cart_id);
+        $debug = serialize($cart_id);
         $corpo = send_error_email($error, $debug);
         $assunto = "Erro no Script Integração Mercado Livre Magento";
         manda_mail($assunto, $corpo);
@@ -219,7 +219,7 @@ class Magento_order{
         else
         {
           $error = "magento4_shoppingCartProductAdd";
-          $debug = var_dump($result_prod_add);
+          $debug = serialize($result_prod_add);
           $corpo = send_error_email($error, $debug);
           $assunto = "Erro no Script Integração Mercado Livre Magento";
           manda_mail($assunto, $corpo);
@@ -236,7 +236,7 @@ class Magento_order{
         $result = $obj_magento->shoppingCartProductList($session, $cart_id, $store_id);
         if(!$result){
           $error = "magento5_shoppingCartProductList";
-          $debug = var_dump($result);
+          $debug = serialize($result);
           $corpo = send_error_email($error, $debug);
           $assunto = "Erro no Script Integração Mercado Livre Magento";
           manda_mail($assunto, $corpo);
@@ -269,7 +269,7 @@ class Magento_order{
         else
         {
           $error = "magento6_shoppingCartCustomerSet";
-          $debug = var_dump($return);
+          $debug = serialize($return);
           $corpo = send_error_email($error, $debug);
           $assunto = "Erro no Script Integração Mercado Livre Magento";
           manda_mail($assunto, $corpo);
@@ -315,7 +315,7 @@ class Magento_order{
             if ($return == true) return "Setado Customer Addresses no carrinho";
             else {
               $error = "magento7_shoppingCartCustomerAddresses";
-              $debug = var_dump($return);
+              $debug = serialize($return);
               $corpo = send_error_email($error, $debug);
               $assunto = "Erro no Script Integração Mercado Livre Magento";
               manda_mail($assunto, $corpo);
@@ -335,7 +335,7 @@ class Magento_order{
             if ($return == true) return "Setado Shipping Method para o carrinho".var_dump($return);
             else {
               $error = "magento8_shoppingCartShippingMethod";
-              $debug = var_dump($return);
+              $debug = serialize($return);
               $corpo = send_error_email($error, $debug);
               $assunto = "Erro no Script Integração Mercado Livre Magento";
               manda_mail($assunto, $corpo);
@@ -372,7 +372,7 @@ class Magento_order{
             if ($return == true) return "Setado Payment Method para o carrinho<br/>";
             else {
               $error = "magento9_shoppingCartPaymentMethod";
-              $debug = var_dump($return);
+              $debug = serialize($return);
               $corpo = send_error_email($error, $debug);
               $assunto = "Erro no Script Integração Mercado Livre Magento";
               manda_mail($assunto, $corpo);
@@ -396,7 +396,7 @@ class Magento_order{
               if(strlen($order_id) < 11) echo "<br/>Order criado - ".$order_id;
               else {
                 $error = "magento10_shoppingCartOrder";
-                $debug = var_dump($order_id);
+                $debug = serialize($order_id);
                 $corpo = send_error_email($error, $debug);
                 $assunto = "Erro no Script Integração Mercado Livre Magento";
                 manda_mail($assunto, $corpo);
@@ -418,7 +418,7 @@ class Magento_order{
               if($return == true) echo "<br/>Comentário criado<br/>";
               else {
                 $error = "magento10_shoppingCartOrder";
-                $debug = var_dump($return);
+                $debug = serialize($return);
                 $corpo = send_error_email($error, $debug);
                 $assunto = "Erro no Script Integração Mercado Livre Magento";
                 manda_mail($assunto, $corpo);

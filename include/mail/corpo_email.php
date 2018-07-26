@@ -1,6 +1,6 @@
 <?php
 
-function send_error_email($error, $debug)
+function send_error_email($texto)
 {
 $retorno ='
 <!doctype html>
@@ -105,12 +105,12 @@ $retorno ='
 
 <table class="table-row-fixed" width="600" bgcolor="#FFFFFF" style="table-layout: fixed; background-color: #ffffff;" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-row-fixed-td" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding-left: 24px; padding-right: 24px;" valign="top" align="left">
    <table class="table-col" align="left" width="285" style="padding-right: 18px; table-layout: fixed;" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-col-td" width="500" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal;" valign="top" align="left">
-     <table class="header-row" width="500" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td class="header-row-td" width="500" style="font-size: 28px; margin: 0px; font-family: Arial, sans-serif; font-weight: normal; line-height: 19px; color: #478fca; padding-bottom: 10px; padding-top: 15px;" valign="top" align="left">Problema no Script:</td></tr></tbody></table>
+     <table class="header-row" width="500" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td class="header-row-td" width="500" style="font-size: 28px; margin: 0px; font-family: Arial, sans-serif; font-weight: normal; line-height: 19px; color: #478fca; padding-bottom: 10px; padding-top: 15px;" valign="top" align="left">'.$texto['0'].':</td></tr></tbody></table>
      <p style="margin: 0px; font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px;">
-     Erro ao realizar atividade '.$error.'.Favor Contatar equipe de suporte especialista em arrumar as próprias merdas
+     '.$texto['1'].'
      </p>
      <br>
-     <table width="100%" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td width="100%" bgcolor="#f5f5f5" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding: 9px; border: 1px solid #e3e3e3; background-color: #f5f5f5;" valign="top" align="left">'.$error.$debug.'</td></tr></tbody></table>
+     <table width="100%" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td width="100%" bgcolor="#f5f5f5" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding: 9px; border: 1px solid #e3e3e3; background-color: #f5f5f5;" valign="top" align="left">'.$texto['2'].'</td></tr></tbody></table>
      <br>
 
      <br>

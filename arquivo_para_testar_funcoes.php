@@ -4,14 +4,15 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require "include/all_include.php";
-require 'include/Error_handling.php';
+require "include/event_base.php";
+require 'include/errorhandling.php';
 
 echo "<pre>";
-
-$e = send_error_email("Error 1", "Mensagem de DEBUG");
+$texto = array("Problema no Sript", "Favor coloque um texto rápido aqui", "Aqui é a função que deu problema ");
+$e = send_error_email($texto);
 var_dump($e);
-$r = new event_base;
-$r->mail("teste",$e);
+$r = new error_handling("function xxxx","teste", "dDEbug", "ggfdg", "1");
+var_dump($r);
 
 // $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
 //
