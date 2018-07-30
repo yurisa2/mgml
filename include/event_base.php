@@ -1,18 +1,27 @@
 <?php
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
 class event_base
 {
   /**
-  * Construtor. Set properties in Magento_order
+  * Construtor. Set properties
   */
-  public function event_base($titulo, $nome_funcao, $saida, $mensagem, $acao)
+  public function __construct()
   {
-    $ob = new stdClass;
-    $ob->titulo = $titulo;
-    $ob->nome_funcao = $nome_funcao;
-    $ob->saida = $saida;
-    $ob->mensagem = $mensagem;
-    $ob->acao = $acao;
+    $this->titulo = '';
+    $this->nome_funcao = '';
+    $this->saida = '';
+    $this->mensagem = '';
+    $this->tipo = '';
   }
+
+  /**
+    * Function response to send the email
+    *
+    * @return string if failure - Message could not be sent. Mailer Error: ErrorInfo or
+    * if was send - e-mail enviado com sucesso!
+    *
+  */
   public function email()
   {
     $e_mail = 'luigifracalanza@gmail.com';
@@ -35,7 +44,7 @@ class event_base
     //MUDAR ISSO De volta quando entrar em produção estável
 
 
-    $mail->CharSet = 'UTF-8';  //Arrumar acentuação
+    $mail->CharSet = 'utf-8';  //Arrumar acentuação
 
     $mail->setFrom($from_mail, $from_name);
     $mail->addAddress($e_mail);               // Name is optional
@@ -55,11 +64,11 @@ class event_base
     $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
     */
     //escreve_log_mail($assunto,$corpo,$e_mail);
-    $mail->addAttachment('etiqueta.pdf');
-    //$mail->isHTML(true);                                  // Set email format to HTML
+    //$mail->addAttachment('etiqueta.pdf');
+    $mail->isHTML(true);                                  // Set email format to HTML
 
     $mail->Subject = $titulo;
-    $mail->Body    = $menssagem;
+    $mail->Body    = $mensagem;
     $mail->AltBody = strip_tags($mensagem);
 
      if(!$mail->send())
@@ -73,16 +82,49 @@ class event_base
 
   public function db()
   {
+    $sqlite = "sqlite:include/event_base.db";
 
+    $pdo = new PDO($sqlite);
+    $sql = "INSERT INTO event(nome_funcao, saida_funcao, mensagem, titulo, tipo) VALUES (?,?,?,?,?)";
+    $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $result = $pdo->prepare($sql);
+    $result->bindParam(1, $this->nome_funcao);
+    $result->bindParam(2, $this->saida);
+    $result->bindParam(3, $this->mensagem);
+    $result->bindParam(4, $this->titulo);
+    $result->bindParam(5, $this->tipo);
+    $result->execute();
+    $select = $result->fetchAll(PDO::FETCH_ASSOC);
+
+    var_dump($select);
   }
-
+  /**
+    * Function to write an json file
+    *
+    * @return string if failure - Arquivo não criado em error_files or
+    * if was true - Concluido!!
+    *
+  */
   public function files()
   {
-    $mensagem = $this->mensagem;
+    $mensagem = json_decode(file_get_contents('error_files/error_log.json'));
+    $mensagem[] = $this->mensagem;
     $resultado = file_put_contents("error_files/error_log.json", json_encode($mensagem));
 
     if($resultado == false) echo "Arquivo não criado em error_files";
     else echo "Concluido!!";
+  }
+
+  public function execute()
+  {
+    global $configmail;
+
+    $this->send_error_email(1);
+    if($configmail == true) $this->email();
+    $this->send_error_email(2);
+    // $this->db();
+    $this->files();
   }
 }
 
