@@ -1,5 +1,5 @@
 <?php
-class error_handling extends event_base
+class log extends event_base
 {
   /**
   * Set Construtor
@@ -17,14 +17,13 @@ class error_handling extends event_base
     $this->titulo = $titulo;
     $this->nome_funcao = $nome_funcao;
     $this->saida = $saida;
-    //$this->mensagem = $mensagem;
     $this->tipo = $tipo;
   }
-  function send_error_email()
+  function send_log_email()
   {
     $this->mensagem = "$this->titulo->$this->nome_funcao: $this->saida - $this->tipo";
 
-    if($this->flag_HTML)
+    if($this->email)
     {
       $this->mensagemHTML  ='
       <!doctype html>

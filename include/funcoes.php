@@ -593,8 +593,9 @@ function criaEtiqueta($shipment_ids, $mlb, $nome, $order_id)
 {
   $token = token();
   $mlb = json_encode($mlb);
+  $nome_arquivo = "$mlb-$order_id-$nome.pdf";
   $curl_url =  "https://api.mercadolibre.com/shipment_labels?shipment_ids=$shipment_ids&response_type=pdf&access_token=$token";
-  $out = fopen("$mlb-$order_id-$nome.pdf","wb");
+  $out = fopen($nome_arquivo,"wb");
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_FILE, $out);
   curl_setopt($ch, CURLOPT_HEADER, 0);
@@ -602,7 +603,9 @@ function criaEtiqueta($shipment_ids, $mlb, $nome, $order_id)
   curl_exec($ch);
   curl_close($ch);
 
-  return "Sucesso!!";
+  echo "Sucesso!!";
+
+  return $nome_arquivo;
 }
 
 ?>

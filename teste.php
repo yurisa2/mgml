@@ -38,9 +38,13 @@ if(!strpos($pedidosFeitos, $string)){
   $order = $teste->magento10_shoppingCartOrder($id_carrinho);
   var_dump($order);
 
-  if($order_id !== 0) {var_dump(escrevePedidoMGML($mlb));
+  if($order_id !== 0)
+  {
+    var_dump(escrevePedidoMGML($mlb));
 
-  criaEtiqueta($id_shipping, $mlb, $nome, $order);}
-}else echo "Pedido já existente no MAGENTO";
+  $nome_arquivo = criaEtiqueta($id_shipping, $mlb, $nome, $order);
+  }
+}
+else echo "Pedido já existente no MAGENTO";
 
 var_dump(escrevePedidoMLB($mlb));

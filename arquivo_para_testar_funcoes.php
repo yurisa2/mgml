@@ -6,13 +6,17 @@ ini_set('display_errors', 1);
 require "include/all_include.php";
 require "include/event_base.php";
 require 'include/error_handling.php';
-
+require 'include/log.php';
 echo "<pre>";
 
                         //$titulo, $nome_funcao, $saida, $mensagem
-$r = new error_handling("Assunto do email", "Função que deu problema", "Debug-> Utilizado serializer", send_error_email(array('Titulo da mensagem','Texto explicativo e sucinto', 'nome da função serializer do erro')), 'Erro');
+// $r = new error_handling("Assunto do email", "Função que deu problema", "Debug-> Utilizado serializer", 'Erro');
+//
+// $r->execute();
 
-$r->execute();
+// $r = new log("Assunto do email", "Função que deu problema", "Debug-> Utilizado serializer", 'Erro');
+//var_dump($r);
+
 
 // $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
 //

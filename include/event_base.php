@@ -8,11 +8,17 @@ class event_base
   */
   public function __construct()
   {
+    global $configmail;
+
     $this->titulo = '';
     $this->nome_funcao = '';
     $this->saida = '';
     $this->mensagem = '';
     $this->tipo = '';
+    $this->mensagemHTML = '';
+    $this->flag_HTML = $configmail;
+    $this->etiqueta = '';
+    $this->email = false;
   }
 
   /**
@@ -28,7 +34,7 @@ class event_base
     $from_mail = 'mercomagento@sa2.com.br';
     $from_name = 'BOT - Integração Mercado Livre Magento Sa2 - BOT';
     $titulo = $this->titulo;
-    $mensagem = $this->mensagem;
+    $mensagem = $this->mensagemHTML;
     $mail = new PHPMailer;
 
     //$mail->SMTPDebug = 3;                               // Enable verbose debug output
@@ -41,32 +47,14 @@ class event_base
     $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
     $mail->Port = 587;                                    // TCP port to connect to
 
-    //MUDAR ISSO De volta quando entrar em produção estável
-
-
     $mail->CharSet = 'utf-8';  //Arrumar acentuação
-
     $mail->setFrom($from_mail, $from_name);
     $mail->addAddress($e_mail);               // Name is optional
-
     $mail->addReplyTo($from_mail, $from_name);
 
+    //if($this->etiqueta !== null) $mail->addAttachment($this->etiqueta);
 
-
-    /*
-    $mail->addAddress('joe@example.net', 'Joe User');     // Add a recipient
-    $mail->addAddress('ellen@example.com');               // Name is optional
-    $mail->addReplyTo('info@example.com', 'Information');
-    $mail->addCC('cc@example.com');
-    $mail->addBCC('bcc@example.com');
-
-    $mail->addAttachment('/var/tmp/file.tar.gz');         // Add attachments
-    $mail->addAttachment('/tmp/image.jpg', 'new.jpg');    // Optional name
-    */
-    //escreve_log_mail($assunto,$corpo,$e_mail);
-    //$mail->addAttachment('etiqueta.pdf');
     $mail->isHTML(true);                                  // Set email format to HTML
-
     $mail->Subject = $titulo;
     $mail->Body    = $mensagem;
     $mail->AltBody = strip_tags($mensagem);
@@ -110,7 +98,7 @@ class event_base
   {
     $mensagem = json_decode(file_get_contents('error_files/error_log.json'));
     $mensagem[] = $this->mensagem;
-    $resultado = file_put_contents("error_files/error_log.json", json_encode($mensagem));
+    $resultado = file_put_contents("error_files/error_log.json", json_encode($mensagem, JSON_UNESCAPED_UNICODE));
 
     if($resultado == false) echo "Arquivo não criado em error_files";
     else echo "Concluido!!";
@@ -120,9 +108,8 @@ class event_base
   {
     global $configmail;
 
-    $this->send_error_email(1);
-    if($configmail == true) $this->email();
-    $this->send_error_email(2);
+    $this->send_error_email();
+    if(($configmail) || ($this->email)) $this->email();
     // $this->db();
     $this->files();
   }
