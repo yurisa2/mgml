@@ -6,7 +6,7 @@ class Magento_order{
   * @param object $dadosVenda;
   */
 
-  public function Magento_order($dadosVenda)
+  public function __construct($dadosVenda)
   {
     global $magento_soap_user;
     global $magento_soap_password;

@@ -23,7 +23,7 @@ class log extends event_base
   {
     $this->mensagem = "$this->titulo->$this->nome_funcao: $this->saida - $this->tipo";
 
-    if($this->email)
+    if($this->log_email)
     {
       $this->mensagemHTML  ='
       <!doctype html>

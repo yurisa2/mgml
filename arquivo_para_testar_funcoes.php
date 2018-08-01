@@ -14,9 +14,14 @@ echo "<pre>";
 //
 // $r->execute();
 
-// $r = new log("Assunto do email", "Função que deu problema", "Debug-> Utilizado serializer", 'Erro');
-//var_dump($r);
+$r = new log("Assunto do email", "Função que deu problema", "Debug-> Utilizado serializer", 'Erro');
+var_dump($r);
 
+$r->log_email = true;
+
+$r->send_log_email();
+
+$r->execute();
 
 // $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
 //

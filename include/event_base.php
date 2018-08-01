@@ -18,7 +18,7 @@ class event_base
     $this->mensagemHTML = '';
     $this->flag_HTML = $configmail;
     $this->etiqueta = '';
-    $this->email = false;
+    $this->log_email = false;
   }
 
   /**
@@ -108,8 +108,8 @@ class event_base
   {
     global $configmail;
 
-    $this->send_error_email();
-    if(($configmail) || ($this->email)) $this->email();
+    // $this->send_error_email();
+    if(($configmail) || ($this->log_email)) $this->email();
     // $this->db();
     $this->files();
   }
