@@ -4,9 +4,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require "include/all_include.php";
-require "include/event_base.php";
-require 'include/error_handling.php';
-require 'include/log.php';
+
 echo "<pre>";
 
                         //$titulo, $nome_funcao, $saida, $mensagem
@@ -14,15 +12,22 @@ echo "<pre>";
 //
 // $r->execute();
 
-$r = new log("Assunto do email", "Função que deu problema", "Debug-> Utilizado serializer", 'Erro');
-var_dump($r);
-
-$r->log_email = true;
-
-$r->send_log_email();
-
-$r->execute();
-
+// $r = new log("Assunto do email", "Função que deu problema", "Debug-> Utilizado serializer", 'Erro');
+// var_dump($r);
+//
+// $r->log_email = true;
+//
+// $r->send_log_email();
+//
+// $r->execute();
+$error_handling = new log("Novo Pedido MAGENTO", "Numero do Pedido MGT: $order", "Comprador: $nome", "nova compra");
+$error_handling->log_email = true;
+$error_handling->mensagem_email = "Nova compra que entrou no magento";
+$error_handling->etiqueta = $nome_arquivo;
+$error_handling->log_email = true;
+$error_handling->log_files = true;
+$error_handling->send_log_email();
+$error_handling->execute();
 // $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
 //
 // if(!$conteudo_arquivo) return "Não deu pra escrever a lista de pedidos do mlb";

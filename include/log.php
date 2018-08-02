@@ -130,7 +130,7 @@ class log extends event_base
       <table class="table-col" align="left" width="285" style="padding-right: 18px; table-layout: fixed;" cellspacing="0" cellpadding="0" border="0"><tbody><tr><td class="table-col-td" width="500" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal;" valign="top" align="left">
       <table class="header-row" width="500" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td class="header-row-td" width="500" style="font-size: 28px; margin: 0px; font-family: Arial, sans-serif; font-weight: normal; line-height: 19px; color: #478fca; padding-bottom: 10px; padding-top: 15px;" valign="top" align="left">'.$this->titulo.':</td></tr></tbody></table>
       <p style="margin: 0px; font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px;">
-      Problemas com o script automático. Contatar equipe de suporte
+      '.$this->mensagem_email.'
       </p>
       <br>
       <table width="100%" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td width="100%" bgcolor="#f5f5f5" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding: 9px; border: 1px solid #e3e3e3; background-color: #f5f5f5;" valign="top" align="left"><b>'.$this->nome_funcao--.'</b>'.$this->saida.'</td></tr></tbody></table>

@@ -17,7 +17,6 @@ class error_handling extends event_base
     $this->titulo = $titulo;
     $this->nome_funcao = $nome_funcao;
     $this->saida = $saida;
-    //$this->mensagem = $mensagem;
     $this->tipo = $tipo;
   }
   function send_error_email()

@@ -1,11 +1,17 @@
 <?php
+ini_set("error_reporting",E_ALL);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 require_once "include/all_include.php";
-
+global $DEBUG;
 echo "<pre>";
+$DEBUG == true;
 
 var_dump(listaPedidoMLB());
-//
+
+
 $Magento_order = retornaObjMl();
+var_dump($Magento_order);
 $nome = $Magento_order->nome_comprador;
 $id_shipping = $Magento_order->id_shipping;
 
@@ -38,11 +44,21 @@ if(!strpos($pedidosFeitos, $string)){
   $order = $teste->magento10_shoppingCartOrder($id_carrinho);
   var_dump($order);
 
-  if($order_id !== 0)
+  if($order != 0)
   {
     var_dump(escrevePedidoMGML($mlb));
 
-  $nome_arquivo = criaEtiqueta($id_shipping, $mlb, $nome, $order);
+    $nome_arquivo = criaEtiqueta($id_shipping, $mlb, $nome, $order);
+
+    $error_handling = new log("Novo Pedido MAGENTO", "Numero do Pedido MGT: $order", "Comprador: $nome", "nova compra");
+    $error_handling->log_email = true;
+    $error_handling->mensagem_email = "Nova compra que entrou no magento";
+    $error_handling->etiqueta = $nome_arquivo;
+    $error_handling->log_email = true;
+    $error_handling->dir_files = "log/log.json";
+    $error_handling->log_files = true;
+    $error_handling->send_log_email();
+    $error_handling->execute();
   }
 }
 else echo "Pedido já existente no MAGENTO";

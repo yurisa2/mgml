@@ -16,9 +16,15 @@ class event_base
     $this->mensagem = '';
     $this->tipo = '';
     $this->mensagemHTML = '';
+    $this->data = time();
+    $this->dir_file = 'error_files/error_log.json';
     $this->flag_HTML = $configmail;
-    $this->etiqueta = '';
+    $this->log_etiqueta = '';
     $this->log_email = false;
+    $this->log_db = false;
+    $this->log_files = false;
+
+    $this->mensagem_email = '';
   }
 
   /**
@@ -30,7 +36,8 @@ class event_base
   */
   public function email()
   {
-    $e_mail = 'luigifracalanza@gmail.com';
+    global $email_destinatario;
+    $e_mail = $email_destinatario[1];
     $from_mail = 'mercomagento@sa2.com.br';
     $from_name = 'BOT - Integração Mercado Livre Magento Sa2 - BOT';
     $titulo = $this->titulo;
@@ -49,10 +56,13 @@ class event_base
 
     $mail->CharSet = 'utf-8';  //Arrumar acentuação
     $mail->setFrom($from_mail, $from_name);
-    $mail->addAddress($e_mail);               // Name is optional
+    foreach ($email_destinatario as $key => $value) {
+      $mail->addAddress($value);
+    }
+
     $mail->addReplyTo($from_mail, $from_name);
 
-    //if($this->etiqueta !== null) $mail->addAttachment($this->etiqueta);
+    if($this->etiqueta !== null) $mail->addAttachment($this->etiqueta);
 
     $mail->isHTML(true);                                  // Set email format to HTML
     $mail->Subject = $titulo;
@@ -73,7 +83,7 @@ class event_base
     $sqlite = "sqlite:include/event_base.db";
 
     $pdo = new PDO($sqlite);
-    $sql = "INSERT INTO event(nome_funcao, saida_funcao, mensagem, titulo, tipo) VALUES (?,?,?,?,?)";
+    $sql = "INSERT INTO event(nome_funcao, saida_funcao, mensagem, titulo, tipo) VALUES (?,?,?,?,?,?)";
     $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $result = $pdo->prepare($sql);
@@ -82,6 +92,7 @@ class event_base
     $result->bindParam(3, $this->mensagem);
     $result->bindParam(4, $this->titulo);
     $result->bindParam(5, $this->tipo);
+    $result->bindParam(6, $this->data);
     $result->execute();
     $select = $result->fetchAll(PDO::FETCH_ASSOC);
 
@@ -98,7 +109,7 @@ class event_base
   {
     $mensagem = json_decode(file_get_contents('error_files/error_log.json'));
     $mensagem[] = $this->mensagem;
-    $resultado = file_put_contents("error_files/error_log.json", json_encode($mensagem, JSON_UNESCAPED_UNICODE));
+    $resultado = file_put_contents($this->dir_file, json_encode($mensagem, JSON_UNESCAPED_UNICODE));
 
     if($resultado == false) echo "Arquivo não criado em error_files";
     else echo "Concluido!!";
@@ -110,8 +121,8 @@ class event_base
 
     // $this->send_error_email();
     if(($configmail) || ($this->log_email)) $this->email();
-    // $this->db();
-    $this->files();
+    if($this->log_db) $this->db();
+    if($this->log_files) $this->files();
   }
 }
 

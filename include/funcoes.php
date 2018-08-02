@@ -263,26 +263,26 @@ function escreve_MLB($MLB)
 }
 
 function retornaDadosVenda($COD){
-  // global $app_Id;
-  // global $secret_Key;
-  // global $DEBUG;
-  //
-  // $meli = new Meli($app_Id, $secret_Key);
-  //
-  // $params = array('access_token' => token()
-  // );
+  global $app_Id;
+  global $secret_Key;
+  global $DEBUG;
+
+  $meli = new Meli($app_Id, $secret_Key);
+
+  $params = array('access_token' => token()
+  );
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
-  global $DEBUG;
-  $appId = "4946951783545211";
-  $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-072014-db73b552b667b4cfa876ffd59d3ef82c-327485416";
-  $userid = '327485416';
-
-  $meli = new Meli($appId, $secretKey);
-
-  $params = array('access_token' => $accesstoken
-  );
+  // global $DEBUG;
+  // $appId = "4946951783545211";
+  // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+  // $accesstoken = "APP_USR-4946951783545211-080213-3d82febc4de927d0be2631577ab082f8-327485416";
+  // $userid = '327485416';
+  //
+  // $meli = new Meli($appId, $secretKey);
+  //
+  // $params = array('access_token' => $accesstoken
+  // );
 //--------------------------------------------
 
   $response = $meli->get("/orders/$COD", $params);
@@ -364,28 +364,28 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
 
 
 function retornaOrders(){
-  // global $app_Id;
-  // global $secret_Key;
-  // global $user_id;
-  // global $DEBUG;
-  //
-  // $meli = new Meli($app_Id, $secret_Key);
-  //
-  // $params = array('access_token' => token(),
-  //   'seller' => $user_id, 'order.status' => "paid",
-  //   'order.date_created.from' => "2018-07-18T00:00:00.000-00:00"
-  // );
+  global $app_Id;
+  global $secret_Key;
+  global $user_id;
+  global $DEBUG;
+
+  $meli = new Meli($app_Id, $secret_Key);
+
+  $params = array('access_token' => token(),
+    'seller' => $user_id, 'order.status' => "paid",
+    'order.date_created.from' => "2018-08-02T00:00:00.000-00:00"
+  );
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
-  global $DEBUG;
-  $appId = "4946951783545211";
-  $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  $accesstoken = "APP_USR-4946951783545211-072014-db73b552b667b4cfa876ffd59d3ef82c-327485416";
-  $userid = '327485416';
-
-  $meli = new Meli($appId, $secretKey);
-  $params = array('access_token' => $accesstoken,
-  'seller' => $userid, 'order.status' => "paid");
+  // global $DEBUG;
+  // $appId = "4946951783545211";
+  // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+  // $accesstoken = "APP_USR-4946951783545211-080213-3d82febc4de927d0be2631577ab082f8-327485416";
+  // $userid = '327485416';
+  //
+  // $meli = new Meli($appId, $secretKey);
+  // $params = array('access_token' => $accesstoken,
+  // 'seller' => $userid, 'order.status' => "paid");
   // $params = array('access_token' => $accesstoken,
   // 'seller' => $userid, 'order.status' => "paid",
   // 'order.date_created.from' => "2018-06-12T00:00:00.000-00:00",
@@ -408,7 +408,7 @@ function retornaOrders(){
 function retornaDadosOrders()
 {
   $orders = retornaOrders();
-  $sku_debug = "EP-51-40971";//$dados_order->sku_produto;
+  // $sku_debug = "EP-51-40971";//$dados_order->sku_produto;
   $magento_orders = new stdClass;
   foreach ($orders as $key => $value) {
     $dados_order = retornaDadosVenda($value);
@@ -416,7 +416,7 @@ function retornaDadosOrders()
     $buyerid = $dados_order->id_comprador;
     $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
     $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
-    $magento_orders->$buyerid->sku_produto[] =$sku_debug;//$dados_order->sku_produto;
+    $magento_orders->$buyerid->sku_produto[] = $dados_order->sku_produto;
     $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
     $magento_orders->$buyerid->qtd_produto[] = $dados_order->qtd_produto;
 
@@ -447,7 +447,7 @@ function retornaDadosOrders()
     $magento_orders->$buyerid->sobrenome_comprador = $dados_order->sobrenome_comprador;
     $magento_orders->$buyerid->tipo_documento_comprador = $dados_order->tipo_documento_comprador;
     $magento_orders->$buyerid->numero_documento_comprador = $dados_order->numero_documento_comprador;
-    $sku_debug++;
+
   }
   return $magento_orders;
 }
@@ -592,10 +592,10 @@ function escrevePedidoMGML($mlb)
 function criaEtiqueta($shipment_ids, $mlb, $nome, $order_id)
 {
   $token = token();
-  $mlb = json_encode($mlb);
-  $nome_arquivo = "$mlb-$order_id-$nome.pdf";
+  $mlb = $mlb;
+  $nome_arquivo = "etiquetas/$mlb-$order_id-$nome.pdf";
   $curl_url =  "https://api.mercadolibre.com/shipment_labels?shipment_ids=$shipment_ids&response_type=pdf&access_token=$token";
-  $out = fopen($nome_arquivo,"wb");
+  $out = fopen($nome_arquivo,"w+");
   $ch = curl_init();
   curl_setopt($ch, CURLOPT_FILE, $out);
   curl_setopt($ch, CURLOPT_HEADER, 0);

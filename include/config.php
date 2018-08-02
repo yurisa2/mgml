@@ -18,4 +18,6 @@ $ajuste_preco_soma = "5.0";
 
 //ML
 $configmail = true;
+$email_destinatario = array('1'=>"yuri@sa2.com.br",
+                            '2'=>"luigifracalanza@gmail.com");
 ?>
