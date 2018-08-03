@@ -1,4 +1,4 @@
-$saida<?php
+<?php
 
 class Magento_order{
   /**
