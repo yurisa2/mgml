@@ -2,7 +2,7 @@
 session_start();
 require 'include/all_include.php';
 
-$redirectURI = "https://localhost:8443/mgml/callback.php";
+$redirectURI = "https://localhost:443/mgml/callback.php";
 
 $meli = new Meli($app_Id, $secret_Key);
 if(isset($_GET['code']) || isset($_SESSION['access_token'])) {
