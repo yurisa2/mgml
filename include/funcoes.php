@@ -6,7 +6,7 @@ function token()
   $access_token = $variavel->access_token;
   $refresh_token = $variavel->refresh_token;
 
-  if(time() > $variavel->time)
+  if(time() > $variavel->expires_in)
   {
     renova($access_token,$refresh_token);
     $variavel = json_decode(file_get_contents("include/files/tokens.json"));
@@ -27,7 +27,7 @@ function renova($access_token,$refresh_token)
   $refresh = $meli->refreshAccessToken();
   $token_info["access_token"] = $refresh["body"]->access_token;
   $token_info["refresh_token"] = $refresh["body"]->refresh_token;
-  $token_info["time"] = time()+10000;
+  $token_info["expires_in"] = time()+10000;
   file_put_contents("include/files/tokens.json",json_encode($token_info));
 }
 
@@ -152,11 +152,13 @@ if ($DEBUG == true) var_dump($produto); //DEBUG
   if($response["httpCode"] == 200) return "1";
   else
   {
-    $error = "atualizaProdMLB";
-    $debug = serialize($response);
-    $corpo = send_error_email($error, $debug);
-    $assunto = "Erro no Script Mercado Livre";
-    manda_mail($assunto, $corpo);
+    $nome_funcao = "atualizaProdMLB";
+    $saida = serialize($response);
+    $titulo = "Erro no Script Mercado Livre";
+    $tipo = "Erro";
+    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
+    $error_handling->send_error_email();
+    $error_handling->execute();
     return "0";
   }
 }
@@ -188,11 +190,13 @@ function atualizaDescricaoMLB($SKU,$MLB)
   if($response["httpCode"] == 200) return "1";
   else
   {
-    $error = "atualizaDescricaoMLB";
-    $debug = serialize($response);
-    $corpo = send_error_email($error, $debug);
-    $assunto = "Erro no Script Mercado Livre";
-    manda_mail($assunto, $corpo);
+    $nome_funcao = "atualizaDescricaoMLB";
+    $saida = serialize($response);
+    $titulo = "Erro no Script Mercado Livre";
+    $tipo = "Erro";
+    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
+    $error_handling->send_error_email();
+    $error_handling->execute();
     return "0";
   }
 }
