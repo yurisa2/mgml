@@ -7,7 +7,23 @@ require "include/all_include.php";
 $DEBUG = true;
 echo "<pre>";
 
-var_dump(lista_MLB());                  //$titulo, $nome_funcao, $saida, $mensagem
+  // httpcode = 403
+
+// var_dump(retornaOrders());
+
+global $app_Id;
+global $secret_Key;
+global $user_id;
+global $DEBUG;
+
+$meli = new Meli($app_Id, $secret_Key);
+
+$params = array('access_token' => token(),
+'seller' => $user_id, 'order.status' => "paid",
+);
+
+$response = $meli->get("orders/search/recent", $params);
+  var_dump($response);         //$titulo, $nome_funcao, $saida, $mensagem
 // $r = new error_handling("Assunto do email", "Função que deu problema", "Debug-> Utilizado serializer", 'Erro');
 //
 // $r->execute();
