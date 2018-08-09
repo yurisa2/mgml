@@ -62,7 +62,7 @@ class event_base
 
     $mail->addReplyTo($from_mail, $from_name);
 
-    if($this->etiqueta !== null) $mail->addAttachment($this->etiqueta);
+    if($this->log_etiqueta !== null) $mail->addAttachment($this->log_etiqueta);
 
     $mail->isHTML(true);                                  // Set email format to HTML
     $mail->Subject = $titulo;
