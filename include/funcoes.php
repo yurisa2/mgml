@@ -44,6 +44,18 @@ function lista_MLB() {
     'limit' => 100
   );
   $result = $meli->get($url, $params);
+
+  if($result["httpCode"] != 200)
+  {
+    $nome_funcao = "lista_MLB";
+    $saida = serialize($result);
+    $titulo = "Erro de credendial no Script Mercado Livre";
+    $tipo = "Erro";
+    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
+    $error_handling->send_error_email();
+    $error_handling->execute();
+    return "0";
+  }
   $limit = $result['body']->limit;
 
   if($result['body']->total > $result['body']->limit)
@@ -78,6 +90,8 @@ function proximo_MLB()
   $ultimo = "MLB".$ultimo;
   $lista = lista_MLB();
 
+  if($lista == 0){return 0;}
+
   $indice_ultimo = array_search($ultimo, $lista);
   $indice_proximo = $indice_ultimo+1;
 
@@ -108,12 +122,12 @@ function atualizaProdMLB($SKU,$MLB)
 
   if(!$produto) return 0;
   $title = $prefixo_prod.$produto['name'].$sufixo_prod;
-if (strlen($title) > 60) $title = $prefixo_prod.$produto['name'];
+  if (strlen($title) > 60) $title = $prefixo_prod.$produto['name'];
 
   $price = round(($produto['price'] * $ajuste_preco_multiplicacao)+$ajuste_preco_soma,2);
   $available_quantity = floor($produto['qty_in_stock'] + ($produto['qty_in_stock']*$ajuste_estoque));
 
-if ($DEBUG == true) var_dump($produto); //DEBUG
+  if ($DEBUG == true) var_dump($produto); //DEBUG
 
   if($available_quantity < 0) $available_quantity = 0;
 
@@ -377,7 +391,7 @@ function retornaOrders(){
 
   $params = array('access_token' => token(),
     'seller' => $user_id, 'order.status' => "paid",
-    'order.date_created.from' => "2018-08-02T00:00:00.000-00:00"
+     'order.date_created.from' => "2018-06-02T00:00:00.000-00:00"
   );
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
@@ -397,6 +411,7 @@ function retornaOrders(){
 // );
 //--------------------------------------------------
   $response = $meli->get("/orders/search", $params);
+    var_dump($response);
   if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']->results);}
 
   $idOrders = new stdClass;
@@ -510,6 +525,7 @@ function listaPedidoMLB()
 {
   global $DEBUG;
   $Magento_order = retornaDadosOrders();
+
   foreach ($Magento_order as $key => $value) {
     $json[] = $Magento_order->$key->id_order;
 
