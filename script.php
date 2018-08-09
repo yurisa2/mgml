@@ -1,5 +1,8 @@
 <?php
 require 'include/all_include.php';
+ini_set("error_reporting",E_ALL);
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 // 1 - Ler a lista de produtos no ML (arquivo list.php)
 // 2 - Localizar ultimo (json) e o próximo da lista (array que vem do list)
 // 3 - Descobrir o SKU através do MLB do próximo
@@ -8,7 +11,7 @@ require 'include/all_include.php';
 //
 // $lista_produto = lista_MLB();
 
-$DEBUG = true;
+$DEBUG = false;
 
 $time_inicial = time();
 echo "<pre><br>";
@@ -21,6 +24,9 @@ echo "<br>";
 echo "<h2>2 - Localizar ultimo (json) e o próximo da lista (array que vem do list)</h2>";
 echo "<br>";
 $MLB = proximo_MLB(); // 2 - Localizar ultimo (json) e o próximo da lista (array que vem do list)
+
+if ($MLB != 0){
+
 $ultimo_MLB = ultimo_MLB();
 echo "<h2>ATUAL MLB: $MLB<BR>ANTERIOR MLB: $ultimo_MLB  <BR>";
 echo "TEMPO:". (time() - $time_inicial);
@@ -38,7 +44,7 @@ if((isset($MLB) && isset($SKU)) || ($MLB != 0 && $SKU != 0))
   echo "<h2>4 - Rodar a função de atualização com os dois dados</h2>";
   echo "<br>";
   $atualiza = atualizaMLB($SKU,$MLB); // 4 - Rodar a função de atualização com os dois dados
-  echo "<h2>atualiza: $atualiza <BR>";
+  echo "<h2>atualiza: ".var_dump($atualiza)."<BR>";
 }
 echo "TEMPO: ". (time() - $time_inicial);
 echo "<br><br><br></h2>";
@@ -51,7 +57,7 @@ echo "<br><br><br></h2>";
 // }
 echo "TEMPO: ". (time() - $time_inicial);
 echo "<br><br><br></h2>";
-//
+
 // // JUNÇÃO ML MG SCRIPT PARA POR O PEDIDO DO ML NO Magento_order
 // echo "<h2>JUNÇÃO ML MG SCRIPT PARA POR O PEDIDO DO ML NO Magento</h2><br/>Lista de Pedidos MLB<br/>";
 // var_dump(listaPedidoMLB());
@@ -134,3 +140,4 @@ echo "<br><br><br></h2>";
 // var_dump(escrevePedidoMLB($mlb));
 //
 // echo "TEMPO Final: ". (time() - $time_inicial);
+}
