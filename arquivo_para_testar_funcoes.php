@@ -19,7 +19,8 @@ global $DEBUG;
 $meli = new Meli($app_Id, $secret_Key);
 
 $params = array('access_token' => token(),
-'seller' => $user_id, 'order.status' => "paid",
+  'seller' => $user_id, 'order.status' => "paid",
+   'order.date_created.from' => "2018-08-02T00:00:00.000-00:00"
 );
 
 $response = $meli->get("orders/search", $params);
