@@ -4,27 +4,18 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require "include/all_include.php";
-$DEBUG = true;
+$DEBUG = false;
 echo "<pre>";
 
   // httpcode = 403
 
-// var_dump(retornaOrders());
+  $listapedido = listaPedidoMLB();
 
-global $app_Id;
-global $secret_Key;
-global $user_id;
-global $DEBUG;
-
-$meli = new Meli($app_Id, $secret_Key);
-
-$params = array('access_token' => token(),
-  'seller' => $user_id, 'order.status' => "paid",
-   'order.date_created.from' => "2018-08-02T00:00:00.000-00:00"
-);
-
-$response = $meli->get("orders/search", $params);
-  var_dump($response);         //$titulo, $nome_funcao, $saida, $mensagem
+if($listapedido != 0){
+echo "Diferente de 0";
+var_dump($listapedido);}
+else {echo "igual a 0";var_dump($listapedido);}
+        //$titulo, $nome_funcao, $saida, $mensagem
 // $r = new error_handling("Assunto do email", "Função que deu problema", "Debug-> Utilizado serializer", 'Erro');
 //
 // $r->execute();
