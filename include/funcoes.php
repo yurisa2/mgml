@@ -411,7 +411,7 @@ function retornaOrders(){
 // );
 //--------------------------------------------------
   $response = $meli->get("/orders/search", $params);
-    var_dump($response);
+
   if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']->results);}
 
   $idOrders = new stdClass;
@@ -427,7 +427,7 @@ function retornaOrders(){
 function retornaDadosOrders()
 {
   $orders = retornaOrders();
-  // $sku_debug = "EP-51-40971";//$dados_order->sku_produto;
+
   $magento_orders = new stdClass;
   foreach ($orders as $key => $value) {
     $dados_order = retornaDadosVenda($value);
@@ -476,6 +476,8 @@ function retornaObjMl()
   global $DEBUG;
 
   $dadosVenda = retornaDadosOrders();
+if($dadosVenda == '') return 0;
+
   $Magento_order = new stdClass();
 
   foreach($dadosVenda as $key => $value){
@@ -531,12 +533,23 @@ function listaPedidoMLB()
 
     $listaPedido = $json;
   }
+
+  if (!isset($listaPedido)) return 0;
   $listagem = json_encode($listaPedido);
+
+  if($DEBUG == true) var_dump($listagem);
 
   $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
 
-  if(!$conteudo_arquivo) return "Não deu pra escrever a lista de pedidos do mlb";
-  else return "Deu pra escrever a lista de pedidos do mlb";
+  if(!$conteudo_arquivo)
+  {
+     echo "Não deu pra escrever a lista de pedidos do mlb";
+     return 0;
+  }
+  else
+  {
+    return "Deu pra escrever a lista de pedidos do mlb";
+  }
 }
 
 function escrevePedidoMLB($MLB)
