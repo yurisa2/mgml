@@ -391,7 +391,7 @@ function retornaOrders(){
 
   $params = array('access_token' => token(),
     'seller' => $user_id, 'order.status' => "paid",
-     'order.date_created.from' => "2018-06-02T00:00:00.000-00:00"
+     'order.date_created.from' => "2018-08-02T00:00:00.000-00:00"
   );
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
