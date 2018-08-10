@@ -22,7 +22,7 @@ $params = array('access_token' => token(),
 'seller' => $user_id, 'order.status' => "paid",
 );
 
-$response = $meli->get("orders/search/recent", $params);
+$response = $meli->get("orders/search", $params);
   var_dump($response);         //$titulo, $nome_funcao, $saida, $mensagem
 // $r = new error_handling("Assunto do email", "Função que deu problema", "Debug-> Utilizado serializer", 'Erro');
 //
