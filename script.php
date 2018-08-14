@@ -1,8 +1,9 @@
 <?php
-require 'include/all_include.php';
 ini_set("error_reporting",E_ALL);
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
+
+require 'include/all_include.php';
 // 1 - Ler a lista de produtos no ML (arquivo list.php)
 // 2 - Localizar ultimo (json) e o próximo da lista (array que vem do list)
 // 3 - Descobrir o SKU através do MLB do próximo
@@ -44,7 +45,7 @@ if ($MLB != 0){
     echo "<h2>4 - Rodar a função de atualização com os dois dados</h2>";
     echo "<br>";
     $atualiza = atualizaMLB($SKU,$MLB); // 4 - Rodar a função de atualização com os dois dados
-    echo "<h2>atualiza: ".var_dump($atualiza)."<BR>";
+    echo "<h2>atualiza: $atualiza<br>";
   }
   echo "TEMPO: ". (time() - $time_inicial);
   echo "<br><br><br></h2>";
@@ -144,6 +145,7 @@ if ($MLB != 0){
     echo "TEMPO Final: ". (time() - $time_inicial);
   }
   else {
-    echo "Nenhum Pedido novo";
+    echo "TEMPO Final: ". (time() - $time_inicial);
+    echo "<br>Nenhum Pedido novo";
   }
 }
