@@ -44,17 +44,22 @@ function lista_MLB() {
     'limit' => 100
   );
   $result = $meli->get($url, $params);
-
-  if($result["httpCode"] != 200)
+  if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
+  $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
+  if ($hora_email_enviado + 3600 < time())
   {
-    $nome_funcao = "lista_MLB";
-    $saida = serialize($result);
-    $titulo = "Erro de credendial no Script Mercado Livre";
-    $tipo = "Erro";
-    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
-    $error_handling->send_error_email();
-    $error_handling->execute();
+    if($result["httpCode"] != 200)
+    {
+      $nome_funcao = "lista_MLB";
+      $saida = serialize($result);
+      $titulo = "Erro de credencial no Script Mercado Livre";
+      $tipo = "Erro";
+      $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
+      $error_handling->send_error_email();
+      $error_handling->execute();
+      file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
     return "0";
+    }
   }
   $limit = $result['body']->limit;
 
@@ -123,7 +128,7 @@ function atualizaProdMLB($SKU,$MLB)
   if(!$produto) return 0;
   $title = $prefixo_prod.$produto['name'].$sufixo_prod;
   if (strlen($title) > 60) $title = $prefixo_prod.$produto['name'];
-
+echo $title;
   $price = round(($produto['price'] * $ajuste_preco_multiplicacao)+$ajuste_preco_soma,2);
   $available_quantity = floor($produto['qty_in_stock'] + ($produto['qty_in_stock']*$ajuste_estoque));
 
@@ -324,6 +329,8 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
   //--------------PAGAMENTO---------
   foreach ($response['body']->payments as $key => $value) {
   $dadosVenda->id_order = $value->order_id;
+  $dadosVenda->date_created = $value->date_created;
+  file_put_contents("include/files/orderdate_create.json", json_encode($dadosVenda->date_created));
   $dadosVenda->id_meio_pagamento = $value->payment_method_id;
   $dadosVenda->tipo_pagamento = $value->payment_type;
   $dadosVenda->custo_envio = $value->shipping_cost;
@@ -391,7 +398,7 @@ function retornaOrders(){
 
   $params = array('access_token' => token(),
     'seller' => $user_id, 'order.status' => "paid",
-     'order.date_created.from' => "2018-08-02T00:00:00.000-00:00"
+     'order.date_created.from' => "2018-06-02T00:00:00.000-00:00"
   );
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
@@ -431,6 +438,24 @@ function retornaDadosOrders()
   $magento_orders = new stdClass;
   foreach ($orders as $key => $value) {
     $dados_order = retornaDadosVenda($value);
+    $lastdatecreate = json_decode(file_get_contents("include/files/orderdate_create.json"));
+
+    if(substr($dados_order->date_created,0,10) != substr($lastdatecreate,0,10)) {
+      //acrescentar a hora
+      if(substr($dados_order->date_created,-15, 2) - substr($lastdatecreate,-15, 2) > 1){
+        if(substr($dados_order->date_created,-12, 2) - substr($lastdatecreate,-12, 2) > 2) {
+          $buyerid = $dados_order->id_comprador;
+          $magento_orders->$buyerid->id_order = $dados_order->id_order;
+          $magento_orders->$buyerid->mlb_produto = $dados_order->mlb_produto;
+          $magento_orders->$buyerid->sku_produto = $dados_order->sku_produto;
+          $magento_orders->$buyerid->nome_produto = $dados_order->nome_produto;
+          $magento_orders->$buyerid->qtd_produto = $dados_order->qtd_produto;
+
+          $magento_orders->$buyerid->preco_unidade_produto = $dados_order->preco_unidade_produto;
+          $magento_orders->$buyerid->preco_total_produto = $dados_order->preco_total_produto;
+        }
+      }
+    }
 
     $buyerid = $dados_order->id_comprador;
     $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
@@ -553,6 +578,7 @@ function listaPedidoMLB()
 }
 
 function escrevePedidoMLB($MLB)
+
 {
     $conteudo_arquivo = file_put_contents("include/files/ultimoPedidoMLB.json", json_encode($MLB));
 
