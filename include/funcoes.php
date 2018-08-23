@@ -299,7 +299,7 @@ function retornaDadosVenda($COD){
   // global $DEBUG;
   // $appId = "4946951783545211";
   // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  // $accesstoken = "APP_USR-4946951783545211-080213-3d82febc4de927d0be2631577ab082f8-327485416";
+  // $accesstoken = "APP_USR-4946951783545211-082312-7848f20417f56c3e02883ef0251c11a7-322193559";
   // $userid = '327485416';
   //
   // $meli = new Meli($appId, $secretKey);
@@ -405,7 +405,7 @@ function retornaOrders(){
   // global $DEBUG;
   // $appId = "4946951783545211";
   // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  // $accesstoken = "APP_USR-4946951783545211-080213-3d82febc4de927d0be2631577ab082f8-327485416";
+  // $accesstoken = "APP_USR-4946951783545211-082312-7848f20417f56c3e02883ef0251c11a7-322193559";
   // $userid = '327485416';
   //
   // $meli = new Meli($appId, $secretKey);
@@ -413,13 +413,12 @@ function retornaOrders(){
   // 'seller' => $userid, 'order.status' => "paid");
   // $params = array('access_token' => $accesstoken,
   // 'seller' => $userid, 'order.status' => "paid",
-  // 'order.date_created.from' => "2018-06-12T00:00:00.000-00:00",
-  // 'order.date_created.to' => "2018-06-13T00:00:00.000-00:00"
-// );
+  // 'order.date_created.from' => "2018-06-12T00:00:00.000-00:00"
+  //);
 //--------------------------------------------------
   $response = $meli->get("/orders/search", $params);
 
-  if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']->results);}
+  if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']);}
 
   $idOrders = new stdClass;
 
@@ -441,7 +440,7 @@ function retornaDadosOrders()
     $lastdatecreate = json_decode(file_get_contents("include/files/orderdate_create.json"));
 
     if(substr($dados_order->date_created,0,10) != substr($lastdatecreate,0,10)) {
-      //acrescentar a hora
+      // if(substr($dados_order->date_created,-18,2) != substr($lastdatecreate,-18,2)) {
       if(substr($dados_order->date_created,-15, 2) - substr($lastdatecreate,-15, 2) > 1){
         if(substr($dados_order->date_created,-12, 2) - substr($lastdatecreate,-12, 2) > 2) {
           $buyerid = $dados_order->id_comprador;

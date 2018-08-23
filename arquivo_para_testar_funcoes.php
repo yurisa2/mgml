@@ -4,17 +4,70 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require "include/all_include.php";
-$DEBUG = false;
+$DEBUG = true;
 echo "<pre>";
 
   // httpcode = 403
+//2018-06-16T19:01:42.000-04:00
+//2018-06-16T19:01:42.000-04:00
+// if('2018-06-16T19:01:42.000-04:00' - '2018-06-16T19:04:42.000-04:00' > 1)
+//echo 'Sim'; else echo "Nao";
+$r = '2018-06-16T19:19:42.000-04:00';
+$s = '2018-06-16T19:19:44.000-04:00';
+$magento_orders = new stdclass;
+$buyerid = '11111111';
+if ( (substr($s,0,10) == substr($r,0,10)) && (substr($s,-18,2) == substr($r,-18,2)) && (substr($s,-15, 2) - substr($r,-15, 2) < 1) && (substr($s,-12, 2) - substr($r,-12, 2) < 2) )
+{ $magento_orders->$buyerid->id_order[] = '12';
+  $magento_orders->$buyerid->mlb_produto[] = '12';
+  $magento_orders->$buyerid->sku_produto[] = '12';
+  $magento_orders->$buyerid->nome_produto[] = '12';
+  $magento_orders->$buyerid->qtd_produto[] = '12';
+  $magento_orders->$buyerid->preco_unidade_produto[] = '12';
+  $magento_orders->$buyerid->preco_total_produto[] = '12';
+}else{$magento_orders->$buyerid->id_order = 11;
+      $magento_orders->$buyerid->mlb_produto = 11;
+      $magento_orders->$buyerid->sku_produto = 11;
+      $magento_orders->$buyerid->nome_produto = 11;
+      $magento_orders->$buyerid->qtd_produto = 11;
+      $magento_orders->$buyerid->preco_unidade_produto = 11;
+      $magento_orders->$buyerid->preco_total_produto = 11;}
+// if(substr($s,0,10) == substr($r,0,10)) {
+//   echo "teste data";
+//   if(substr($s,-18,2) == substr($r,-18,2)) {
+//     echo "teste hora";
+//   if(substr($s,-15, 2) - substr($r,-15, 2) < 1){
+//     echo "teste minuto";
+//     if(substr($s,-12, 2) - substr($r,-12, 2) < 2) {
+//             echo "teste segundo";
+//       $magento_orders->$buyerid->id_order = 11;
+//       $magento_orders->$buyerid->mlb_produto = 11;
+//       $magento_orders->$buyerid->sku_produto = 11;
+//       $magento_orders->$buyerid->nome_produto = 11;
+//       $magento_orders->$buyerid->qtd_produto = 11;
+//       $magento_orders->$buyerid->preco_unidade_produto = 11;
+//       $magento_orders->$buyerid->preco_total_produto = 11;
+//
+//     }
+//   }
+// }
+// }
+// $magento_orders->$buyerid->id_order[] = '12';
+// $magento_orders->$buyerid->mlb_produto[] = '12';
+// $magento_orders->$buyerid->sku_produto[] = '12';
+// $magento_orders->$buyerid->nome_produto[] = '12';
+// $magento_orders->$buyerid->qtd_produto[] = '12';
+// $magento_orders->$buyerid->preco_unidade_produto[] = '12';
+// $magento_orders->$buyerid->preco_total_produto[] = '12';
 
-  $listapedido = listaPedidoMLB();
+ var_dump($magento_orders);
+//
+// $pedidosFeitos = retornaPedidosfeitosMGML();
+// if(count($mlb) > 1){
+// $string = implode(",",$mlb);
+//}
+// if(!strpos($pedidosFeitos, $string)) echo " Não achou igual"; else echo "Achou";
+// var_dump(retornaDadosOrders());
 
-if($listapedido != 0){
-echo "Diferente de 0";
-var_dump($listapedido);}
-else {echo "igual a 0";var_dump($listapedido);}
         //$titulo, $nome_funcao, $saida, $mensagem
 // $r = new error_handling("Assunto do email", "Função que deu problema", "Debug-> Utilizado serializer", 'Erro');
 //

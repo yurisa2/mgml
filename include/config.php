@@ -15,7 +15,6 @@ $sufixo_prod = " - EasyPath";
 $prefixo_prod = "";
 $marca = "EasyPath";
 $ajuste_preco_soma = "5.0";
-$tempo = time();
 
 //ML
 $configmail = true;
