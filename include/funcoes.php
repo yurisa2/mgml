@@ -58,7 +58,7 @@ function lista_MLB() {
       $error_handling->send_error_email();
       $error_handling->execute();
       file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
-    return "0";
+      return "0";
     }
   }
   $limit = $result['body']->limit;
@@ -103,8 +103,8 @@ function proximo_MLB()
   $valor_proximo = substr($lista[$indice_proximo], 3);
   $valor_zero = substr($lista["0"], 3);
 
-if ($DEBUG == true) var_dump($valor_zero); //$DEBUG
-if ($DEBUG == true) var_dump($valor_proximo); //$DEBUG
+  if ($DEBUG == true) var_dump($valor_zero); //$DEBUG
+  if ($DEBUG == true) var_dump($valor_proximo); //$DEBUG
 
   if($indice_proximo+1 > count($lista)) return $valor_zero;
   else return $valor_proximo;
@@ -128,7 +128,7 @@ function atualizaProdMLB($SKU,$MLB)
   if(!$produto) return 0;
   $title = $prefixo_prod.$produto['name'].$sufixo_prod;
   if (strlen($title) > 60) $title = $prefixo_prod.$produto['name'];
-echo $title;
+  echo $title;
   $price = round(($produto['price'] * $ajuste_preco_multiplicacao)+$ajuste_preco_soma,2);
   $available_quantity = floor($produto['qty_in_stock'] + ($produto['qty_in_stock']*$ajuste_estoque));
 
@@ -146,209 +146,209 @@ echo $title;
     'price' => $price,
     'available_quantity' => $available_quantity,
     'attributes' =>
+    array(
       array(
+        'name' => "Marca",
+        'value_name' => $marca),
+        // DEBUG AQUI PRECISA TER O SKU CASO CONTRARIO ELE ESCREVE A MARCA E ANULA  $SKU
+        //PROVAVELMENTE ESTARÃO SEM SKU ALGUNS DOS ANUNCIOS
         array(
-          'name' => "Marca",
-          'value_name' => $marca),
-// DEBUG AQUI PRECISA TER O SKU CASO CONTRARIO ELE ESCREVE A MARCA E ANULA  $SKU
-//PROVAVELMENTE ESTARÃO SEM SKU ALGUNS DOS ANUNCIOS
-         array(
-           'id' => "MODEL",
-           'value_name' => $SKU)
+          'id' => "MODEL",
+          'value_name' => $SKU)
         )
-  );
+      );
 
 
-  $response = $meli->put('/items/MLB'.$MLB, $body, $params);
+      $response = $meli->put('/items/MLB'.$MLB, $body, $params);
 
-  // echo "body: <br> "; var_dump($body); //DEBUG
-  //
-  // echo "response: <br> "; var_dump($response); //DEBUG
+      // echo "body: <br> "; var_dump($body); //DEBUG
+      //
+      // echo "response: <br> "; var_dump($response); //DEBUG
 
-  // echo "MLB: $MLB";
-  if ($DEBUG == true) var_dump($response); //DEBUG
+      // echo "MLB: $MLB";
+      if ($DEBUG == true) var_dump($response); //DEBUG
 
-  if($response["httpCode"] == 200) return "1";
-  else
-  {
-    $nome_funcao = "atualizaProdMLB";
-    $saida = serialize($response);
-    $titulo = "Erro no Script Mercado Livre";
-    $tipo = "Erro";
-    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
-    $error_handling->send_error_email();
-    $error_handling->execute();
-    return "0";
-  }
-}
-
-function atualizaDescricaoMLB($SKU,$MLB)
-{
-  global $app_Id;
-  global $secret_Key;
-  global $DEBUG;
-
-
-  $produto = magento_product_summary($SKU);
-
-  if(!$produto) return 0;
-
-  $description = $produto['description'];
-  $meli = new Meli($app_Id, $secret_Key);
-  $params = array('access_token' => token());
-
-  $body = array
-  (
-    'plain_text' => $description
-  );
-
-  $response = $meli->put('/items/MLB'.$MLB.'/description', $body, $params);
-
-  if ($DEBUG == true) var_dump($response); //DEBUG
-
-  if($response["httpCode"] == 200) return "1";
-  else
-  {
-    $nome_funcao = "atualizaDescricaoMLB";
-    $saida = serialize($response);
-    $titulo = "Erro no Script Mercado Livre";
-    $tipo = "Erro";
-    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
-    $error_handling->send_error_email();
-    $error_handling->execute();
-    return "0";
-  }
-}
-
-function atualizaMLB($SKU,$MLB)
-{
-  $atualizaProd = atualizaProdMLB($SKU,$MLB);
-  $atualizaDesc = atualizaDescricaoMLB($SKU,$MLB);
-
-  if($atualizaProd && $atualizaDesc)
-  {
-    return '1';
-  }
-  else
-  {
-    return '0';
-  }
-}
-
-function retorna_SKU($MLB)
-{
-  global $app_Id;
-  global $secret_Key;
-  global $DEBUG;
-
-
-  $meli = new Meli($app_Id, $secret_Key);
-
-  $params = array('attributes' => "attributes",
-  'attributes&include_internal_attributes'=>"true");
-
-  if(strpos($MLB, 'MLB') === 0) $MLB = substr($MLB, -10);
-
-  $response = $meli->get('/items/MLB'.$MLB,$params);
-
-  if(!$response){
-    $error = "retorna_SKU";
-    $debug = serialize($response);
-    $corpo = send_error_email($error, $debug);
-    $assunto = "Erro no Script Mercado Livre";
-    manda_mail($assunto, $corpo);
-  }
-  if ($DEBUG == true) var_dump($response['body']); //DEBUG
-
-
-  //LUIGI, aqui precisei fazer isso pois voce assumiu que o SKU estaria sempre no indice 2 (o que nao é verdade)
-  foreach ($response['body']->attributes as $key => $value) {
-    if($value->name == "Modelo") return $value->value_name;
-    // echo "<br>";
-  }
-  //ESSE FOREACH procura pelo value Modelo, e retorna o modelo. se nao tiver, continua a execucao e retorna 0
-
-  return 0;
-}
-
-function escreve_MLB($MLB)
-{
-    $conteudo_arquivo = file_put_contents("include/files/ultimo_MLB.json", json_encode($MLB));
-
-    if(!$conteudo_arquivo)
-    {
-      return "0";
+      if($response["httpCode"] == 200) return "1";
+      else
+      {
+        $nome_funcao = "atualizaProdMLB";
+        $saida = serialize($response);
+        $titulo = "Erro no Script Mercado Livre";
+        $tipo = "Erro";
+        $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
+        $error_handling->send_error_email();
+        $error_handling->execute();
+        return "0";
+      }
     }
-    else
+
+    function atualizaDescricaoMLB($SKU,$MLB)
     {
-      return "1";
+      global $app_Id;
+      global $secret_Key;
+      global $DEBUG;
+
+
+      $produto = magento_product_summary($SKU);
+
+      if(!$produto) return 0;
+
+      $description = $produto['description'];
+      $meli = new Meli($app_Id, $secret_Key);
+      $params = array('access_token' => token());
+
+      $body = array
+      (
+        'plain_text' => $description
+      );
+
+      $response = $meli->put('/items/MLB'.$MLB.'/description', $body, $params);
+
+      if ($DEBUG == true) var_dump($response); //DEBUG
+
+      if($response["httpCode"] == 200) return "1";
+      else
+      {
+        $nome_funcao = "atualizaDescricaoMLB";
+        $saida = serialize($response);
+        $titulo = "Erro no Script Mercado Livre";
+        $tipo = "Erro";
+        $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
+        $error_handling->send_error_email();
+        $error_handling->execute();
+        return "0";
+      }
     }
-}
 
-function retornaDadosVenda($COD){
-  global $app_Id;
-  global $secret_Key;
-  global $DEBUG;
+    function atualizaMLB($SKU,$MLB)
+    {
+      $atualizaProd = atualizaProdMLB($SKU,$MLB);
+      $atualizaDesc = atualizaDescricaoMLB($SKU,$MLB);
 
-  $meli = new Meli($app_Id, $secret_Key);
+      if($atualizaProd && $atualizaDesc)
+      {
+        return '1';
+      }
+      else
+      {
+        return '0';
+      }
+    }
 
-  $params = array('access_token' => token()
-  );
-
-//BLOCO PARA USAR AS ORDERS DE TESTE----
-  // global $DEBUG;
-  // $appId = "4946951783545211";
-  // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  // $accesstoken = "APP_USR-4946951783545211-082312-7848f20417f56c3e02883ef0251c11a7-322193559";
-  // $userid = '327485416';
-  //
-  // $meli = new Meli($appId, $secretKey);
-  //
-  // $params = array('access_token' => $accesstoken
-  // );
-//--------------------------------------------
-
-  $response = $meli->get("/orders/$COD", $params);
-
-  // echo "<pre><h1>Aqui</h1>";
-
-if($DEBUG == true) echo "<h1>DEBUG retornaDadosVenda</h1><br>";
-if($DEBUG == true) var_dump($response['body']); //DEBUG
-  $dadosVenda = new stdClass;
-
-  //------------PRODUTO--------
-  foreach ($response['body']->order_items as $key => $value) {
-    $dadosVenda->mlb_produto = $value->item->id;
-    $dadosVenda->sku_produto = retorna_SKU($dadosVenda->mlb_produto);
-    $dadosVenda->nome_produto = $value->item->title;
-    $dadosVenda->qtd_produto = $value->quantity;
-    $dadosVenda->preco_unidade_produto = $value->unit_price;
-    $dadosVenda->preco_total_produto = $value->full_unit_price;
-  }
-
-  //--------------PAGAMENTO---------
-  foreach ($response['body']->payments as $key => $value) {
-  $dadosVenda->id_order = $value->order_id;
-  $dadosVenda->date_created = $value->date_created;
-  file_put_contents("include/files/orderdate_create.json", json_encode($dadosVenda->date_created));
-  $dadosVenda->id_meio_pagamento = $value->payment_method_id;
-  $dadosVenda->tipo_pagamento = $value->payment_type;
-  $dadosVenda->custo_envio = $value->shipping_cost;
-  $dadosVenda->total_pagar = $value->total_paid_amount;
-  $dadosVenda->status_pagamento = $value->status;
-  }
-
-  //----- ------ENDEREÇO---------
+    function retorna_SKU($MLB)
+    {
+      global $app_Id;
+      global $secret_Key;
+      global $DEBUG;
 
 
-  if(!isset($response['body']->shipping->receiver_address)){
-    $shipment_id = $response['body']->shipping->id;
-    $params = array('access_token' => token()
+      $meli = new Meli($app_Id, $secret_Key);
+
+      $params = array('attributes' => "attributes",
+      'attributes&include_internal_attributes'=>"true");
+
+      if(strpos($MLB, 'MLB') === 0) $MLB = substr($MLB, -10);
+
+      $response = $meli->get('/items/MLB'.$MLB,$params);
+
+      if(!$response){
+        $error = "retorna_SKU";
+        $debug = serialize($response);
+        $corpo = send_error_email($error, $debug);
+        $assunto = "Erro no Script Mercado Livre";
+        manda_mail($assunto, $corpo);
+      }
+      if ($DEBUG == true) var_dump($response['body']); //DEBUG
+
+
+      //LUIGI, aqui precisei fazer isso pois voce assumiu que o SKU estaria sempre no indice 2 (o que nao é verdade)
+      foreach ($response['body']->attributes as $key => $value) {
+        if($value->name == "Modelo") return $value->value_name;
+        // echo "<br>";
+      }
+      //ESSE FOREACH procura pelo value Modelo, e retorna o modelo. se nao tiver, continua a execucao e retorna 0
+
+      return 0;
+    }
+
+    function escreve_MLB($MLB)
+    {
+      $conteudo_arquivo = file_put_contents("include/files/ultimo_MLB.json", json_encode($MLB));
+
+      if(!$conteudo_arquivo)
+      {
+        return "0";
+      }
+      else
+      {
+        return "1";
+      }
+    }
+
+    function retornaDadosVenda($COD){
+      global $app_Id;
+      global $secret_Key;
+      global $DEBUG;
+
+      $meli = new Meli($app_Id, $secret_Key);
+
+      $params = array('access_token' => token()
+    );
+
+    //BLOCO PARA USAR AS ORDERS DE TESTE----
+    // global $DEBUG;
+    // $appId = "4946951783545211";
+    // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+    // $accesstoken = "APP_USR-4946951783545211-082413-1b73686202ae1580e2c9393549f2c5ad-327485416";
+    // $userid = '327485416';
+    //
+    // $meli = new Meli($appId, $secretKey);
+    //
+    // $params = array('access_token' => $accesstoken
+    // );
+    //--------------------------------------------
+
+    $response = $meli->get("/orders/$COD", $params);
+
+    // echo "<pre><h1>Aqui</h1>";
+
+    if($DEBUG == true) echo "<h1>DEBUG retornaDadosVenda</h1><br>";
+    if($DEBUG == true) var_dump($response['body']); //DEBUG
+    $dadosVenda = new stdClass;
+
+    //------------PRODUTO--------
+    foreach ($response['body']->order_items as $key => $value) {
+      $dadosVenda->mlb_produto = $value->item->id;
+      $dadosVenda->sku_produto = retorna_SKU($dadosVenda->mlb_produto);
+      $dadosVenda->nome_produto = $value->item->title;
+      $dadosVenda->qtd_produto = $value->quantity;
+      $dadosVenda->preco_unidade_produto = $value->unit_price;
+      $dadosVenda->preco_total_produto = $value->full_unit_price;
+    }
+
+    //--------------PAGAMENTO---------
+    foreach ($response['body']->payments as $key => $value) {
+      $dadosVenda->id_order = $value->order_id;
+      $dadosVenda->date_created = strtotime($value->date_created);
+      // file_put_contents("include/files/orderdate_create.json", json_encode($dadosVenda->date_created));
+      $dadosVenda->id_meio_pagamento = $value->payment_method_id;
+      $dadosVenda->tipo_pagamento = $value->payment_type;
+      $dadosVenda->custo_envio = $value->shipping_cost;
+      $dadosVenda->total_pagar = $value->total_paid_amount;
+      $dadosVenda->status_pagamento = $value->status;
+    }
+
+    //----- ------ENDEREÇO---------
+
+
+    if(!isset($response['body']->shipping->receiver_address)){
+      $shipment_id = $response['body']->shipping->id;
+      $params = array('access_token' => token()
     );
 
     $dados_shipping = $meli->get("/shipments/$shipment_id", $params);
-// echo "<h1>AQUI ÒOOOOOO</h1>";
-//   var_dump($response)    ;
+    // echo "<h1>AQUI ÒOOOOOO</h1>";
+    //   var_dump($response)    ;
     $dadosVenda->id_shipping = $dados_shipping['body']->id;
     $dadosVenda->rua = $dados_shipping['body']->receiver_address->street_name;
     $dadosVenda->numero =$dados_shipping['body']->receiver_address->street_number;
@@ -370,7 +370,7 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
     $dadosVenda->pais = $response['body']->shipping->receiver_address->country->id;
   }
 
-//PEGAR O ID DO PAIS -- COUNTRY_ID
+  //PEGAR O ID DO PAIS -- COUNTRY_ID
   // -------USUARIO --------
   $dadosVenda->id_comprador = $response['body']->buyer->id;
   $dadosVenda->apelido_comprador = $response['body']->buyer->nickname;
@@ -381,7 +381,6 @@ if($DEBUG == true) var_dump($response['body']); //DEBUG
   $dadosVenda->sobrenome_comprador = $response['body']->buyer->last_name;
   $dadosVenda->tipo_documento_comprador = $response['body']->buyer->billing_info->doc_type;
   $dadosVenda->numero_documento_comprador = $response['body']->buyer->billing_info->doc_number;
-
 
   return $dadosVenda;
 
@@ -397,101 +396,108 @@ function retornaOrders(){
   $meli = new Meli($app_Id, $secret_Key);
 
   $params = array('access_token' => token(),
-    'seller' => $user_id, 'order.status' => "paid",
-     'order.date_created.from' => "2018-06-02T00:00:00.000-00:00"
-  );
+  'seller' => $user_id, 'order.status' => "paid",
+  'order.date_created.from' => "2018-06-05T00:00:00.000-00:00"
+);
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
-  // global $DEBUG;
-  // $appId = "4946951783545211";
-  // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  // $accesstoken = "APP_USR-4946951783545211-082312-7848f20417f56c3e02883ef0251c11a7-322193559";
-  // $userid = '327485416';
-  //
-  // $meli = new Meli($appId, $secretKey);
-  // $params = array('access_token' => $accesstoken,
-  // 'seller' => $userid, 'order.status' => "paid");
-  // $params = array('access_token' => $accesstoken,
-  // 'seller' => $userid, 'order.status' => "paid",
-  // 'order.date_created.from' => "2018-06-12T00:00:00.000-00:00"
-  //);
+// global $DEBUG;
+// $appId = "4946951783545211";
+// $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+// $accesstoken = "APP_USR-4946951783545211-082413-1b73686202ae1580e2c9393549f2c5ad-327485416";
+// $userid = '327485416';
+//
+// $meli = new Meli($appId, $secretKey);
+// $params = array('access_token' => $accesstoken,
+// 'seller' => $userid, 'order.status' => "paid",
+// 'order.date_created.from' => "2018-06-01T00:00:00.000-00:00"
+// );
 //--------------------------------------------------
-  $response = $meli->get("/orders/search", $params);
+$response = $meli->get("/orders/search", $params);
 
-  if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']);}
+if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']);}
 
-  $idOrders = new stdClass;
+$idOrders = new stdClass;
 
-  foreach ($response['body']->results as $key => $value) {
-    // $i = "order_id_".$key;
-    $idOrders->$key = $value->payments[0]->order_id;
+foreach ($response['body']->results as $key => $value) {
+  // $i = "order_id_".$key;
+  $idOrders->$key = $value->payments[0]->order_id;
 
-  }
-  return $idOrders;
 }
-//LEMBRAR DE ARRUMAR CAMPO SKU E O RESTO DESTE ARQUIVO
+return $idOrders;
+}
+
+function retorna_data_pedidos($orders_id)
+{
+$ml_data_pedido = new stdclass;
+foreach ($orders_id as $key => $value) {
+  $dados_order = retornaDadosVenda($value);
+  $ml_data_pedido->data_pedido[] = $dados_order->date_created;
+}
+$result = file_put_contents("include/files/orderdate_create.json", json_encode($ml_data_pedido->data_pedido));
+
+if($result) return "Ok"; else return "Não deu";
+}
+
 function retornaDadosOrders()
 {
   $orders = retornaOrders();
-
+  retorna_data_pedidos($orders);
   $magento_orders = new stdClass;
   foreach ($orders as $key => $value) {
     $dados_order = retornaDadosVenda($value);
     $lastdatecreate = json_decode(file_get_contents("include/files/orderdate_create.json"));
+    $aux = $key+1;
+    if($lastdatecreate[$aux] - $dados_order->date_created <= 2)
+    {
+      echo "e<br>";
+      $buyerid = $dados_order->id_comprador;
 
-    if(substr($dados_order->date_created,0,10) != substr($lastdatecreate,0,10)) {
-      // if(substr($dados_order->date_created,-18,2) != substr($lastdatecreate,-18,2)) {
-      if(substr($dados_order->date_created,-15, 2) - substr($lastdatecreate,-15, 2) > 1){
-        if(substr($dados_order->date_created,-12, 2) - substr($lastdatecreate,-12, 2) > 2) {
-          $buyerid = $dados_order->id_comprador;
-          $magento_orders->$buyerid->id_order = $dados_order->id_order;
-          $magento_orders->$buyerid->mlb_produto = $dados_order->mlb_produto;
-          $magento_orders->$buyerid->sku_produto = $dados_order->sku_produto;
-          $magento_orders->$buyerid->nome_produto = $dados_order->nome_produto;
-          $magento_orders->$buyerid->qtd_produto = $dados_order->qtd_produto;
+      $magento_orders->$buyerid->id_order = $dados_order->id_order;
+      $magento_orders->$buyerid->mlb_produto = $dados_order->mlb_produto;
+      $magento_orders->$buyerid->sku_produto = $dados_order->sku_produto;
+      $magento_orders->$buyerid->nome_produto = $dados_order->nome_produto;
+      $magento_orders->$buyerid->qtd_produto = $dados_order->qtd_produto;
 
-          $magento_orders->$buyerid->preco_unidade_produto = $dados_order->preco_unidade_produto;
-          $magento_orders->$buyerid->preco_total_produto = $dados_order->preco_total_produto;
-        }
-      }
+      $magento_orders->$buyerid->preco_unidade_produto = $dados_order->preco_unidade_produto;
+      $magento_orders->$buyerid->preco_total_produto = $dados_order->preco_total_produto;
+
+      $magento_orders->$buyerid->id_meio_pagamento = $dados_order->id_meio_pagamento;
+      $magento_orders->$buyerid->tipo_pagamento = $dados_order->tipo_pagamento;
+      $magento_orders->$buyerid->custo_envio = $dados_order->custo_envio;
+      $magento_orders->$buyerid->total_pagar = $dados_order->total_pagar;
+      $magento_orders->$buyerid->status_pagamento = $dados_order->status_pagamento;
+
+
+      $magento_orders->$buyerid->id_shipping = $dados_order->id_shipping;
+      $magento_orders->$buyerid->rua = $dados_order->rua;
+      $magento_orders->$buyerid->numero = $dados_order->numero;
+      $magento_orders->$buyerid->bairro = $dados_order->bairro;
+      $magento_orders->$buyerid->cep = $dados_order->cep;
+      $magento_orders->$buyerid->cidade = $dados_order->cidade;
+      $magento_orders->$buyerid->estado = $dados_order->estado;
+      $magento_orders->$buyerid->pais = $dados_order->pais;
+
+      $magento_orders->$buyerid->id_comprador = $dados_order->id_comprador;
+      $magento_orders->$buyerid->apelido_comprador = $dados_order->apelido_comprador;
+      $magento_orders->$buyerid->email_comprador = $dados_order->email_comprador;
+      $magento_orders->$buyerid->cod_area_comprador = $dados_order->cod_area_comprador;
+      $magento_orders->$buyerid->telefone_comprador = $dados_order->cod_area_comprador.$dados_order->telefone_comprador;
+      $magento_orders->$buyerid->nome_comprador = $dados_order->nome_comprador;
+      $magento_orders->$buyerid->sobrenome_comprador = $dados_order->sobrenome_comprador;
+      $magento_orders->$buyerid->tipo_documento_comprador = $dados_order->tipo_documento_comprador;
+      $magento_orders->$buyerid->numero_documento_comprador = $dados_order->numero_documento_comprador;
+
     }
+    else
+    {
+    $buyerid = $key;
+    $magento_orders->$buyerid=$dados_order;
 
-    $buyerid = $dados_order->id_comprador;
-    $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
-    $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
-    $magento_orders->$buyerid->sku_produto[] = $dados_order->sku_produto;
-    $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
-    $magento_orders->$buyerid->qtd_produto[] = $dados_order->qtd_produto;
+}
 
-    $magento_orders->$buyerid->preco_unidade_produto[] = $dados_order->preco_unidade_produto;
-    $magento_orders->$buyerid->preco_total_produto[] = $dados_order->preco_total_produto;
-    $magento_orders->$buyerid->id_meio_pagamento = $dados_order->id_meio_pagamento;
-    $magento_orders->$buyerid->tipo_pagamento = $dados_order->tipo_pagamento;
-    $magento_orders->$buyerid->custo_envio = $dados_order->custo_envio;
-    $magento_orders->$buyerid->total_pagar = $dados_order->total_pagar;
-    $magento_orders->$buyerid->status_pagamento = $dados_order->status_pagamento;
+}
 
-
-    $magento_orders->$buyerid->id_shipping = $dados_order->id_shipping;
-    $magento_orders->$buyerid->rua = $dados_order->rua;
-    $magento_orders->$buyerid->numero = $dados_order->numero;
-    $magento_orders->$buyerid->bairro = $dados_order->bairro;
-    $magento_orders->$buyerid->cep = $dados_order->cep;
-    $magento_orders->$buyerid->cidade = $dados_order->cidade;
-    $magento_orders->$buyerid->estado = $dados_order->estado;
-    $magento_orders->$buyerid->pais = $dados_order->pais;
-
-    $magento_orders->$buyerid->id_comprador = $dados_order->id_comprador;
-    $magento_orders->$buyerid->apelido_comprador = $dados_order->apelido_comprador;
-    $magento_orders->$buyerid->email_comprador = $dados_order->email_comprador;
-    $magento_orders->$buyerid->cod_area_comprador = $dados_order->cod_area_comprador;
-    $magento_orders->$buyerid->telefone_comprador = $dados_order->cod_area_comprador.$dados_order->telefone_comprador;
-    $magento_orders->$buyerid->nome_comprador = $dados_order->nome_comprador;
-    $magento_orders->$buyerid->sobrenome_comprador = $dados_order->sobrenome_comprador;
-    $magento_orders->$buyerid->tipo_documento_comprador = $dados_order->tipo_documento_comprador;
-    $magento_orders->$buyerid->numero_documento_comprador = $dados_order->numero_documento_comprador;
-
-  }
   return $magento_orders;
 }
 
@@ -500,7 +506,7 @@ function retornaObjMl()
   global $DEBUG;
 
   $dadosVenda = retornaDadosOrders();
-if($dadosVenda == '') return 0;
+  if($dadosVenda == '') return 0;
 
   $Magento_order = new stdClass();
 
@@ -567,8 +573,8 @@ function listaPedidoMLB()
 
   if(!$conteudo_arquivo)
   {
-     echo "Não deu pra escrever a lista de pedidos do mlb";
-     return 0;
+    echo "Não deu pra escrever a lista de pedidos do mlb";
+    return 0;
   }
   else
   {
@@ -579,16 +585,16 @@ function listaPedidoMLB()
 function escrevePedidoMLB($MLB)
 
 {
-    $conteudo_arquivo = file_put_contents("include/files/ultimoPedidoMLB.json", json_encode($MLB));
+  $conteudo_arquivo = file_put_contents("include/files/ultimoPedidoMLB.json", json_encode($MLB));
 
-    if(!$conteudo_arquivo)
-    {
-      return "Não deu pra escrever o pedido do mlb";
-    }
-    else
-    {
-      return "Escrito ultimo MLB com sucesso";
-    }
+  if(!$conteudo_arquivo)
+  {
+    return "Não deu pra escrever o pedido do mlb";
+  }
+  else
+  {
+    return "Escrito ultimo MLB com sucesso";
+  }
 }
 
 function ultimoPedidoMLB()
