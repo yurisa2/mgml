@@ -299,7 +299,7 @@ function atualizaProdMLB($SKU,$MLB)
     // global $DEBUG;
     // $appId = "4946951783545211";
     // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-    // $accesstoken = "APP_USR-4946951783545211-082413-1b73686202ae1580e2c9393549f2c5ad-327485416";
+    // $accesstoken = "APP_USR-4946951783545211-082713-0979c380fd0ed7329b8abbba31363c9a-327485416";
     // $userid = '327485416';
     //
     // $meli = new Meli($appId, $secretKey);
@@ -330,7 +330,6 @@ function atualizaProdMLB($SKU,$MLB)
     foreach ($response['body']->payments as $key => $value) {
       $dadosVenda->id_order = $value->order_id;
       $dadosVenda->date_created = strtotime($value->date_created);
-      // file_put_contents("include/files/orderdate_create.json", json_encode($dadosVenda->date_created));
       $dadosVenda->id_meio_pagamento = $value->payment_method_id;
       $dadosVenda->tipo_pagamento = $value->payment_type;
       $dadosVenda->custo_envio = $value->shipping_cost;
@@ -404,7 +403,7 @@ function retornaOrders(){
 // global $DEBUG;
 // $appId = "4946951783545211";
 // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-// $accesstoken = "APP_USR-4946951783545211-082413-1b73686202ae1580e2c9393549f2c5ad-327485416";
+// $accesstoken = "APP_USR-4946951783545211-082713-0979c380fd0ed7329b8abbba31363c9a-327485416";
 // $userid = '327485416';
 //
 // $meli = new Meli($appId, $secretKey);
@@ -420,7 +419,6 @@ if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response[
 $idOrders = new stdClass;
 
 foreach ($response['body']->results as $key => $value) {
-  // $i = "order_id_".$key;
   $idOrders->$key = $value->payments[0]->order_id;
 
 }
@@ -429,247 +427,260 @@ return $idOrders;
 
 function retorna_data_pedidos($orders_id)
 {
-$ml_data_pedido = new stdclass;
-foreach ($orders_id as $key => $value) {
-  $dados_order = retornaDadosVenda($value);
-  $ml_data_pedido->data_pedido[] = $dados_order->date_created;
-}
-$result = file_put_contents("include/files/orderdate_create.json", json_encode($ml_data_pedido->data_pedido));
+  $ml_data_pedido = new stdclass;
+  foreach ($orders_id as $key => $value) {
+    $dados_order = retornaDadosVenda($value);
+    $ml_data_pedido->data_pedido[] = $dados_order->date_created;
+    $ml_data_pedido->id_comprador[] = $dados_order->id_comprador;
+  }
+  $result_idbuyer =  file_put_contents("include/files/idbuyers.json", json_encode($ml_data_pedido->id_comprador));
+  $result_data = file_put_contents("include/files/orderdate_create.json", json_encode($ml_data_pedido->data_pedido));
 
-if($result) return "Ok"; else return "Não deu";
+  if($result_data && $result_idbuyer) return "Ok"; else return "Não deu";
 }
 
 function retornaDadosOrders()
 {
   $orders = retornaOrders();
+
   retorna_data_pedidos($orders);
   $magento_orders = new stdClass;
   foreach ($orders as $key => $value) {
     $dados_order = retornaDadosVenda($value);
     $lastdatecreate = json_decode(file_get_contents("include/files/orderdate_create.json"));
     $aux = $key+1;
-    if($lastdatecreate[$aux] - $dados_order->date_created <= 2)
+    $aux1 = $key-1;
+    $buyerid = json_decode(file_get_contents("include/files/idbuyers.json"));
+    if(($buyerid[$aux] == $dados_order->id_comprador) || ($buyerid[$aux1] == $dados_order->id_comprador) )
     {
-      echo "e<br>";
-      $buyerid = $dados_order->id_comprador;
+      echo "$dados_order->buyerid<br>";
+      var_dump($buyerid[$aux]);
+      echo "$dados_order->buyerid<br>";
+      var_dump($buyerid[$aux1]);
+      if($lastdatecreate[$aux] - $dados_order->date_created <= 2)
+      {
+        $buyerid = "ID$dados_order->id_comprador";
 
-      $magento_orders->$buyerid->id_order = $dados_order->id_order;
-      $magento_orders->$buyerid->mlb_produto = $dados_order->mlb_produto;
-      $magento_orders->$buyerid->sku_produto = $dados_order->sku_produto;
-      $magento_orders->$buyerid->nome_produto = $dados_order->nome_produto;
-      $magento_orders->$buyerid->qtd_produto = $dados_order->qtd_produto;
+        $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
+        $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
+        $magento_orders->$buyerid->sku_produto[] = $dados_order->sku_produto;
+        $magento_orders->$buyerid->nome_produto[] = $dados_order->nome_produto;
+        $magento_orders->$buyerid->qtd_produto[] = $dados_order->qtd_produto;
 
-      $magento_orders->$buyerid->preco_unidade_produto = $dados_order->preco_unidade_produto;
-      $magento_orders->$buyerid->preco_total_produto = $dados_order->preco_total_produto;
+        $magento_orders->$buyerid->preco_unidade_produto[] = $dados_order->preco_unidade_produto;
+        $magento_orders->$buyerid->preco_total_produto[] = $dados_order->preco_total_produto;
 
-      $magento_orders->$buyerid->id_meio_pagamento = $dados_order->id_meio_pagamento;
-      $magento_orders->$buyerid->tipo_pagamento = $dados_order->tipo_pagamento;
-      $magento_orders->$buyerid->custo_envio = $dados_order->custo_envio;
-      $magento_orders->$buyerid->total_pagar = $dados_order->total_pagar;
-      $magento_orders->$buyerid->status_pagamento = $dados_order->status_pagamento;
+        $magento_orders->$buyerid->id_meio_pagamento = $dados_order->id_meio_pagamento;
+        $magento_orders->$buyerid->tipo_pagamento = $dados_order->tipo_pagamento;
+        $magento_orders->$buyerid->custo_envio = $dados_order->custo_envio;
+        $magento_orders->$buyerid->total_pagar = $dados_order->total_pagar;
+        $magento_orders->$buyerid->status_pagamento = $dados_order->status_pagamento;
 
 
-      $magento_orders->$buyerid->id_shipping = $dados_order->id_shipping;
-      $magento_orders->$buyerid->rua = $dados_order->rua;
-      $magento_orders->$buyerid->numero = $dados_order->numero;
-      $magento_orders->$buyerid->bairro = $dados_order->bairro;
-      $magento_orders->$buyerid->cep = $dados_order->cep;
-      $magento_orders->$buyerid->cidade = $dados_order->cidade;
-      $magento_orders->$buyerid->estado = $dados_order->estado;
-      $magento_orders->$buyerid->pais = $dados_order->pais;
+        $magento_orders->$buyerid->id_shipping = $dados_order->id_shipping;
+        $magento_orders->$buyerid->rua = $dados_order->rua;
+        $magento_orders->$buyerid->numero = $dados_order->numero;
+        $magento_orders->$buyerid->bairro = $dados_order->bairro;
+        $magento_orders->$buyerid->cep = $dados_order->cep;
+        $magento_orders->$buyerid->cidade = $dados_order->cidade;
+        $magento_orders->$buyerid->estado = $dados_order->estado;
+        $magento_orders->$buyerid->pais = $dados_order->pais;
 
-      $magento_orders->$buyerid->id_comprador = $dados_order->id_comprador;
-      $magento_orders->$buyerid->apelido_comprador = $dados_order->apelido_comprador;
-      $magento_orders->$buyerid->email_comprador = $dados_order->email_comprador;
-      $magento_orders->$buyerid->cod_area_comprador = $dados_order->cod_area_comprador;
-      $magento_orders->$buyerid->telefone_comprador = $dados_order->cod_area_comprador.$dados_order->telefone_comprador;
-      $magento_orders->$buyerid->nome_comprador = $dados_order->nome_comprador;
-      $magento_orders->$buyerid->sobrenome_comprador = $dados_order->sobrenome_comprador;
-      $magento_orders->$buyerid->tipo_documento_comprador = $dados_order->tipo_documento_comprador;
-      $magento_orders->$buyerid->numero_documento_comprador = $dados_order->numero_documento_comprador;
+        $magento_orders->$buyerid->id_comprador = $dados_order->id_comprador;
+        $magento_orders->$buyerid->apelido_comprador = $dados_order->apelido_comprador;
+        $magento_orders->$buyerid->email_comprador = $dados_order->email_comprador;
+        $magento_orders->$buyerid->cod_area_comprador = $dados_order->cod_area_comprador;
+        $magento_orders->$buyerid->telefone_comprador = $dados_order->cod_area_comprador.$dados_order->telefone_comprador;
+        $magento_orders->$buyerid->nome_comprador = $dados_order->nome_comprador;
+        $magento_orders->$buyerid->sobrenome_comprador = $dados_order->sobrenome_comprador;
+        $magento_orders->$buyerid->tipo_documento_comprador = $dados_order->tipo_documento_comprador;
+        $magento_orders->$buyerid->numero_documento_comprador = $dados_order->numero_documento_comprador;
+
+      }
+      else
+      {
+        $magento_orders->$key = $dados_order;
+      }
 
     }
     else
     {
-    $buyerid = $key;
-    $magento_orders->$buyerid=$dados_order;
+      echo "////////////";
+      $magento_orders->$key = $dados_order;
+    }}
 
-}
-
-}
-
-  return $magento_orders;
-}
-
-function retornaObjMl()
-{
-  global $DEBUG;
-
-  $dadosVenda = retornaDadosOrders();
-  if($dadosVenda == '') return 0;
-
-  $Magento_order = new stdClass();
-
-  foreach($dadosVenda as $key => $value){
-
-    $Magento_order->order_id = $dadosVenda->$key->id_order;
-    $Magento_order->mlb_produto = $dadosVenda->$key->mlb_produto;
-    $Magento_order->sku_produto = $dadosVenda->$key->sku_produto;
-    $Magento_order->nome_produto = $dadosVenda->$key->nome_produto;
-    $Magento_order->qtd_produto = $dadosVenda->$key->qtd_produto;
-    $Magento_order->preco_unidade_produto =$dadosVenda->$key->preco_unidade_produto;
-    $Magento_order->preco_total_produto = $dadosVenda->$key->preco_total_produto;
-
-    //--------------PAGAMENTO---------
-    $Magento_order->id_meio_pagamento = $dadosVenda->$key->id_meio_pagamento;
-    $Magento_order->tipo_pagamento = $dadosVenda->$key->tipo_pagamento;
-    $Magento_order->custo_envio = $dadosVenda->$key->custo_envio;
-    $Magento_order->total_pagar = $dadosVenda->$key->total_pagar;
-    $Magento_order->status_pagamento = $dadosVenda->$key->status_pagamento;
-
-    //-----------ENDEREÇO---------
-    $Magento_order->id_shipping = $dadosVenda->$key->id_shipping;
-    $Magento_order->rua = $dadosVenda->$key->rua;
-    $Magento_order->numero = $dadosVenda->$key->numero;
-    $Magento_order->bairro = $dadosVenda->$key->bairro;
-    $Magento_order->cep = $dadosVenda->$key->cep;
-    $Magento_order->cidade = $dadosVenda->$key->cidade;
-    $Magento_order->estado = $dadosVenda->$key->estado;
-    $Magento_order->pais = $dadosVenda->$key->pais;
-
-    // ---------USUARIO---------
-    $Magento_order->id_comprador = $dadosVenda->$key->id_comprador;
-    $Magento_order->apelido_comprador = $dadosVenda->$key->apelido_comprador;
-    $Magento_order->email_comprador = $dadosVenda->$key->email_comprador;
-    $Magento_order->cod_area_comprador = $dadosVenda->$key->cod_area_comprador;
-    $Magento_order->telefone_comprador = $dadosVenda->$key->telefone_comprador;
-    $Magento_order->nome_comprador = $dadosVenda->$key->nome_comprador;
-    $Magento_order->sobrenome_comprador = $dadosVenda->$key->sobrenome_comprador;
-    $Magento_order->tipo_documento_comprador = $dadosVenda->$key->tipo_documento_comprador;
-    $Magento_order->numero_documento_comprador = $dadosVenda->$key->numero_documento_comprador;
-
-  }
-  return $Magento_order;
-  if($DEBUG == TRUE) {echo "Estrutura do OBJ Magento_order";var_dump($Magento_order);}
-}
-
-function listaPedidoMLB()
-{
-  global $DEBUG;
-  $Magento_order = retornaDadosOrders();
-
-  foreach ($Magento_order as $key => $value) {
-    $json[] = $Magento_order->$key->id_order;
-
-    $listaPedido = $json;
+    return $magento_orders;
   }
 
-  if (!isset($listaPedido)) return 0;
-  $listagem = json_encode($listaPedido);
-
-  if($DEBUG == true) var_dump($listagem);
-
-  $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
-
-  if(!$conteudo_arquivo)
+  function retornaObjMl()
   {
-    echo "Não deu pra escrever a lista de pedidos do mlb";
-    return 0;
+    global $DEBUG;
+
+    $dadosVenda = retornaDadosOrders();
+    if($dadosVenda == '') return 0;
+
+    $Magento_order = new stdClass();
+
+    foreach($dadosVenda as $key => $value){
+
+      $Magento_order->order_id = $dadosVenda->$key->id_order;
+      $Magento_order->mlb_produto = $dadosVenda->$key->mlb_produto;
+      $Magento_order->sku_produto = $dadosVenda->$key->sku_produto;
+      $Magento_order->nome_produto = $dadosVenda->$key->nome_produto;
+      $Magento_order->qtd_produto = $dadosVenda->$key->qtd_produto;
+      $Magento_order->preco_unidade_produto =$dadosVenda->$key->preco_unidade_produto;
+      $Magento_order->preco_total_produto = $dadosVenda->$key->preco_total_produto;
+
+      //--------------PAGAMENTO---------
+      $Magento_order->id_meio_pagamento = $dadosVenda->$key->id_meio_pagamento;
+      $Magento_order->tipo_pagamento = $dadosVenda->$key->tipo_pagamento;
+      $Magento_order->custo_envio = $dadosVenda->$key->custo_envio;
+      $Magento_order->total_pagar = $dadosVenda->$key->total_pagar;
+      $Magento_order->status_pagamento = $dadosVenda->$key->status_pagamento;
+
+      //-----------ENDEREÇO---------
+      $Magento_order->id_shipping = $dadosVenda->$key->id_shipping;
+      $Magento_order->rua = $dadosVenda->$key->rua;
+      $Magento_order->numero = $dadosVenda->$key->numero;
+      $Magento_order->bairro = $dadosVenda->$key->bairro;
+      $Magento_order->cep = $dadosVenda->$key->cep;
+      $Magento_order->cidade = $dadosVenda->$key->cidade;
+      $Magento_order->estado = $dadosVenda->$key->estado;
+      $Magento_order->pais = $dadosVenda->$key->pais;
+
+      // ---------USUARIO---------
+      $Magento_order->id_comprador = $dadosVenda->$key->id_comprador;
+      $Magento_order->apelido_comprador = $dadosVenda->$key->apelido_comprador;
+      $Magento_order->email_comprador = $dadosVenda->$key->email_comprador;
+      $Magento_order->cod_area_comprador = $dadosVenda->$key->cod_area_comprador;
+      $Magento_order->telefone_comprador = $dadosVenda->$key->telefone_comprador;
+      $Magento_order->nome_comprador = $dadosVenda->$key->nome_comprador;
+      $Magento_order->sobrenome_comprador = $dadosVenda->$key->sobrenome_comprador;
+      $Magento_order->tipo_documento_comprador = $dadosVenda->$key->tipo_documento_comprador;
+      $Magento_order->numero_documento_comprador = $dadosVenda->$key->numero_documento_comprador;
+
+    }
+    return $Magento_order;
+    if($DEBUG == TRUE) {echo "Estrutura do OBJ Magento_order";var_dump($Magento_order);}
   }
-  else
+
+  function listaPedidoMLB()
   {
-    return "Deu pra escrever a lista de pedidos do mlb";
+    global $DEBUG;
+    $Magento_order = retornaDadosOrders();
+
+    foreach ($Magento_order as $key => $value) {
+      $json[] = $Magento_order->$key->id_order;
+
+      $listaPedido = $json;
+    }
+
+    if (!isset($listaPedido)) return 0;
+    $listagem = json_encode($listaPedido);
+
+    if($DEBUG == true) var_dump($listagem);
+
+    $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
+
+    if(!$conteudo_arquivo)
+    {
+      echo "Não deu pra escrever a lista de pedidos do mlb";
+      return 0;
+    }
+    else
+    {
+      return "Deu pra escrever a lista de pedidos do mlb";
+    }
   }
-}
 
-function escrevePedidoMLB($MLB)
+  function escrevePedidoMLB($MLB)
 
-{
-  $conteudo_arquivo = file_put_contents("include/files/ultimoPedidoMLB.json", json_encode($MLB));
-
-  if(!$conteudo_arquivo)
   {
-    return "Não deu pra escrever o pedido do mlb";
+    $conteudo_arquivo = file_put_contents("include/files/ultimoPedidoMLB.json", json_encode($MLB));
+
+    if(!$conteudo_arquivo)
+    {
+      return "Não deu pra escrever o pedido do mlb";
+    }
+    else
+    {
+      return "Escrito ultimo MLB com sucesso";
+    }
   }
-  else
+
+  function ultimoPedidoMLB()
   {
-    return "Escrito ultimo MLB com sucesso";
+    if(!file_exists("include/files/ultimoPedidoMLB.json")) return "Arquivo json não existente!";
+    else {
+      $conteudo_arquivo = file_get_contents("include/files/ultimoPedidoMLB.json");
+      $retorno = $conteudo_arquivo;
+      return $retorno;
+    }
   }
-}
 
-function ultimoPedidoMLB()
-{
-  if(!file_exists("include/files/ultimoPedidoMLB.json")) return "Arquivo json não existente!";
-  else {
-    $conteudo_arquivo = file_get_contents("include/files/ultimoPedidoMLB.json");
-    $retorno = $conteudo_arquivo;
-    return $retorno;
-  }
-}
-
-function proximoPedidoMLB()
-{
-  $ultimo = json_decode(ultimoPedidoMLB());
-  $lista = file_get_contents("include/files/listaPedidoMLB.json");
-  $lista = json_decode($lista);
-
-  $indice_ultimo = array_search($ultimo, $lista);
-  $indice_proximo = $indice_ultimo+1;
-
-  $valor_proximo = $lista[$indice_proximo];
-  $valor_zero = $lista["0"];
-
-  if($indice_proximo+1 < count($lista)) return $valor_proximo;
-  else return $valor_zero;
-}
-
-function retornaPedidosfeitosMGML()
-{
-  if(!file_exists("include/files/PedidosFeitosMLB.json"))
+  function proximoPedidoMLB()
   {
-    file_put_contents('include/files/PedidosFeitosMLB.json', "");
-    return "Arquivo json não existente! Criado Novo arquivo";
-  }
-  else {
-    $conteudo_arquivo = file_get_contents("include/files/PedidosFeitosMLB.json");
-    $retorno = $conteudo_arquivo;
-    return $retorno;
-  }
-}
+    $ultimo = json_decode(ultimoPedidoMLB());
+    $lista = file_get_contents("include/files/listaPedidoMLB.json");
+    $lista = json_decode($lista);
 
-function escrevePedidoMGML($mlb)
-{
-  $listapedido = retornaPedidosfeitosMGML();
-  $pos = strpos($listapedido, $mlb["0"]);
+    $indice_ultimo = array_search($ultimo, $lista);
+    $indice_proximo = $indice_ultimo+1;
 
-  if($pos == false)
+    $valor_proximo = $lista[$indice_proximo];
+    $valor_zero = $lista["0"];
+
+    if($indice_proximo+1 < count($lista)) return $valor_proximo;
+    else return $valor_zero;
+  }
+
+  function retornaPedidosfeitosMGML()
   {
-    $listapedido = (array) json_decode($listapedido);
-    $listapedido[] =  array('MLB' => $mlb);
-    $conteudo_arquivo = file_put_contents("include/files/PedidosFeitosMLB.json", json_encode($listapedido));
-
-    if(!$conteudo_arquivo) echo "Não foi possível escrever/criar JSON com o pedido";
-    else echo "Criado/escrito JSON pedido<br/>";
+    if(!file_exists("include/files/PedidosFeitosMLB.json"))
+    {
+      file_put_contents('include/files/PedidosFeitosMLB.json', "");
+      return "Arquivo json não existente! Criado Novo arquivo";
+    }
+    else {
+      $conteudo_arquivo = file_get_contents("include/files/PedidosFeitosMLB.json");
+      $retorno = $conteudo_arquivo;
+      return $retorno;
+    }
   }
-}
 
-function criaEtiqueta($shipment_ids, $mlb, $nome, $order_id)
-{
-  $token = token();
-  $mlb = $mlb;
-  $nome_arquivo = "etiquetas/$mlb-$order_id-$nome.pdf";
-  $curl_url =  "https://api.mercadolibre.com/shipment_labels?shipment_ids=$shipment_ids&response_type=pdf&access_token=$token";
-  $out = fopen($nome_arquivo,"w+");
-  $ch = curl_init();
-  curl_setopt($ch, CURLOPT_FILE, $out);
-  curl_setopt($ch, CURLOPT_HEADER, 0);
-  curl_setopt($ch, CURLOPT_URL, $curl_url);
-  curl_exec($ch);
-  curl_close($ch);
+  function escrevePedidoMGML($mlb)
+  {
+    $listapedido = retornaPedidosfeitosMGML();
+    $pos = strpos($listapedido, $mlb["0"]);
 
-  echo "Sucesso!!";
+    if($pos == false)
+    {
+      $listapedido = (array) json_decode($listapedido);
+      $listapedido[] =  array('MLB' => $mlb);
+      $conteudo_arquivo = file_put_contents("include/files/PedidosFeitosMLB.json", json_encode($listapedido));
 
-  return $nome_arquivo;
-}
+      if(!$conteudo_arquivo) echo "Não foi possível escrever/criar JSON com o pedido";
+      else echo "Criado/escrito JSON pedido<br/>";
+    }
+  }
 
-?>
+  function criaEtiqueta($shipment_ids, $mlb, $nome, $order_id)
+  {
+    $token = token();
+    $mlb = $mlb;
+    $nome_arquivo = "etiquetas/$mlb-$order_id-$nome.pdf";
+    $curl_url =  "https://api.mercadolibre.com/shipment_labels?shipment_ids=$shipment_ids&response_type=pdf&access_token=$token";
+    $out = fopen($nome_arquivo,"w+");
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_FILE, $out);
+    curl_setopt($ch, CURLOPT_HEADER, 0);
+    curl_setopt($ch, CURLOPT_URL, $curl_url);
+    curl_exec($ch);
+    curl_close($ch);
+
+    echo "Sucesso!!";
+
+    return $nome_arquivo;
+  }
+
+  ?>
