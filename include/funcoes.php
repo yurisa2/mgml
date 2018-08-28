@@ -299,7 +299,7 @@ function atualizaProdMLB($SKU,$MLB)
     // global $DEBUG;
     // $appId = "4946951783545211";
     // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-    // $accesstoken = "APP_USR-4946951783545211-082713-0979c380fd0ed7329b8abbba31363c9a-327485416";
+    // $accesstoken = "APP_USR-4946951783545211-082816-9f29ea4048643e00d0ada759e51e7e93-327485416";
     // $userid = '327485416';
     //
     // $meli = new Meli($appId, $secretKey);
@@ -403,7 +403,7 @@ function retornaOrders(){
 // global $DEBUG;
 // $appId = "4946951783545211";
 // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-// $accesstoken = "APP_USR-4946951783545211-082713-0979c380fd0ed7329b8abbba31363c9a-327485416";
+// $accesstoken = "APP_USR-4946951783545211-082816-9f29ea4048643e00d0ada759e51e7e93-327485416";
 // $userid = '327485416';
 //
 // $meli = new Meli($appId, $secretKey);
@@ -415,7 +415,7 @@ function retornaOrders(){
 $response = $meli->get("/orders/search", $params);
 
 if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']);}
-
+// if ($response['httpCode'] == 0) return 0;
 $idOrders = new stdClass;
 
 foreach ($response['body']->results as $key => $value) {
@@ -442,7 +442,7 @@ function retorna_data_pedidos($orders_id)
 function retornaDadosOrders()
 {
   $orders = retornaOrders();
-
+  if ($orders == 0) return 0;
   retorna_data_pedidos($orders);
   $magento_orders = new stdClass;
   foreach ($orders as $key => $value) {
@@ -451,16 +451,16 @@ function retornaDadosOrders()
     $aux = $key+1;
     $aux1 = $key-1;
     $buyerid = json_decode(file_get_contents("include/files/idbuyers.json"));
-    if(($buyerid[$aux] == $dados_order->id_comprador) || ($buyerid[$aux1] == $dados_order->id_comprador) )
+    if(($buyerid[$aux1] == $dados_order->id_comprador)
+    || ($buyerid[$aux] == $dados_order->id_comprador))
     {
-      echo "$dados_order->buyerid<br>";
-      var_dump($buyerid[$aux]);
-      echo "$dados_order->buyerid<br>";
-      var_dump($buyerid[$aux1]);
-      if($lastdatecreate[$aux] - $dados_order->date_created <= 2)
+      //descobrir pq karalhos aqui influencia
+      // if ($aux = count($lastdatecreate)) $lastdatecreate[$aux] = time();
+      if(($lastdatecreate[$aux] - $dados_order->date_created <= 2)
+      || ($dados_order->date_created - $lastdatecreate[$aux1] <= 2))
       {
         $buyerid = "ID$dados_order->id_comprador";
-
+        echo "------buyerID: ".$buyerid." ->";
         $magento_orders->$buyerid->id_order[] = $dados_order->id_order;
         $magento_orders->$buyerid->mlb_produto[] = $dados_order->mlb_produto;
         $magento_orders->$buyerid->sku_produto[] = $dados_order->sku_produto;
@@ -505,7 +505,6 @@ function retornaDadosOrders()
     }
     else
     {
-      echo "////////////";
       $magento_orders->$key = $dados_order;
     }}
 
