@@ -7,10 +7,23 @@ require "include/all_include.php";
 $DEBUG = false;
 echo "<pre>";
 
+$teste = new error_handling("titulo", "nome_funcao", "saida", "tipo");
+$teste->files();
 
- var_dump(retornaDadosOrders());
-
-
+// $mensagem = file_get_contents('error_files/error_log.json');
+// var_dump($mensagem);
+// if (count($mensagem) < 100)
+// {
+//   $titulo = "Erros sei lá";
+//   $corpo_email = '';
+//   foreach ($mensagem as $key => $value) {
+//     foreach ($mensagem[$key] as $i => $values) {
+//       $corpo_email.= $i.": ".$values."<br>";
+//     }
+//   }
+//   // var_dump($corpo_email);
+//
+// }else echo "ainda não";
 // $appId = "4946951783545211";
 // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
 // $accesstoken = "APP_USR-4946951783545211-062613-e512bd2717f82eb16eb143eb18085bfe-327485416";
