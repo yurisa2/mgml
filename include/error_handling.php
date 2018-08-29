@@ -20,9 +20,11 @@ class error_handling extends event_base
     $this->tipo = $tipo;
   }
   function send_error_email()
-  {
-    $this->mensagem = "$this->titulo->$this->nome_funcao: $this->saida - $this->tipo";
-
+  {//nome_funcao, saida_funcao, mensagem, titulo, tipo
+    $this->mensagem = array('Nome Funcao' =>$this->nome_funcao ,
+    'Msg de Erro' =>$this->saida ,
+    'Titulo' =>$this->titulo ,
+    'Tipo do Erro' =>$this->tipo );
     if($this->flag_HTML)
     {
       $this->mensagemHTML  ='

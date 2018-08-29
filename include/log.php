@@ -21,7 +21,10 @@ class log extends event_base
   }
   function send_log_email()
   {
-    $this->mensagem = "$this->titulo->$this->nome_funcao: $this->saida - $this->tipo";
+    $this->mensagem = array('Nome Funcao' =>$this->nome_funcao ,
+    'Msg de Erro' =>$this->saida ,
+    'Titulo' =>$this->titulo ,
+    'Tipo do Erro' =>$this->tipo );
 
     if($this->log_email)
     {

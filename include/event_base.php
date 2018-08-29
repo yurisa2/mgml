@@ -5,7 +5,22 @@ class event_base
 {
   /**
   * Construtor. Set properties
+*$this->titulo = '';
+*$this->nome_funcao = '';
+*$this->saida = '';
+*$this->mensagem = '';
+*$this->tipo = '';
+*$this->mensagemHTML = '';
+*$this->data = time();
+*$this->dir_file = 'error_files/error_log.json';
+*$this->flag_HTML = $configmail;
+*$this->log_etiqueta = '';
+*$this->log_email = false;
+*$this->log_db = false;
+*$this->log_files = false;
+*$this->mensagem_email = '';
   */
+
   public function __construct()
   {
     global $configmail;
@@ -107,10 +122,23 @@ class event_base
   */
   public function files()
   {
-    $mensagem = json_decode(file_get_contents('error_files/error_log.json'));
+    $mensagem = json_decode(file_get_contents($this->dir_file));
     $mensagem[] = $this->mensagem;
     $resultado = file_put_contents($this->dir_file, json_encode($mensagem, JSON_UNESCAPED_UNICODE));
 
+    if (count($mensagem) == 100)
+    {
+      $this->titulo = "Erros sei lá";
+      foreach ($mensagem as $key => $value)
+      {
+        foreach ($mensagem[$key] as $i => $values) {
+          $this->mensagemHTML.= $i.": ".$values."<br>";
+        }
+      }
+      var_dump($this->mensagemHTML);
+      $this->email();
+      file_put_contents($this->dir_file, "");
+    }
     if($resultado == false) echo "Arquivo não criado em error_files";
     else echo "Concluido!!";
   }
