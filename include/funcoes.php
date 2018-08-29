@@ -455,7 +455,7 @@ function retornaDadosOrders()
     || ($buyerid[$aux] == $dados_order->id_comprador))
     {
       //descobrir pq karalhos aqui influencia
-      // if ($aux = count($lastdatecreate)) $lastdatecreate[$aux] = time();
+      if ($aux = count($lastdatecreate)) $lastdatecreate[$aux] = time();
       if(($lastdatecreate[$aux] - $dados_order->date_created <= 2)
       || ($dados_order->date_created - $lastdatecreate[$aux1] <= 2))
       {
