@@ -3,51 +3,106 @@ use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 class event_base
 {
-  /**
-  * Construtor. Set properties
-*$this->titulo = '';
-*$this->nome_funcao = '';
-*$this->saida = '';
-*$this->mensagem = '';
-*$this->tipo = '';
-*$this->mensagemHTML = '';
-*$this->data = time();
-*$this->dir_file = 'error_files/error_log.json';
-*$this->flag_HTML = $configmail;
-*$this->log_etiqueta = '';
-*$this->log_email = false;
-*$this->log_db = false;
-*$this->log_files = false;
-*$this->mensagem_email = '';
-  */
-
   public function __construct()
   {
+    /**
+    * @param $configmail True se email estiver habilitado/false se não estiver habilitado
+    *
+    */
     global $configmail;
 
+    /**
+    * @property $titulo O assunto do email
+    *
+    */
     $this->titulo = '';
+
+    /**
+    * @property $nome_funcao A função que houve problema
+    *
+    */
     $this->nome_funcao = '';
+
+    /**
+    * @property $saida O debug da função
+    *
+    */
     $this->saida = '';
-    $this->mensagem = '';
+
+    /**
+    * @property $tipo Qual a origem/significado da mensagem: Erro - log
+    *
+    */
     $this->tipo = '';
+
+    /**
+    * @property $mensagem Conteudo que irá no corpo do email/arquivo de log .json/gravado no banco de dados
+    *
+    */
+    $this->mensagem = '';
+
+    /**
+    * @property $mensagemHTML Conteudo HTML que irá no corpo do email
+    *
+    */
     $this->mensagemHTML = '';
+
+    /**
+    * @property $data A data em segundos para a gravação no banco de dados
+    *
+    */
     $this->data = time();
+
+    /**
+    * @property $dir_file Diretório do arquivo de log .json pré-definido (modificavél para classe log)
+    *
+    */
     $this->dir_file = 'error_files/error_log.json';
-    $this->flag_HTML = $configmail;
+
+    /**
+    * @property $flag_HTML Comanda o tipo de dados que irá no corpo do email
+    *
+    */
+    $this->flag_HTML = true;
+
+    /**
+    * @property $log_etiqueta Diretorio do arquivo de etiqueta .pdf - vazio caso nao exista necessidade de anexar
+    *
+    */
     $this->log_etiqueta = '';
+
+    /**
+    * @property $log_email CLASSE LOG - Comanda o tipo de dados que irá no corpo do email
+    *
+    */
     $this->log_email = false;
+
+    /**
+    * @property $log_db CLASSE LOG - True para gravar informações no BD /false para não gravar
+    *
+    */
     $this->log_db = false;
+
+    /**
+    * @property $log_files CLASSE LOG - True para gravar informações no arquivo .json /false para não gravar
+    *
+    */
     $this->log_files = false;
 
+    /**
+    * @property $mensagem_email classe log - Titulo do email que sera enviado
+    *
+    */
     $this->mensagem_email = '';
+
   }
 
   /**
-    * Function response to send the email
-    *
-    * @return string if failure - Message could not be sent. Mailer Error: ErrorInfo or
-    * if was send - e-mail enviado com sucesso!
-    *
+  * Function responsible to send the email
+  *
+  * @return string if failure - Message could not be sent. Mailer Error: ErrorInfo or
+  * if was send - e-mail enviado com sucesso!
+  *
   */
   public function email()
   {
@@ -84,21 +139,24 @@ class event_base
     $mail->Body    = $mensagem;
     $mail->AltBody = strip_tags($mensagem);
 
-     if(!$mail->send())
-     {
-         echo 'Message could not be sent.';
-         echo 'Mailer Error: ' . $mail->ErrorInfo;
-     }
-     else echo "e-mail enviado com sucesso!<br>";
+    if(!$mail->send())
+    {
+      echo 'Message could not be sent.';
+      echo 'Mailer Error: ' . $mail->ErrorInfo;
+    }
+    else echo "e-mail enviado com sucesso!<br>";
 
   }
-
+  /**
+  * Function responsible to save data on DB
+  *
+  */
   public function db()
   {
-    $sqlite = "sqlite:include/event_base.db";
+    $sqlite = "sqlite:include/event.db";
 
     $pdo = new PDO($sqlite);
-    $sql = "INSERT INTO event(nome_funcao, saida_funcao, mensagem, titulo, tipo) VALUES (?,?,?,?,?,?)";
+    $sql = "INSERT INTO event(nome_funcao, saida_erro, mensagem, titulo, tipo, data) VALUES (?,?,?,?,?,?)";
     $pdo->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $result = $pdo->prepare($sql);
@@ -113,12 +171,13 @@ class event_base
 
     var_dump($select);
   }
+
   /**
-    * Function to write an json file
-    *
-    * @return string if failure - Arquivo não criado em error_files or
-    * if was true - Concluido!!
-    *
+  * Function to write an json file
+  *
+  * @return string if failure - Arquivo não criado em error_files or
+  * if was true - Concluido!!
+  *
   */
   public function files()
   {
@@ -126,7 +185,7 @@ class event_base
     $mensagem[] = $this->mensagem;
     $resultado = file_put_contents($this->dir_file, json_encode($mensagem, JSON_UNESCAPED_UNICODE));
 
-    if (count($mensagem) == 100)
+    if (count($mensagem) > 100)
     {
       $this->titulo = "Erros sei lá";
       foreach ($mensagem as $key => $value)
@@ -147,11 +206,11 @@ class event_base
   {
     global $configmail;
 
-    // $this->send_error_email();
     if(($configmail) || ($this->log_email)) $this->email();
     if($this->log_db) $this->db();
     if($this->log_files) $this->files();
   }
+
 }
 
 ?>
