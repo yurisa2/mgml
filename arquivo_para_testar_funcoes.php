@@ -7,8 +7,27 @@ require "include/all_include.php";
 $DEBUG = false;
 echo "<pre>";
 
-$teste = new error_handling("titulo", "nome_funcao", "saida", "tipo");
+$teste = new error_handling("Teste 2", "Teste 2", "Teste 2", "Teste 2");
+$teste->log_send_error_email();
 $teste->files();
+
+
+
+
+
+
+
+/**
+ * Output debugging info via user-defined method.
+ * Only generates output if SMTP debug output is enabled (@see SMTP::$do_debug).
+ *
+ * @see PHPMailer::$Debugoutput
+ * @see PHPMailer::$SMTPDebug
+ *
+ * @param string $str
+ */
+
+
 
 // $mensagem = file_get_contents('error_files/error_log.json');
 // var_dump($mensagem);
