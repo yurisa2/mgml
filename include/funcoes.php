@@ -46,9 +46,11 @@ function lista_MLB() {
   $result = $meli->get($url, $params);
   if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
   $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
-  if ($hora_email_enviado + 3600 < time())
+
+  if($result["httpCode"] != 200)
   {
-    if($result["httpCode"] != 200)
+    //gravar o erro no arquivo .json
+    if ($hora_email_enviado + 3600 < time())
     {
       $nome_funcao = "lista_MLB";
       $saida = serialize($result);
