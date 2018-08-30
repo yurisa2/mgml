@@ -7,7 +7,6 @@ class error_handling extends event_base
   * @param string $titulo O assunto do email
   * @param string $nome_funcao A função que houve problema
   * @param string $saida O debug da função
-  * @param string $mensagem A mensagem a ser enviada por email
   * @param string $tipo Qual a origem/significado da mensagem: Erro - log
   *
   */
@@ -19,8 +18,17 @@ class error_handling extends event_base
     $this->saida = $saida;
     $this->tipo = $tipo;
   }
+  
+  function send_errorlog_email()
+  {
+    $this->mensagem = array('Nome Funcao' =>$this->nome_funcao ,
+    'Msg de Erro' =>$this->saida ,
+    'Titulo' =>$this->titulo ,
+    'Tipo do Erro' =>$this->tipo );
+  }
+
   function send_error_email()
-  {//nome_funcao, saida_funcao, mensagem, titulo, tipo
+  {
     $this->mensagem = array('Nome Funcao' =>$this->nome_funcao ,
     'Msg de Erro' =>$this->saida ,
     'Titulo' =>$this->titulo ,
