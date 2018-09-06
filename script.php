@@ -29,7 +29,7 @@ $MLB = proximo_MLB(); // 2 - Localizar ultimo (json) e o próximo da lista (arra
 if ($MLB != 0){
 
   $ultimo_MLB = ultimo_MLB();
-  echo "<h2>ATUAL MLB: $MLB<BR>ANTERIOR MLB: $ultimo_MLB  <BR>";
+  echo "<h2>ANTERIOR MLBATUAL MLB: $MLB<BR>ATUAL MLB: $ultimo_MLB  <BR>";
   echo "TEMPO:". (time() - $time_inicial);
   echo "<br><br><br></h2>";
 
@@ -144,8 +144,9 @@ if ($MLB != 0){
 
     echo "TEMPO Final: ". (time() - $time_inicial);
   }
-  else {
+  else
+  {
+    echo "<h3>Nenhum Pedido novo</h3><br>";
     echo "TEMPO Final: ". (time() - $time_inicial);
-    echo "<br>Nenhum Pedido novo";
   }
 }
