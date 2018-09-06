@@ -20,4 +20,5 @@ $ajuste_preco_soma = "5.0";
 $configmail = true;
 $email_destinatario = array('1'=>"yuri@sa2.com.br",
                             '2'=>"luigifracalanza@gmail.com");
+$SMTP = false;              //se SMTP é false, sendmail será usado
 ?>
