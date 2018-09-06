@@ -9,12 +9,7 @@ echo "<pre>";
 
 $teste = new error_handling("Teste de acento", "TEstando os áçentôs", "Teste 2", "Teste 2");
 $teste->send_error_email();
-$teste->execute();
-
-
-
-
-
+$teste->email();
 
 
 
