@@ -119,6 +119,8 @@ class event_base
   public function email()
   {
     global $email_destinatario;
+    global $SMTP;
+
     $e_mail = $email_destinatario[1];
     $from_mail = 'mercomagento@sa2.com.br';
     $from_name = 'BOT - Integração Mercado Livre Magento Sa2 - BOT';
@@ -127,37 +129,47 @@ class event_base
     $mail = new PHPMailer;
 
     //$mail->SMTPDebug = 3;                               // Enable verbose debug output
-
-    $mail->isSMTP();                                      // Set mailer to use SMTP
-    $mail->Host = 'smtp.sendgrid.net';  // Specify main and backup SMTP servers
-    $mail->SMTPAuth = true;                               // Enable SMTP authentication
-    $mail->Username = 'mercomagento';                 // SMTP username
-    $mail->Password = '01merco02magento';                           // SMTP password
-    $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
-    $mail->Port = 587;                                    // TCP port to connect to
-
-    $mail->CharSet = 'utf-8';  //Arrumar acentuação
-    $mail->setFrom($from_mail, $from_name);
-    foreach ($email_destinatario as $key => $value) {
-      $mail->addAddress($value);
+    if($SMTP == true)
+    {
+      $mail->isSMTP();                                      // Set mailer to use SMTP
+      $mail->Host = 'smtp.sendgrid.net';  // Specify main and backup SMTP servers
+      $mail->SMTPAuth = true;                               // Enable SMTP authentication
+      $mail->Username = 'mercomagento';                 // SMTP username
+      $mail->Password = '01merco02magento';                           // SMTP password
+      $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+      $mail->Port = 587;
+      $mail->Body    = $mensagem;
+      $mail->SMTPDebug = 1;                               // TCP port to connect to
+    }
+    else
+    {
+      $mail->isSendmail();
+      $mail->SMTPAuth = true;  
+      $mail->msgHTML($this->mensagem);
     }
 
-    $mail->addReplyTo($from_mail, $from_name);
+    $mail->CharSet = 'utf-8';  //Arrumar acentuação
+    $mail->setFrom("luigifracalanza@gmail.com", "luigi fracalanza");
+    // $mail->addReplyTo($from_mail, $from_name);
+    // foreach ($email_destinatario as $key => $value) {
+    //   $mail->addAddress($value);
+    // }
+    $mail->addAddress('luigi_blackfm@hotmail.com');
+    $mail->isHTML(true);                     // Set email format to HTML
+    $mail->Subject = $titulo;
+
+    $mail->AltBody = strip_tags($mensagem);
 
     if($this->log_etiqueta !== null) $mail->addAttachment($this->log_etiqueta);
-
-    $mail->isHTML(true);                                  // Set email format to HTML
-    $mail->Subject = $titulo;
-    $mail->Body    = $mensagem;
-    $mail->AltBody = strip_tags($mensagem);
 
     if(!$mail->send())
     {
       echo 'Message could not be sent.';
       echo 'Mailer Error: ' . $mail->ErrorInfo;
     }
-    else echo "e-mail enviado com sucesso!<br>";
-
+    else{ echo "e-mail enviado com sucesso!<br>";
+      echo 'Mailer Error: ' . $mail->ErrorInfo;
+}
   }
   /**
   * Function responsible to save data on DB
@@ -195,7 +207,7 @@ class event_base
   {
     $mensagem = json_decode(file_get_contents($this->dir_file));
     $mensagem[] = json_decode($this->mensagem); //incluir opção no encode para caracteres especiais como ç´^~
-    $resultado = file_put_contents($this->dir_file, json_encode($mensagem));
+    $resultado = file_put_contents($this->dir_file, json_encode($mensagem, JSON_UNESCAPED_UNICODE));
     //caso exista + de 100 erros no json manda email com todos.
     //OBS: Pode até mandar o arquivo em anexo;
     if (count($mensagem) > 100)
