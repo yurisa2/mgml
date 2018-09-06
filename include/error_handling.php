@@ -18,7 +18,12 @@ class error_handling extends event_base
     $this->saida = $saida;
     $this->tipo = $tipo;
   }
-  
+
+  /**
+  *
+  * Funcao responsavel por criar o corpo do email
+  * Exclusivamente usada na função files() do event_base
+  */
   function send_errorlog_email()
   {
     $this->mensagem = array('Nome Funcao' =>$this->nome_funcao ,
@@ -27,12 +32,18 @@ class error_handling extends event_base
     'Tipo do Erro' =>$this->tipo );
   }
 
+  /**
+  * Funcao responsavel por criar o corpo do email
+  * Usada na função email() do event_base
+  * Caso não esteja habilitado para mandar email, a mensagem se torna array
+  * para facilitar a utilização nas funções db() e files()
+  */
   function send_error_email()
   {
-    $this->mensagem = array('Nome Funcao' =>$this->nome_funcao ,
+    $this->mensagem = json_encode(array('Nome Funcao' =>$this->nome_funcao ,
     'Msg de Erro' =>$this->saida ,
     'Titulo' =>$this->titulo ,
-    'Tipo do Erro' =>$this->tipo );
+    'Tipo do Erro' =>$this->tipo));
     if($this->flag_HTML)
     {
       $this->mensagemHTML  ='
