@@ -54,6 +54,18 @@ class event_base
     $this->data = time();
 
     /**
+    * @property $error_db CLASSE ERROR HANDLING - True para gravar informações no BD /false para não gravar
+    *
+    */
+    $this->error_db = true;
+
+    /**
+    * @property $error_files CLASSE ERROR HANDLING - True para gravar informações no arquivo .json /false para não gravar
+    *
+    */
+    $this->error_files = true;
+
+    /**
     * @property $dir_file Diretório do arquivo de log .json pré-definido (modificavél para classe log)
     *
     */
@@ -182,9 +194,10 @@ class event_base
   public function files()
   {
     $mensagem = json_decode(file_get_contents($this->dir_file));
-    $mensagem[] = $this->mensagem;
-    $resultado = file_put_contents($this->dir_file, json_encode($mensagem, JSON_UNESCAPED_UNICODE));
-
+    $mensagem[] = json_decode($this->mensagem); //incluir opção no encode para caracteres especiais como ç´^~
+    $resultado = file_put_contents($this->dir_file, json_encode($mensagem));
+    //caso exista + de 100 erros no json manda email com todos.
+    //OBS: Pode até mandar o arquivo em anexo;
     if (count($mensagem) > 100)
     {
       $this->titulo = "Erros sei lá";
@@ -205,10 +218,10 @@ class event_base
   public function execute()
   {
     global $configmail;
-
+var_dump($this->mensagem);
     if(($configmail) || ($this->log_email)) $this->email();
-    if($this->log_db) $this->db();
-    if($this->log_files) $this->files();
+    if(($this->log_db) || ($this->error_db)) $this->db();
+    if(($this->log_files) || ($this->error_files)) $this->files();
   }
 
 }
