@@ -170,320 +170,315 @@ function atualizaProdMLB($SKU,$MLB)
     'available_quantity' => $available_quantity,
     'attributes' =>
     array(
-      array(
-        'name' => "Marca",
-        'value_name' => $marca),
-        // DEBUG AQUI PRECISA TER O SKU CASO CONTRARIO ELE ESCREVE A MARCA E ANULA  $SKU
-        //PROVAVELMENTE ESTARÃO SEM SKU ALGUNS DOS ANUNCIOS
-        array(
-          'id' => "MODEL",
-          'value_name' => $SKU)
-        )
-      );
+      array('name' => "Marca",
+      'value_name' => $marca),
+      array('id' => "MODEL",
+      'value_name' => $SKU)
+    )
+  );
 
 
-      $response = $meli->put('/items/MLB'.$MLB, $body, $params);
+  $response = $meli->put('/items/MLB'.$MLB, $body, $params);
 
-      if ($DEBUG == true) var_dump($response); //DEBUG
-      //lê o json que contem o time() do ultimo email enviado
-      if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
-      $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
+  if ($DEBUG == true) var_dump($response); //DEBUG
+  //lê o json que contem o time() do ultimo email enviado
+  if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
+  $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
 
-//Se na requisição para atualizar o produto houver problema (retorno dif de 200)
-// ele entra no bloco de código
-      if($response["httpCode"] != 200)
-      {
-        $nome_funcao = "atualizaProdMLB";
-        $saida = serialize($response);
-        $titulo = "Erro no Script Mercado Livre";
-        $tipo = "Erro";
-        //estancia a classe com os parametros
-        $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
-        //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
-        //atual significa que ja passou uma hora e pode mandar novamente email
-        if ($hora_email_enviado + 3600 <= time())
-        {
-          //estancia a função para criar a mensagem de corpo
-          $error_handling->send_error_email();
-          //estancia a função para executar as funções email()-db()-files() previamente
-          //por padrão, as propriedades error_db e error_files estão true
-          $error_handling->execute();
-          //atualiza o json para a hora em que é mandado o email
-          file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
-          return "0";
-        }
-        else
-        {
-          //Caso não tenha dado uma hora do ultimo email enviado, é gravado
-          //o erro no json de log  error_files/error_log.json
-          //executa a função para criar a mensagem de erro
-          $error_handling->send_errorlog_email();
-          //executa a função para atualizar o json com o novo erro
-          $error_handling->files();
-          return "0";
-        }
-      }
-      //caso não tenha dado problema com a atualização do PRODUTO retorna 1
-      else return "1";
-    }
-    function atualizaDescricaoMLB($SKU,$MLB)
+  //Se na requisição para atualizar o produto houver problema (retorno dif de 200)
+  // ele entra no bloco de código
+  if($response["httpCode"] != 200)
+  {
+    $nome_funcao = "atualizaProdMLB";
+    $saida = serialize($response);
+    $titulo = "Erro no Script Mercado Livre";
+    $tipo = "Erro";
+    //estancia a classe com os parametros
+    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
+    //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
+    //atual significa que ja passou uma hora e pode mandar novamente email
+    if ($hora_email_enviado + 3600 <= time())
     {
-      global $app_Id;
-      global $secret_Key;
-      global $DEBUG;
-
-
-      $produto = magento_product_summary($SKU);
-
-      if(!$produto) return 0;
-
-      $description = $produto['description'];
-      $meli = new Meli($app_Id, $secret_Key);
-      $params = array('access_token' => token());
-
-      $body = array
-      (
-        'plain_text' => $description
-      );
-
-      $response = $meli->put('/items/MLB'.$MLB.'/description', $body, $params);
-
-      if ($DEBUG == true) var_dump($response); //DEBUG
-
-      //lê o json que contem o time() do ultimo email enviado
-      if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
-      $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
-
-    //Se na requisição para atualizar o produto houver problema (retorno dif de 200)
-    // ele entra no bloco de código
-      if($response["httpCode"] != 200)
-      {
-        $nome_funcao = "atualizaDescricaoMLB";
-        $saida = serialize($response);
-        $titulo = "Erro no Script Mercado Livre";
-        $tipo = "Erro";
-        //estancia a classe com os parametros
-        $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
-        //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
-        //atual significa que ja passou uma hora e pode mandar novamente email
-        if ($hora_email_enviado + 3600 <= time())
-        {
-          //estancia a função para criar a mensagem de corpo
-          $error_handling->send_error_email();
-          //estancia a função para executar as funções email()-db()-files() previamente
-          //por padrão, as propriedades error_db e error_files estão true
-          $error_handling->execute();
-          //atualiza o json para a hora em que é mandado o email
-          file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
-          return "0";
-        }
-        else
-        {
-          //Caso não tenha dado uma hora do ultimo email enviado, é gravado
-          //o erro no json de log  error_files/error_log.json
-          //executa a função para criar a mensagem de erro
-          $error_handling->send_errorlog_email();
-          //executa a função para atualizar o json com o novo erro
-          $error_handling->files();
-          return "0";
-        }
-      }
-      else return 1;
+      //estancia a função para criar a mensagem de corpo
+      $error_handling->send_error_email();
+      //estancia a função para executar as funções email()-db()-files() previamente
+      //por padrão, as propriedades error_db e error_files estão true
+      $error_handling->execute();
+      //atualiza o json para a hora em que é mandado o email
+      file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
+      return "0";
     }
-    function atualizaMLB($SKU,$MLB)
+    else
     {
-      $atualizaProd = atualizaProdMLB($SKU,$MLB);
-      $atualizaDesc = atualizaDescricaoMLB($SKU,$MLB);
-
-      if($atualizaProd && $atualizaDesc)
-      {
-        return '1';
-      }
-      else
-      {
-        return '0';
-      }
+      //Caso não tenha dado uma hora do ultimo email enviado, é gravado
+      //o erro no json de log  error_files/error_log.json
+      //executa a função para criar a mensagem de erro
+      $error_handling->send_errorlog_email();
+      //executa a função para atualizar o json com o novo erro
+      $error_handling->files();
+      return "0";
     }
-
-    function retorna_SKU($MLB)
-    {
-      global $app_Id;
-      global $secret_Key;
-      global $DEBUG;
-
-
-      $meli = new Meli($app_Id, $secret_Key);
-
-      $params = array('attributes' => "attributes",
-      'attributes&include_internal_attributes'=>"true");
-
-      if(strpos($MLB, 'MLB') === 0) $MLB = substr($MLB, -10);
-
-      $response = $meli->get('/items/MLB'.$MLB,$params);
-
-      //lê o json que contem o time() do ultimo email enviado
-      if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
-      $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
-
-      //Se na requisição para atualizar o produto houver problema (retorno dif de 200)
-      // ele entra no bloco de código
-      if($response['httpCode'] != 200)
-      {
-        $nome_funcao = "retorna_SKU";
-        $saida = serialize($response);
-        $titulo = "Erro no Script Mercado Livre";
-        $tipo = "Erro";
-        //estancia a classe com os parametros
-        $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
-        //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
-        //atual significa que ja passou uma hora e pode mandar novamente email
-        if ($hora_email_enviado + 3600 <= time())
-        {
-          //estancia a função para criar a mensagem de corpo
-          $error_handling->send_error_email();
-          //estancia a função para executar as funções email()-db()-files() previamente
-          //por padrão, as propriedades error_db e error_files estão true
-          $error_handling->execute();
-          //atualiza o json para a hora em que é mandado o email
-          file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
-          return "0";
-        }
-        else
-        {
-          //Caso não tenha dado uma hora do ultimo email enviado, é gravado
-          //o erro no json de log  error_files/error_log.json
-          //executa a função para criar a mensagem de erro
-          $error_handling->send_errorlog_email();
-          //executa a função para atualizar o json com o novo erro
-          $error_handling->files();
-          return "0";
-        }
-      }
-      if ($DEBUG == true) var_dump($response['body']); //DEBUG
-
-      //LUIGI, aqui precisei fazer isso pois voce assumiu que o SKU estaria sempre no indice 2 (o que nao é verdade)
-      foreach ($response['body']->attributes as $key => $value) {
-        if($value->name == "Modelo") return $value->value_name;
-        // echo "<br>";
-      }
-      //ESSE FOREACH procura pelo value Modelo, e retorna o modelo. se nao tiver, continua a execucao e retorna 0
-
-      return 0;
-    }
-
-    function escreve_MLB($MLB)
-    {
-      $conteudo_arquivo = file_put_contents("include/files/ultimo_MLB.json", json_encode($MLB));
-
-      if(!$conteudo_arquivo)
-      {
-        return "0";
-      }
-      else
-      {
-        return "1";
-      }
-    }
-
-    function retornaDadosVenda($COD){
-      global $app_Id;
-      global $secret_Key;
-      global $DEBUG;
-
-      $meli = new Meli($app_Id, $secret_Key);
-
-      $params = array('access_token' => token()
-    );
-
-    //BLOCO PARA USAR AS ORDERS DE TESTE----
-    // global $DEBUG;
-    // $appId = "4946951783545211";
-    // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-    // $accesstoken = "APP_USR-4946951783545211-082816-9f29ea4048643e00d0ada759e51e7e93-327485416";
-    // $userid = '327485416';
-    //
-    // $meli = new Meli($appId, $secretKey);
-    //
-    // $params = array('access_token' => $accesstoken
-    // );
-    //--------------------------------------------
-
-    $response = $meli->get("/orders/$COD", $params);
-
-    if($DEBUG == true) echo "<h1>DEBUG retornaDadosVenda</h1><br>";
-    if($DEBUG == true) var_dump($response['body']); //DEBUG
-
-    $dadosVenda = new stdClass;
-
-    //------------PRODUTO--------
-    foreach ($response['body']->order_items as $key => $value) {
-      $dadosVenda->mlb_produto = $value->item->id;
-      $dadosVenda->sku_produto = retorna_SKU($dadosVenda->mlb_produto);
-      $dadosVenda->nome_produto = $value->item->title;
-      $dadosVenda->qtd_produto = $value->quantity;
-      $dadosVenda->preco_unidade_produto = $value->unit_price;
-      $dadosVenda->preco_total_produto = $value->full_unit_price;
-    }
-
-    //--------------PAGAMENTO---------
-    foreach ($response['body']->payments as $key => $value) {
-      $dadosVenda->id_order = $value->order_id;
-      $dadosVenda->date_created = strtotime($value->date_created);
-      $dadosVenda->id_meio_pagamento = $value->payment_method_id;
-      $dadosVenda->tipo_pagamento = $value->payment_type;
-      $dadosVenda->custo_envio = $value->shipping_cost;
-      $dadosVenda->total_pagar = $value->total_paid_amount;
-      $dadosVenda->status_pagamento = $value->status;
-    }
-
-    //----- ------ENDEREÇO---------
-
-
-    if(!isset($response['body']->shipping->receiver_address)){
-      $shipment_id = $response['body']->shipping->id;
-      $params = array('access_token' => token()
-    );
-
-    $dados_shipping = $meli->get("/shipments/$shipment_id", $params);
-    // echo "<h1>AQUI ÒOOOOOO</h1>";
-    //   var_dump($response)    ;
-    $dadosVenda->id_shipping = $dados_shipping['body']->id;
-    $dadosVenda->rua = $dados_shipping['body']->receiver_address->street_name;
-    $dadosVenda->numero =$dados_shipping['body']->receiver_address->street_number;
-    $dadosVenda->bairro = $dados_shipping['body']->receiver_address->neighborhood->name;
-    $dadosVenda->cep = $dados_shipping['body']->receiver_address->zip_code;
-    $dadosVenda->cidade = $dados_shipping['body']->receiver_address->city->name;
-    $estado = $dados_shipping['body']->receiver_address->state->id;
-    $dadosVenda->estado = substr($estado,-2);
-    $dadosVenda->pais = $dados_shipping['body']->receiver_address->country->id;
-  }else{
-    $dadosVenda->id_shipping = $response['body']->shipping->id;
-    $dadosVenda->rua = $response['body']->shipping->receiver_address->street_name;
-    $dadosVenda->numero =$response['body']->shipping->receiver_address->street_number;
-    $dadosVenda->bairro = $response['body']->shipping->receiver_address->neighborhood->name;
-    $dadosVenda->cep = $response['body']->shipping->receiver_address->zip_code;
-    $dadosVenda->cidade = $response['body']->shipping->receiver_address->city->name;
-    $estado = $response['body']->shipping->receiver_address->state->id;
-    $dadosVenda->estado = substr($estado,-2);
-    $dadosVenda->pais = $response['body']->shipping->receiver_address->country->id;
   }
-
-  //PEGAR O ID DO PAIS -- COUNTRY_ID
-  // -------USUARIO --------
-  $dadosVenda->id_comprador = $response['body']->buyer->id;
-  $dadosVenda->apelido_comprador = $response['body']->buyer->nickname;
-  $dadosVenda->email_comprador = $response['body']->buyer->email;
-  $dadosVenda->cod_area_comprador = $response['body']->buyer->phone->area_code;
-  $dadosVenda->telefone_comprador = $response['body']->buyer->phone->number;
-  $dadosVenda->nome_comprador = "MLB-".$response['body']->buyer->first_name;
-  $dadosVenda->sobrenome_comprador = $response['body']->buyer->last_name;
-  $dadosVenda->tipo_documento_comprador = $response['body']->buyer->billing_info->doc_type;
-  $dadosVenda->numero_documento_comprador = $response['body']->buyer->billing_info->doc_number;
-
-  return $dadosVenda;
-
+  //caso não tenha dado problema com a atualização do PRODUTO retorna 1
+  else return "1";
 }
 
+function atualizaDescricaoMLB($SKU,$MLB)
+{
+  global $app_Id;
+  global $secret_Key;
+  global $DEBUG;
+
+
+  $produto = magento_product_summary($SKU);
+
+  if(!$produto) return 0;
+
+  $description = $produto['description'];
+  $meli = new Meli($app_Id, $secret_Key);
+  $params = array('access_token' => token());
+
+  $body = array
+  (
+    'plain_text' => $description
+  );
+
+  $response = $meli->put('/items/MLB'.$MLB.'/description', $body, $params);
+
+  if ($DEBUG == true) var_dump($response); //DEBUG
+
+  //lê o json que contem o time() do ultimo email enviado
+  if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
+  $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
+
+  //Se na requisição para atualizar o produto houver problema (retorno dif de 200)
+  // ele entra no bloco de código
+  if($response["httpCode"] != 200)
+  {
+    $nome_funcao = "atualizaDescricaoMLB";
+    $saida = serialize($response);
+    $titulo = "Erro no Script Mercado Livre";
+    $tipo = "Erro";
+    //estancia a classe com os parametros
+    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
+    //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
+    //atual significa que ja passou uma hora e pode mandar novamente email
+    if ($hora_email_enviado + 3600 <= time())
+    {
+      //estancia a função para criar a mensagem de corpo
+      $error_handling->send_error_email();
+      //estancia a função para executar as funções email()-db()-files() previamente
+      //por padrão, as propriedades error_db e error_files estão true
+      $error_handling->execute();
+      //atualiza o json para a hora em que é mandado o email
+      file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
+      return "0";
+    }
+    else
+    {
+      //Caso não tenha dado uma hora do ultimo email enviado, é gravado
+      //o erro no json de log  error_files/error_log.json
+      //executa a função para criar a mensagem de erro
+      $error_handling->send_errorlog_email();
+      //executa a função para atualizar o json com o novo erro
+      $error_handling->files();
+      return "0";
+    }
+  }
+  else return 1;
+}
+
+function atualizaMLB($SKU,$MLB)
+{
+  $atualizaProd = atualizaProdMLB($SKU,$MLB);
+  $atualizaDesc = atualizaDescricaoMLB($SKU,$MLB);
+
+  if($atualizaProd && $atualizaDesc)
+  {
+    return '1';
+  }
+  else
+  {
+    return '0';
+  }
+}
+
+function retorna_SKU($MLB)
+{
+  global $app_Id;
+  global $secret_Key;
+  global $DEBUG;
+
+
+  $meli = new Meli($app_Id, $secret_Key);
+
+  $params = array('attributes' => "attributes",
+  'attributes&include_internal_attributes'=>"true");
+
+  if(strpos($MLB, 'MLB') === 0) $MLB = substr($MLB, -10);
+
+  $response = $meli->get('/items/MLB'.$MLB,$params);
+
+  //lê o json que contem o time() do ultimo email enviado
+  if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
+  $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
+
+  //Se na requisição para atualizar o produto houver problema (retorno dif de 200)
+  // ele entra no bloco de código
+  if($response['httpCode'] != 200)
+  {
+    $nome_funcao = "retorna_SKU";
+    $saida = serialize($response);
+    $titulo = "Erro no Script Mercado Livre";
+    $tipo = "Erro";
+    //estancia a classe com os parametros
+    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
+    //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
+    //atual significa que ja passou uma hora e pode mandar novamente email
+    if ($hora_email_enviado + 3600 <= time())
+    {
+      //estancia a função para criar a mensagem de corpo
+      $error_handling->send_error_email();
+      //estancia a função para executar as funções email()-db()-files() previamente
+      //por padrão, as propriedades error_db e error_files estão true
+      $error_handling->execute();
+      //atualiza o json para a hora em que é mandado o email
+      file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
+      return "0";
+    }
+    else
+    {
+      //Caso não tenha dado uma hora do ultimo email enviado, é gravado
+      //o erro no json de log  error_files/error_log.json
+      //executa a função para criar a mensagem de erro
+      $error_handling->send_errorlog_email();
+      //executa a função para atualizar o json com o novo erro
+      $error_handling->files();
+      return "0";
+    }
+  }
+  if ($DEBUG == true) var_dump($response['body']); //DEBUG
+
+  foreach ($response['body']->attributes as $key => $value) {
+    if($value->name == "Modelo") return $value->value_name;
+  }
+  //ESSE FOREACH procura pelo value Modelo, e retorna o modelo. se nao tiver, continua a execucao e retorna 0
+
+  return 0;
+}
+
+function escreve_MLB($MLB)
+{
+  $conteudo_arquivo = file_put_contents("include/files/ultimo_MLB.json", json_encode($MLB));
+
+  if(!$conteudo_arquivo)
+  {
+    return "0";
+  }
+  else
+  {
+    return "1";
+  }
+}
+
+function retornaDadosVenda($COD){
+  global $app_Id;
+  global $secret_Key;
+  global $DEBUG;
+
+  $meli = new Meli($app_Id, $secret_Key);
+
+  $params = array('access_token' => token()
+);
+
+//BLOCO PARA USAR AS ORDERS DE TESTE----
+// global $DEBUG;
+// $appId = "4946951783545211";
+// $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+// $accesstoken = "APP_USR-4946951783545211-082816-9f29ea4048643e00d0ada759e51e7e93-327485416";
+// $userid = '327485416';
+//
+// $meli = new Meli($appId, $secretKey);
+//
+// $params = array('access_token' => $accesstoken
+// );
+//--------------------------------------------
+
+$response = $meli->get("/orders/$COD", $params);
+
+if($DEBUG == true) echo "<h1>DEBUG retornaDadosVenda</h1><br>";
+if($DEBUG == true) var_dump($response['body']); //DEBUG
+
+$dadosVenda = new stdClass;
+
+//------------PRODUTO--------
+foreach ($response['body']->order_items as $key => $value) {
+  $dadosVenda->mlb_produto = $value->item->id;
+  $dadosVenda->sku_produto = retorna_SKU($dadosVenda->mlb_produto);
+  $dadosVenda->nome_produto = $value->item->title;
+  $dadosVenda->qtd_produto = $value->quantity;
+  $dadosVenda->preco_unidade_produto = $value->unit_price;
+  $dadosVenda->preco_total_produto = $value->full_unit_price;
+}
+
+//--------------PAGAMENTO---------
+foreach ($response['body']->payments as $key => $value) {
+  $dadosVenda->id_order = $value->order_id;
+  $dadosVenda->date_created = strtotime($value->date_created);
+  $dadosVenda->id_meio_pagamento = $value->payment_method_id;
+  $dadosVenda->tipo_pagamento = $value->payment_type;
+  $dadosVenda->custo_envio = $value->shipping_cost;
+  $dadosVenda->total_pagar = $value->total_paid_amount;
+  $dadosVenda->status_pagamento = $value->status;
+}
+
+//----- ------ENDEREÇO---------
+
+
+if(!isset($response['body']->shipping->receiver_address)){
+  $shipment_id = $response['body']->shipping->id;
+  $params = array('access_token' => token()
+);
+
+$dados_shipping = $meli->get("/shipments/$shipment_id", $params);
+// echo "<h1>AQUI ÒOOOOOO</h1>";
+//   var_dump($response)    ;
+$dadosVenda->id_shipping = $dados_shipping['body']->id;
+$dadosVenda->rua = $dados_shipping['body']->receiver_address->street_name;
+$dadosVenda->numero =$dados_shipping['body']->receiver_address->street_number;
+$dadosVenda->bairro = $dados_shipping['body']->receiver_address->neighborhood->name;
+$dadosVenda->cep = $dados_shipping['body']->receiver_address->zip_code;
+$dadosVenda->cidade = $dados_shipping['body']->receiver_address->city->name;
+$estado = $dados_shipping['body']->receiver_address->state->id;
+$dadosVenda->estado = substr($estado,-2);
+$dadosVenda->pais = $dados_shipping['body']->receiver_address->country->id;
+}else{
+  $dadosVenda->id_shipping = $response['body']->shipping->id;
+  $dadosVenda->rua = $response['body']->shipping->receiver_address->street_name;
+  $dadosVenda->numero =$response['body']->shipping->receiver_address->street_number;
+  $dadosVenda->bairro = $response['body']->shipping->receiver_address->neighborhood->name;
+  $dadosVenda->cep = $response['body']->shipping->receiver_address->zip_code;
+  $dadosVenda->cidade = $response['body']->shipping->receiver_address->city->name;
+  $estado = $response['body']->shipping->receiver_address->state->id;
+  $dadosVenda->estado = substr($estado,-2);
+  $dadosVenda->pais = $response['body']->shipping->receiver_address->country->id;
+}
+
+//PEGAR O ID DO PAIS -- COUNTRY_ID
+// -------USUARIO --------
+$dadosVenda->id_comprador = $response['body']->buyer->id;
+$dadosVenda->apelido_comprador = $response['body']->buyer->nickname;
+$dadosVenda->email_comprador = $response['body']->buyer->email;
+$dadosVenda->cod_area_comprador = $response['body']->buyer->phone->area_code;
+$dadosVenda->telefone_comprador = $response['body']->buyer->phone->number;
+$dadosVenda->nome_comprador = "MLB-".$response['body']->buyer->first_name;
+$dadosVenda->sobrenome_comprador = $response['body']->buyer->last_name;
+$dadosVenda->tipo_documento_comprador = $response['body']->buyer->billing_info->doc_type;
+$dadosVenda->numero_documento_comprador = $response['body']->buyer->billing_info->doc_number;
+
+return $dadosVenda;
+
+}
 
 function retornaOrders(){
   global $app_Id;
@@ -495,40 +490,54 @@ function retornaOrders(){
 
   $params = array('access_token' => token(),
   'seller' => $user_id, 'order.status' => "paid",
-  'order.date_created.from' => "2018-06-05T00:00:00.000-00:00"
-);
+  'order.date_created.from' => "2018-08-10T00:00:00.000-00:00"
+  );
 
-//BLOCO PARA USAR AS ORDERS DE TESTE----
-// global $DEBUG;
-// $appId = "4946951783545211";
-// $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-// $accesstoken = "APP_USR-4946951783545211-082816-9f29ea4048643e00d0ada759e51e7e93-327485416";
-// $userid = '327485416';
-//
-// $meli = new Meli($appId, $secretKey);
-// $params = array('access_token' => $accesstoken,
-// 'seller' => $userid, 'order.status' => "paid",
-// 'order.date_created.from' => "2018-06-01T00:00:00.000-00:00"
-// );
-//--------------------------------------------------
-$response = $meli->get("/orders/search", $params);
+  //BLOCO PARA USAR AS ORDERS DE TESTE----
+  // global $DEBUG;
+  // $appId = "4946951783545211";
+  // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+  // $accesstoken = "APP_USR-4946951783545211-082816-9f29ea4048643e00d0ada759e51e7e93-327485416";
+  // $userid = '327485416';
+  //
+  // $meli = new Meli($appId, $secretKey);
+  // $params = array('access_token' => $accesstoken,
+  // 'seller' => $userid, 'order.status' => "paid",
+  // 'order.date_created.from' => "2018-06-01T00:00:00.000-00:00"
+  // );
+  //--------------------------------------------------
+  $response = $meli->get("/orders/search", $params);
 
-if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']);}
+  if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']);}
 
-$idOrders = new stdClass;
+  $idOrders = new stdClass;
 
-foreach ($response['body']->results as $key => $value) {
-  $idOrders->$key = $value->payments[0]->order_id;
+  foreach ($response['body']->results as $key => $value)
+  {
+    $idOrders->$key = $value->payments[0]->order_id;
+  }
 
+  if(count($response['body']->results) < 1) return 0;
+
+  return $idOrders;
 }
-return $idOrders;
-}
-
+/**
+ * Funçao para auxiliar no workflow da função
+ * Obtem a data e o id do comprador do pedido
+ * Returns se foi possivel ou não
+ *
+ * @param string $orders_id    id do pedido do Mercado Livre
+ *
+ * @throws Exception
+ *
+ * @return string
+ */
 function retorna_data_pedidos($orders_id)
 {
   $ml_data_pedido = new stdclass;
   foreach ($orders_id as $key => $value) {
     $dados_order = retornaDadosVenda($value);
+    var_dump($dados_order);
     $ml_data_pedido->data_pedido[] = $dados_order->date_created;
     $ml_data_pedido->id_comprador[] = $dados_order->id_comprador;
   }
@@ -537,7 +546,15 @@ function retorna_data_pedidos($orders_id)
 
   if($result_data && $result_idbuyer) return "Ok"; else return "Não deu";
 }
-
+/**
+ * Funçao que agrupa os pedidos do ML por comprador
+ * Ao saber que um pedido é ligado a outro (compra com itens diferentes) o código os junta para ser uma compra somente
+ * Returns o objeto criado :: Objeto->BuyerId->DadosDaCompra
+ *
+ * @throws Exception
+ *
+ * @return object
+ */
 function retornaDadosOrders()
 {
   $orders = retornaOrders();
@@ -607,178 +624,218 @@ function retornaDadosOrders()
     }
   }
 
-    return $magento_orders;
+  return $magento_orders;
+}
+
+/**
+ * Funçao para transformar o objeto retornado pela função retornaDadosOrders()
+ * Converte o objeto da função retornaDadosOrders em um novo objeto para facilitar
+ * Returns o objeto criado
+ *
+ * @throws Exception
+ *
+ * @return object
+ */
+function retornaObjMl()
+{
+  global $DEBUG;
+
+  $dadosVenda = retornaDadosOrders();
+  if($dadosVenda == '') return 0;
+
+  $Magento_order = new stdClass();
+
+  foreach($dadosVenda as $key => $value){
+
+    $Magento_order->order_id = $dadosVenda->$key->id_order;
+    $Magento_order->mlb_produto = $dadosVenda->$key->mlb_produto;
+    $Magento_order->sku_produto = $dadosVenda->$key->sku_produto;
+    $Magento_order->nome_produto = $dadosVenda->$key->nome_produto;
+    $Magento_order->qtd_produto = $dadosVenda->$key->qtd_produto;
+    $Magento_order->preco_unidade_produto =$dadosVenda->$key->preco_unidade_produto;
+    $Magento_order->preco_total_produto = $dadosVenda->$key->preco_total_produto;
+
+    //--------------PAGAMENTO---------
+    $Magento_order->id_meio_pagamento = $dadosVenda->$key->id_meio_pagamento;
+    $Magento_order->tipo_pagamento = $dadosVenda->$key->tipo_pagamento;
+    $Magento_order->custo_envio = $dadosVenda->$key->custo_envio;
+    $Magento_order->total_pagar = $dadosVenda->$key->total_pagar;
+    $Magento_order->status_pagamento = $dadosVenda->$key->status_pagamento;
+
+    //-----------ENDEREÇO---------
+    $Magento_order->id_shipping = $dadosVenda->$key->id_shipping;
+    $Magento_order->rua = $dadosVenda->$key->rua;
+    $Magento_order->numero = $dadosVenda->$key->numero;
+    $Magento_order->bairro = $dadosVenda->$key->bairro;
+    $Magento_order->cep = $dadosVenda->$key->cep;
+    $Magento_order->cidade = $dadosVenda->$key->cidade;
+    $Magento_order->estado = $dadosVenda->$key->estado;
+    $Magento_order->pais = $dadosVenda->$key->pais;
+
+    // ---------USUARIO---------
+    $Magento_order->id_comprador = $dadosVenda->$key->id_comprador;
+    $Magento_order->apelido_comprador = $dadosVenda->$key->apelido_comprador;
+    $Magento_order->email_comprador = $dadosVenda->$key->email_comprador;
+    $Magento_order->cod_area_comprador = $dadosVenda->$key->cod_area_comprador;
+    $Magento_order->telefone_comprador = $dadosVenda->$key->telefone_comprador;
+    $Magento_order->nome_comprador = $dadosVenda->$key->nome_comprador;
+    $Magento_order->sobrenome_comprador = $dadosVenda->$key->sobrenome_comprador;
+    $Magento_order->tipo_documento_comprador = $dadosVenda->$key->tipo_documento_comprador;
+    $Magento_order->numero_documento_comprador = $dadosVenda->$key->numero_documento_comprador;
+
+  }
+  return $Magento_order;
+  if($DEBUG == TRUE) {echo "Estrutura do OBJ Magento_order";var_dump($Magento_order);}
+}
+
+function listaPedidoMLB()
+{
+  global $DEBUG;
+  $Magento_order = retornaDadosOrders();
+
+  if ($Magento_order == 0) return "Não há Novos pedidos";
+
+  foreach ($Magento_order as $key => $value) {
+    $json[] = $Magento_order->$key->id_order;
+
+    $listaPedido = $json;
   }
 
-  function retornaObjMl()
+  if (!isset($listaPedido)) return 0;
+  $listagem = json_encode($listaPedido);
+
+  if($DEBUG == true) var_dump($listagem);
+
+  $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
+
+  if(!$conteudo_arquivo)
   {
-    global $DEBUG;
-
-    $dadosVenda = retornaDadosOrders();
-    if($dadosVenda == '') return 0;
-
-    $Magento_order = new stdClass();
-
-    foreach($dadosVenda as $key => $value){
-
-      $Magento_order->order_id = $dadosVenda->$key->id_order;
-      $Magento_order->mlb_produto = $dadosVenda->$key->mlb_produto;
-      $Magento_order->sku_produto = $dadosVenda->$key->sku_produto;
-      $Magento_order->nome_produto = $dadosVenda->$key->nome_produto;
-      $Magento_order->qtd_produto = $dadosVenda->$key->qtd_produto;
-      $Magento_order->preco_unidade_produto =$dadosVenda->$key->preco_unidade_produto;
-      $Magento_order->preco_total_produto = $dadosVenda->$key->preco_total_produto;
-
-      //--------------PAGAMENTO---------
-      $Magento_order->id_meio_pagamento = $dadosVenda->$key->id_meio_pagamento;
-      $Magento_order->tipo_pagamento = $dadosVenda->$key->tipo_pagamento;
-      $Magento_order->custo_envio = $dadosVenda->$key->custo_envio;
-      $Magento_order->total_pagar = $dadosVenda->$key->total_pagar;
-      $Magento_order->status_pagamento = $dadosVenda->$key->status_pagamento;
-
-      //-----------ENDEREÇO---------
-      $Magento_order->id_shipping = $dadosVenda->$key->id_shipping;
-      $Magento_order->rua = $dadosVenda->$key->rua;
-      $Magento_order->numero = $dadosVenda->$key->numero;
-      $Magento_order->bairro = $dadosVenda->$key->bairro;
-      $Magento_order->cep = $dadosVenda->$key->cep;
-      $Magento_order->cidade = $dadosVenda->$key->cidade;
-      $Magento_order->estado = $dadosVenda->$key->estado;
-      $Magento_order->pais = $dadosVenda->$key->pais;
-
-      // ---------USUARIO---------
-      $Magento_order->id_comprador = $dadosVenda->$key->id_comprador;
-      $Magento_order->apelido_comprador = $dadosVenda->$key->apelido_comprador;
-      $Magento_order->email_comprador = $dadosVenda->$key->email_comprador;
-      $Magento_order->cod_area_comprador = $dadosVenda->$key->cod_area_comprador;
-      $Magento_order->telefone_comprador = $dadosVenda->$key->telefone_comprador;
-      $Magento_order->nome_comprador = $dadosVenda->$key->nome_comprador;
-      $Magento_order->sobrenome_comprador = $dadosVenda->$key->sobrenome_comprador;
-      $Magento_order->tipo_documento_comprador = $dadosVenda->$key->tipo_documento_comprador;
-      $Magento_order->numero_documento_comprador = $dadosVenda->$key->numero_documento_comprador;
-
-    }
-    return $Magento_order;
-    if($DEBUG == TRUE) {echo "Estrutura do OBJ Magento_order";var_dump($Magento_order);}
+    echo "Não deu pra escrever a lista de pedidos do mlb";
+    return 0;
   }
-
-  function listaPedidoMLB()
+  else
   {
-    global $DEBUG;
-    $Magento_order = retornaDadosOrders();
-
-    foreach ($Magento_order as $key => $value) {
-      $json[] = $Magento_order->$key->id_order;
-
-      $listaPedido = $json;
-    }
-
-    if (!isset($listaPedido)) return 0;
-    $listagem = json_encode($listaPedido);
-
-    if($DEBUG == true) var_dump($listagem);
-
-    $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
-
-    if(!$conteudo_arquivo)
-    {
-      echo "Não deu pra escrever a lista de pedidos do mlb";
-      return 0;
-    }
-    else
-    {
-      return "Deu pra escrever a lista de pedidos do mlb";
-    }
+    return "Deu pra escrever a lista de pedidos do mlb";
   }
+}
 
-  function escrevePedidoMLB($MLB)
+function escrevePedidoMLB($MLB)
 
+{
+  $conteudo_arquivo = file_put_contents("include/files/ultimoPedidoMLB.json", json_encode($MLB));
+
+  if(!$conteudo_arquivo)
   {
-    $conteudo_arquivo = file_put_contents("include/files/ultimoPedidoMLB.json", json_encode($MLB));
-
-    if(!$conteudo_arquivo)
-    {
-      return "Não deu pra escrever o pedido do mlb";
-    }
-    else
-    {
-      return "Escrito ultimo MLB com sucesso";
-    }
+    return "Não deu pra escrever o pedido do mlb";
   }
-
-  function ultimoPedidoMLB()
+  else
   {
-    if(!file_exists("include/files/ultimoPedidoMLB.json")) return "Arquivo json não existente!";
-    else {
-      $conteudo_arquivo = file_get_contents("include/files/ultimoPedidoMLB.json");
-      $retorno = $conteudo_arquivo;
-      return $retorno;
-    }
+    return "Escrito ultimo MLB com sucesso";
   }
+}
 
-  function proximoPedidoMLB()
+function ultimoPedidoMLB()
+{
+  if(!file_exists("include/files/ultimoPedidoMLB.json")) return "Arquivo json não existente!";
+  else {
+    $conteudo_arquivo = file_get_contents("include/files/ultimoPedidoMLB.json");
+    $retorno = $conteudo_arquivo;
+    return $retorno;
+  }
+}
+
+function proximoPedidoMLB()
+{
+  $ultimo = json_decode(ultimoPedidoMLB());
+  $lista = file_get_contents("include/files/listaPedidoMLB.json");
+  $lista = json_decode($lista);
+
+  $indice_ultimo = array_search($ultimo, $lista);
+  $indice_proximo = $indice_ultimo+1;
+
+  $valor_proximo = $lista[$indice_proximo];
+  $valor_zero = $lista["0"];
+
+  if($indice_proximo+1 < count($lista)) return $valor_proximo;
+  else return $valor_zero;
+}
+/**
+ * Funçao para controle dos pedidos ja existentes no Magento
+ * Lê o json
+ * Returns se a operação foi sucessida ou não
+ *
+ * @throws Exception
+ *
+ * @return string
+ */
+function retornaPedidosfeitosMGML()
+{
+  if(!file_exists("include/files/PedidosFeitosMLB.json"))
   {
-    $ultimo = json_decode(ultimoPedidoMLB());
-    $lista = file_get_contents("include/files/listaPedidoMLB.json");
-    $lista = json_decode($lista);
-
-    $indice_ultimo = array_search($ultimo, $lista);
-    $indice_proximo = $indice_ultimo+1;
-
-    $valor_proximo = $lista[$indice_proximo];
-    $valor_zero = $lista["0"];
-
-    if($indice_proximo+1 < count($lista)) return $valor_proximo;
-    else return $valor_zero;
+    file_put_contents('include/files/PedidosFeitosMLB.json', "");
+    return "Arquivo json não existente! Criado Novo arquivo";
   }
-
-  function retornaPedidosfeitosMGML()
+  else
   {
-    if(!file_exists("include/files/PedidosFeitosMLB.json"))
-    {
-      file_put_contents('include/files/PedidosFeitosMLB.json', "");
-      return "Arquivo json não existente! Criado Novo arquivo";
-    }
-    else {
-      $conteudo_arquivo = file_get_contents("include/files/PedidosFeitosMLB.json");
-      $retorno = $conteudo_arquivo;
-      return $retorno;
-    }
+    $conteudo_arquivo = file_get_contents("include/files/PedidosFeitosMLB.json");
+    $retorno = $conteudo_arquivo;
+    return $retorno;
   }
+}
+/**
+ * Funçao para controle dos pedidos ja existentes no Magento
+ * Escreve no json o id do pedido criado no magento
+ * Returns se a operação foi sucessida ou não
+ *
+ * @param string $mlb    id do pedido criado no magento
+ *
+ * @throws Exception
+ *
+ * @return string
+ */
+function escrevePedidoMGML($mlb)
+{
+  $listapedido = retornaPedidosfeitosMGML();
+  $pos = strpos($listapedido, $mlb["0"]);
 
-  function escrevePedidoMGML($mlb)
+  if($pos == false)
   {
-    $listapedido = retornaPedidosfeitosMGML();
-    $pos = strpos($listapedido, $mlb["0"]);
+    $listapedido = (array) json_decode($listapedido);
+    $listapedido[] =  array('MLB' => $mlb);
+    $conteudo_arquivo = file_put_contents("include/files/PedidosFeitosMLB.json", json_encode($listapedido));
 
-    if($pos == false)
-    {
-      $listapedido = (array) json_decode($listapedido);
-      $listapedido[] =  array('MLB' => $mlb);
-      $conteudo_arquivo = file_put_contents("include/files/PedidosFeitosMLB.json", json_encode($listapedido));
-
-      if(!$conteudo_arquivo) echo "Não foi possível escrever/criar JSON com o pedido";
-      else echo "Criado/escrito JSON pedido<br/>";
-    }
+    if(!$conteudo_arquivo) echo "Não foi possível escrever/criar JSON com o pedido";
+    else echo "Criado/escrito JSON pedido<br/>";
   }
+}
+/**
+ * Cria a etiqueta da compra feita no mercado livre
+ * Returns o nome do arquivo criado
+ *
+ * @param string $shipment_ids    id do envio (pode ser mais de um)
+ * @param string $mlb             id do mercado livre
+ * @param string $nome            nome do comprador
+ * @param string $order_id        id do pedido no magento
+ *
+ * @return string
+ */
+function criaEtiqueta($shipment_ids, $mlb, $nome, $order_id)
+{
+  $token = token();
+  $mlb = $mlb;
+  $nome_arquivo = "etiquetas/$mlb-$order_id-$nome.pdf";
+  $curl_url =  "https://api.mercadolibre.com/shipment_labels?shipment_ids=$shipment_ids&response_type=pdf&access_token=$token";
+  $out = fopen($nome_arquivo,"w+");
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_FILE, $out);
+  curl_setopt($ch, CURLOPT_HEADER, 0);
+  curl_setopt($ch, CURLOPT_URL, $curl_url);
+  curl_exec($ch);
+  curl_close($ch);
 
-  function criaEtiqueta($shipment_ids, $mlb, $nome, $order_id)
-  {
-    $token = token();
-    $mlb = $mlb;
-    $nome_arquivo = "etiquetas/$mlb-$order_id-$nome.pdf";
-    $curl_url =  "https://api.mercadolibre.com/shipment_labels?shipment_ids=$shipment_ids&response_type=pdf&access_token=$token";
-    $out = fopen($nome_arquivo,"w+");
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_FILE, $out);
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_URL, $curl_url);
-    curl_exec($ch);
-    curl_close($ch);
+  echo "Sucesso!!";
 
-    echo "Sucesso!!";
+  return $nome_arquivo;
+}
 
-    return $nome_arquivo;
-  }
-
-  ?>
+?>
