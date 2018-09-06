@@ -7,9 +7,10 @@ require "include/all_include.php";
 $DEBUG = false;
 echo "<pre>";
 
-$teste = new error_handling("Teste 2", "Teste 2", "Teste 2", "Teste 2");
-$teste->log_send_error_email();
-$teste->files();
+$teste = new error_handling("Teste de acento", "TEstando os áçentôs", "Teste 2", "Teste 2");
+$teste->send_error_email();
+$teste->execute();
+
 
 
 
