@@ -17,8 +17,10 @@ $marca = "EasyPath";
 $ajuste_preco_soma = "5.0";
 
 //ML
-$configmail = true;
+$configmail = true;     // true para habilitar o envio de email
 $email_destinatario = array('1'=>"yuri@sa2.com.br",
                             '2'=>"luigifracalanza@gmail.com");
-$SMTP = false;              //se SMTP é false, sendmail será usado
+
+// Ainda há problemas não encontrados para o uso do Sendmail
+$SMTP = true;              //se SMTP é false, sendmail será usado
 ?>

@@ -7,12 +7,9 @@ require "include/all_include.php";
 $DEBUG = false;
 echo "<pre>";
 
-$teste = new error_handling("Teste de acento", "TEstando os áçentôs", "Teste 2", "Teste 2");
-$teste->send_error_email();
-$teste->email();
 
 
-
+var_dump(retornaDadosOrders());
 /**
  * Output debugging info via user-defined method.
  * Only generates output if SMTP debug output is enabled (@see SMTP::$do_debug).

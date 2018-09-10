@@ -154,7 +154,7 @@ class error_handling extends event_base
       Problemas com o script automático. Contatar equipe de suporte
       </p>
       <br>
-      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td width="100%" bgcolor="#f5f5f5" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding: 9px; border: 1px solid #e3e3e3; background-color: #f5f5f5;" valign="top" align="left"><b>'.$this->nome_funcao--.'</b>'.$this->saida.'</td></tr></tbody></table>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td width="100%" bgcolor="#f5f5f5" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding: 9px; border: 1px solid #e3e3e3; background-color: #f5f5f5;" valign="top" align="left"><b>'.$this->nome_funcao--.'</b>&nbsp;&nbsp;'.$this->saida.'</td></tr></tbody></table>
       <br>
 
       <br>

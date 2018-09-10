@@ -10,9 +10,13 @@ require_once 'include/ml/php-sdk/Meli/meli.php';
 require_once 'include/ml/php-sdk/configApp.php';
 require_once 'include/apimagentophp/include/all_include.php';
 
-require_once 'include/PHPMailer/src/Exception.php';
-require_once 'include/PHPMailer/src/PHPMailer.php';
-require_once 'include/PHPMailer/src/SMTP.php';
+//COM AUTOLOAD
+// require 'include/PHPMailer/vendor/autoload.php';
+
+// SEM AUTOLOAD
+require 'include/PHPMailer/src/Exception.php';
+require 'include/PHPMailer/src/PHPMailer.php';
+require 'include/PHPMailer/src/SMTP.php';
 
 require_once 'include/mail/mail.php';
 require_once 'include/mail/corpo_email.php';

@@ -490,7 +490,7 @@ function retornaOrders(){
 
   $params = array('access_token' => token(),
   'seller' => $user_id, 'order.status' => "paid",
-  'order.date_created.from' => "2018-08-10T00:00:00.000-00:00"
+  'order.date_created.from' => "2018-06-10T00:00:00.000-00:00"
   );
 
   //BLOCO PARA USAR AS ORDERS DE TESTE----
@@ -537,7 +537,6 @@ function retorna_data_pedidos($orders_id)
   $ml_data_pedido = new stdclass;
   foreach ($orders_id as $key => $value) {
     $dados_order = retornaDadosVenda($value);
-    var_dump($dados_order);
     $ml_data_pedido->data_pedido[] = $dados_order->date_created;
     $ml_data_pedido->id_comprador[] = $dados_order->id_comprador;
   }
@@ -546,6 +545,7 @@ function retorna_data_pedidos($orders_id)
 
   if($result_data && $result_idbuyer) return "Ok"; else return "Não deu";
 }
+
 /**
  * Funçao que agrupa os pedidos do ML por comprador
  * Ao saber que um pedido é ligado a outro (compra com itens diferentes) o código os junta para ser uma compra somente
@@ -715,7 +715,8 @@ function listaPedidoMLB()
   }
   else
   {
-    return "Deu pra escrever a lista de pedidos do mlb";
+    echo "Deu pra escrever a lista de pedidos do mlb";
+    return true;
   }
 }
 

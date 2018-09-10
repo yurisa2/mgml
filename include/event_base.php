@@ -81,7 +81,7 @@ class event_base
     * @property $log_etiqueta Diretorio do arquivo de etiqueta .pdf - vazio caso nao exista necessidade de anexar
     *
     */
-    $this->log_etiqueta = '';
+    $this->log_etiqueta = null;
 
     /**
     * @property $log_email CLASSE LOG - Comanda o tipo de dados que irá no corpo do email
@@ -127,8 +127,7 @@ class event_base
     $titulo = $this->titulo;
     $mensagem = $this->mensagemHTML;
     $mail = new PHPMailer;
-
-    //$mail->SMTPDebug = 3;                               // Enable verbose debug output
+    $mail->IsHTML(true);
     if($SMTP == true)
     {
       $mail->isSMTP();                                      // Set mailer to use SMTP
@@ -139,27 +138,21 @@ class event_base
       $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
       $mail->Port = 587;
       $mail->Body    = $mensagem;
-      $mail->SMTPDebug = 1;                               // TCP port to connect to
     }
     else
     {
       $mail->isSendmail();
-      $mail->SMTPAuth = true;  
+      $mail->SMTPAuth = true;
       $mail->msgHTML($this->mensagem);
+      $mail->SMTPDebug=1;
     }
 
     $mail->CharSet = 'utf-8';  //Arrumar acentuação
-    $mail->setFrom("luigifracalanza@gmail.com", "luigi fracalanza");
-    // $mail->addReplyTo($from_mail, $from_name);
-    // foreach ($email_destinatario as $key => $value) {
-    //   $mail->addAddress($value);
-    // }
-    $mail->addAddress('luigi_blackfm@hotmail.com');
-    $mail->isHTML(true);                     // Set email format to HTML
+    $mail->setFrom($from_mail, $from_name);
+    foreach ($email_destinatario as $key => $value) {
+      $mail->addAddress($value);
+    }
     $mail->Subject = $titulo;
-
-    $mail->AltBody = strip_tags($mensagem);
-
     if($this->log_etiqueta !== null) $mail->addAttachment($this->log_etiqueta);
 
     if(!$mail->send())
@@ -168,7 +161,7 @@ class event_base
       echo 'Mailer Error: ' . $mail->ErrorInfo;
     }
     else{ echo "e-mail enviado com sucesso!<br>";
-      echo 'Mailer Error: ' . $mail->ErrorInfo;
+
 }
   }
   /**
@@ -219,18 +212,27 @@ class event_base
           $this->mensagemHTML.= $i.": ".$values."<br>";
         }
       }
-      var_dump($this->mensagemHTML);
       $this->email();
       file_put_contents($this->dir_file, "");
     }
     if($resultado == false) echo "Arquivo não criado em error_files";
-    else echo "Concluido!!";
+    else echo "Erro gravado com sucesso";
   }
 
+  /**
+  * Function Para executar as funções
+  *
+  * @param    $configmail   Variavel global para o envio de email
+  * @property $log_email    Propriedade da classe para restringir o envio do email na Classe filha LOG
+  * @property $log_db       Propriedade da classe para restringir a gravação no DB na Classe filha LOG
+  * @property $log_files    Propriedade da classe para restringir a gravação no json na Classe filha LOG
+  * @property $error_db     Propriedade da classe para restringir a gravação no DB na Classe filha ERROR_HANDLING
+  * @property $error_files  Propriedade da classe para restringir a gravação no json na Classe filha ERROR_HANDLING
+  */
   public function execute()
   {
     global $configmail;
-var_dump($this->mensagem);
+
     if(($configmail) || ($this->log_email)) $this->email();
     if(($this->log_db) || ($this->error_db)) $this->db();
     if(($this->log_files) || ($this->error_files)) $this->files();

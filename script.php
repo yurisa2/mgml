@@ -61,13 +61,17 @@ if ($MLB != 0){
 
   // JUNÇÃO ML MG SCRIPT PARA POR O PEDIDO DO ML NO Magento_order
   echo "<h2>JUNÇÃO ML MG SCRIPT PARA POR O PEDIDO DO ML NO Magento</h2><br/>Lista de Pedidos MLB<br/>";
+  // 1 Lista os pedidos existentes no Mercado Livre
   $listapedido = listaPedidoMLB();
 
-  if($listapedido != 0)
+  // Caso exista pedido sendo retornado entra no if
+  if($listapedido == true)
   {
     echo "<h2>Dados do pedido a ser cadastrado</h2>";
     echo "<br>";
+    // Retorna um objeto com
     $Magento_order = retornaObjMl();
+    if($Magento_order == 0) return "Sem Novos Pedidos";
     var_dump($Magento_order);
     $nome = $Magento_order->nome_comprador;
     $id_shipping = $Magento_order->id_shipping;
@@ -117,26 +121,27 @@ if ($MLB != 0){
       $customerPagamentoSet = $teste->magento9_shoppingCartPaymentMethod($id_carrinho);
       var_dump($customerPagamentoSet);
 
-      echo "<br/><h2>7 - Finalização da compra</h2>";
-      $order = $teste->magento10_shoppingCartOrder($id_carrinho);
-      var_dump($order);
+      // echo "<br/><h2>7 - Finalização da compra</h2>";
+      // $order = $teste->magento10_shoppingCartOrder($id_carrinho);
+      // var_dump($order);
 
-      if($order != 0)
-      {
-        var_dump(escrevePedidoMGML($mlb));
-
-        $nome_arquivo = criaEtiqueta($id_shipping, $mlb, $nome, $order);
-
-        $error_handling = new log("Novo Pedido MAGENTO", "Numero do Pedido MGT: $order", "Comprador: $nome", "nova compra");
-        $error_handling->log_email = true;
-        $error_handling->mensagem_email = "Nova compra que entrou no magento";
-        $error_handling->etiqueta = $nome_arquivo;
-        $error_handling->log_email = true;
-        $error_handling->dir_files = "log/log.json";
-        $error_handling->log_files = true;
-        $error_handling->send_log_email();
-        $error_handling->execute();
-      }
+      // if($order != 0)
+      // {
+      //   var_dump(escrevePedidoMGML($mlb));
+      //
+      //   $nome_arquivo = criaEtiqueta($id_shipping, $mlb, $nome, $order);
+      //
+      //   $error_handling = new log("Novo Pedido MAGENTO", "Numero do Pedido MGT: $order", "Comprador: $nome", "nova compra");
+      //   $error_handling->log_email = true;
+      //   $error_handling->mensagem_email = "Nova compra que entrou no magento";
+      //   $error_handling->etiqueta = $nome_arquivo;
+      //   $error_handling->log_email = true;
+      //   $error_handling->dir_files = "log/log.json";
+      //   $error_handling->log_files = true;
+      //   $error_handling->send_log_email();
+      //   $error_handling->execute();
+      // }
+      var_dump(escrevePedidoMLB($mlb));
     }
     else echo "Pedido já existente no MAGENTO";
 
