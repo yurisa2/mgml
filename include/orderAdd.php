@@ -77,7 +77,6 @@ class Magento_order{
     );
 
     $return = $obj_magento->customerCustomerList($session, $complexFilter);
-var_dump($return);
     //VERIFICAÇÃO SE EXISTE CLIENTE CADASTRADO COM O EMAIL NO MGNT
     //CASO NÃO EXISTA É CADASTRADO E É PEGO O ID DO CLIENTE
     if(!$return)
@@ -107,43 +106,14 @@ var_dump($return);
         if($DEBUG == TRUE) var_dump($customer_address);
 
         $return = $obj_magento->customerAddressCreate($session, $id_customer, $customer_address);
-        //lê o json que contem o time() do ultimo email enviado
-        if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
-        $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
-
         //Se na requisição para atualizar o produto houver problema (retorno dif de 200)
         // ele entra no bloco de código
-        if($return["httpCode"] != 200)
+        if(gettype($return) != 'integer')
         {
           $nome_funcao = "magento1_customerCustomerCreate";
-          $saida = serialize($return);
+          $saida = $return->faultstring;
           $titulo = "Erro no Script Integração Mercado Livre Magento";
-          $tipo = "Erro";
-          //estancia a classe com os parametros
-          $error_handling = new error_handling($titulo, $nome_funcao, $saida, "erro");
-          //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
-          //atual significa que ja passou uma hora e pode mandar novamente email
-          if ($hora_email_enviado + 3600 <= time())
-          {
-            //estancia a função para criar a mensagem de corpo
-            $error_handling->send_error_email();
-            //estancia a função para executar as funções email()-db()-files() previamente
-            //por padrão, as propriedades error_db e error_files estão true
-            $error_handling->execute();
-            //atualiza o json para a hora em que é mandado o email
-            file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
-            return "0";
-          }
-          else
-          {
-            //Caso não tenha dado uma hora do ultimo email enviado, é gravado
-            //o erro no json de log  error_files/error_log.json
-            //executa a função para criar a mensagem de erro
-            $error_handling->send_errorlog_email();
-            //executa a função para atualizar o json com o novo erro
-            $error_handling->files();
-            return "0";
-          }
+          mandaEmail_files_db($nome_funcao,$saida,$titulo);
         }
         else echo "Criado customer Address: ";
         return $return;
@@ -209,41 +179,13 @@ var_dump($return);
       $session = magento_session();
 
       $cart_id = $obj_magento->shoppingCartCreate($session, $store_id);
-      //lê o json que contem o time() do ultimo email enviado
-      if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
-      $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
 
       if($cart_id) echo "<br/>ID do Carrinho de Compras: ".$cart_id;
       else{
         $nome_funcao = "magento3_shoppingCartCreate";
-        $saida = serialize($cart_id);
+        $saida = $cart_id->faultstring;
         $titulo = "Erro no Script Integração Mercado Livre Magento";
-        $tipo = "Erro";
-        //estancia a classe com os parametros
-        $error_handling = new error_handling($titulo, $nome_funcao, $saida, "erro");
-        //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
-        //atual significa que ja passou uma hora e pode mandar novamente email
-        if ($hora_email_enviado + 3600 <= time())
-        {
-          //estancia a função para criar a mensagem de corpo
-          $error_handling->send_error_email();
-          //estancia a função para executar as funções email()-db()-files() previamente
-          //por padrão, as propriedades error_db e error_files estão true
-          $error_handling->execute();
-          //atualiza o json para a hora em que é mandado o email
-          file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
-          return "0";
-        }
-        else
-        {
-          //Caso não tenha dado uma hora do ultimo email enviado, é gravado
-          //o erro no json de log  error_files/error_log.json
-          //executa a função para criar a mensagem de erro
-          $error_handling->send_errorlog_email();
-          //executa a função para atualizar o json com o novo erro
-          $error_handling->files();
-          return "0";
-        }
+        mandaEmail_files_db($nome_funcao,$saida,$titulo);
       }
       return $cart_id;
       if($DEBUG == TRUE) {echo "<h1>shoppingCartCreate</h1>";var_dump($cart_id);}
@@ -255,57 +197,36 @@ var_dump($return);
       global $store_id;
       $obj_magento = magento_obj();
       $session = magento_session();
-echo "<h1>aqui</h1>";var_dump($this->data->sku_produto);
+
+      if(gettype($this->data->sku_produto) == 'array'){
       foreach ($this->data->sku_produto as $key => $value)
       {
-
         $shoppingCartProductEntity[$key] = array(
           'sku' => $this->data->sku_produto[$key],
           'qty' => $this->data->qtd_produto[$key]);
       }
-
+    }else {
+      $shoppingCartProductEntity[] = array(
+        'sku' => $this->data->sku_produto,
+        'qty' => $this->data->qtd_produto);
+    }
+    var_dump($shoppingCartProductEntity);
         $result_prod_add = $obj_magento->shoppingCartProductAdd($session, $cart_id, $shoppingCartProductEntity, $store_id);
-        //lê o json que contem o time() do ultimo email enviado
-        if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
-        $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
-
+        var_dump($result_prod_add);
         if ($result_prod_add === true)
         {
           echo "<br/>Itens adicionados no Carrinho: ";
           var_dump($shoppingCartProductEntity);
+          return 1;
         }
         else
         {
-            echo "<br/>Produtos não puderam ser adicionados";var_dump($result_prod_add);
+          echo "<br/>Produtos não puderam ser adicionados";var_dump($result_prod_add);
           $nome_funcao = "magento4_shoppingCartProductAdd";
-          $saida = serialize($result_prod_add);
+          $saida = $result_prod_add->faultstring;
           $titulo = "Erro no Script Integração Mercado Livre Magento";
-          $tipo = "Erro";
-          //estancia a classe com os parametros
-          $error_handling = new error_handling($titulo, $nome_funcao, $saida, "erro");
-          //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
-          //atual significa que ja passou uma hora e pode mandar novamente email
-          if ($hora_email_enviado + 3600 <= time())
-          {
-            //estancia a função para criar a mensagem de corpo
-            $error_handling->send_error_email();
-            //estancia a função para executar as funções email()-db()-files() previamente
-            //por padrão, as propriedades error_db e error_files estão true
-            $error_handling->execute();
-            //atualiza o json para a hora em que é mandado o email
-            file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
-            return "0";
-          }
-          else
-          {
-            //Caso não tenha dado uma hora do ultimo email enviado, é gravado
-            //o erro no json de log  error_files/error_log.json
-            //executa a função para criar a mensagem de erro
-            $error_handling->send_errorlog_email();
-            //executa a função para atualizar o json com o novo erro
-            $error_handling->files();
-            return "0";
-          }
+        mandaEmail_files_db($nome_funcao,$saida,$titulo);
+        return 0;
         }
       }
 
@@ -316,50 +237,22 @@ echo "<h1>aqui</h1>";var_dump($this->data->sku_produto);
         $obj_magento = magento_obj();
         $session = magento_session();
         $result = $obj_magento->shoppingCartProductList($session, $cart_id, $store_id);
-        //lê o json que contem o time() do ultimo email enviado
-        if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
-        $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
-
-        //Se na requisição para atualizar o produto houver problema (retorno dif de 200)
-        // ele entra no bloco de código
-        if($result["httpCode"] != 200)
-        {
-          $nome_funcao = "magento5_shoppingCartProductList";
-          $saida = serialize($result);
-          $titulo = "Erro no Script Integração Mercado Livre Magento";
-          $tipo = "Erro";
-          //estancia a classe com os parametros
-          $error_handling = new error_handling($titulo, $nome_funcao, $saida, "erro");
-          //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
-          //atual significa que ja passou uma hora e pode mandar novamente email
-          if ($hora_email_enviado + 3600 <= time())
-          {
-            //estancia a função para criar a mensagem de corpo
-            $error_handling->send_error_email();
-            //estancia a função para executar as funções email()-db()-files() previamente
-            //por padrão, as propriedades error_db e error_files estão true
-            $error_handling->execute();
-            //atualiza o json para a hora em que é mandado o email
-            file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
-            return "0";
-          }
-          else
-          {
-            //Caso não tenha dado uma hora do ultimo email enviado, é gravado
-            //o erro no json de log  error_files/error_log.json
-            //executa a função para criar a mensagem de erro
-            $error_handling->send_errorlog_email();
-            //executa a função para atualizar o json com o novo erro
-            $error_handling->files();
-            return "0";
-          }
-        }
         if($DEBUG == TRUE)
         {
           echo "<h1>Produtos adicionados no carrinho: </h1>";
           var_dump($result);
         }
-        return "Produtos adicionados no carrinho";
+
+        //Se na requisição para atualizar o produto houver problema (retorno dif de 200)
+        // ele entra no bloco de código
+        if(gettype($result) != 'array')
+        {
+          $nome_funcao = "magento5_shoppingCartProductList";
+          $saida = $result->faultstring;
+          $titulo = "Erro no Script Integração Mercado Livre Magento";
+          mandaEmail_files_db($nome_funcao,$saida,$titulo);
+        }
+        else return "Produtos adicionados no carrinho";
       }
       public function magento6_shoppingCartCustomerSet($cart_id, $id_customer)
       {
@@ -382,10 +275,9 @@ echo "<h1>aqui</h1>";var_dump($this->data->sku_produto);
         else
         {
           $nome_funcao = "magento6_shoppingCartCustomerSet";
-          $saida = serialize($return);
+          $saida = $return->faultstring;
           $titulo = "Erro no Script Integração Mercado Livre Magento";
-          $error_handling = new error_handling($titulo, $nome_funcao, $saida, "erro");
-          $error_handling->execute();
+          mandaEmail_files_db($nome_funcao,$saida,$titulo);
           echo "<br/>Não foi possível Setar Customer";
         }
         if($DEBUG == TRUE) echo "<h1>CartCustomerSet: ".$return."</h1>";
@@ -428,10 +320,9 @@ echo "<h1>aqui</h1>";var_dump($this->data->sku_produto);
             if ($return == true) return "Setado Customer Addresses no carrinho";
             else {
               $nome_funcao = "magento7_shoppingCartCustomerAddresses";
-              $saida = serialize($return);
+              $saida = $return->faultstring;
               $titulo = "Erro no Script Integração Mercado Livre Magento";
-              $error_handling = new error_handling($titulo, $nome_funcao, $saida, "erro");
-              $error_handling->execute();
+              mandaEmail_files_db($nome_funcao,$saida,$titulo);
               echo "nao deu".var_dump($return);//Mandar email do erro
             }
 
@@ -448,10 +339,9 @@ echo "<h1>aqui</h1>";var_dump($this->data->sku_produto);
             if ($return == true) return "Setado Shipping Method para o carrinho".var_dump($return);
             else {
               $nome_funcao = "magento8_shoppingCartShippingMethod";
-              $saida = serialize($return);
+              $saida = $return->faultstring;
               $titulo = "Erro no Script Integração Mercado Livre Magento";
-              $error_handling = new error_handling($titulo, $nome_funcao, $saida, "erro");
-              $error_handling->execute();
+              mandaEmail_files_db($nome_funcao,$saida,$titulo);
 
               return "Não foi possivel acionar o metodo de entrega".var_dump($return);//Mandar email do erro
             }
@@ -485,10 +375,9 @@ echo "<h1>aqui</h1>";var_dump($this->data->sku_produto);
             if ($return == true) return "Setado Payment Method para o carrinho<br/>";
             else {
               $nome_funcao = "magento9_shoppingCartPaymentMethod";
-              $saida = serialize($return);
+              $saida = $return->faultstring;
               $titulo = "Erro no Script Integração Mercado Livre Magento";
-              $error_handling = new error_handling($titulo, $nome_funcao, $saida, "erro");
-              $error_handling->execute();
+              mandaEmail_files_db($nome_funcao,$saida,$titulo);
               echo "Problema meio de pagamento";
             }
             if($DEBUG == TRUE)
@@ -509,10 +398,9 @@ echo "<h1>aqui</h1>";var_dump($this->data->sku_produto);
               if(strlen($order_id) < 11) echo "<br/>Order criado - ".$order_id;
               else {
                 $nome_funcao = "magento10_shoppingCartOrder";
-                $saida = serialize($order_id);
+                $saida = $order_id->faultstring;
                 $titulo = "Erro no Script Integração Mercado Livre Magento";
-                $error_handling = new error_handling($titulo, $nome_funcao, $saida, "erro");
-                $error_handling->execute();
+              mandaEmail_files_db($nome_funcao,$saida,$titulo);
                 echo '<br/>Deu problema no final--> '.$order_id;
               }
             }
@@ -531,10 +419,9 @@ echo "<h1>aqui</h1>";var_dump($this->data->sku_produto);
               if($return == true) echo "<br/>Comentário criado<br/>";
               else {
                 $nome_funcao = "magento10_shoppingCartOrder";
-                $saida = serialize($return);
+                $saida = $return->faultstring;
                 $titulo = "Erro no Script Integração Mercado Livre Magento";
-                $error_handling = new error_handling($titulo, $nome_funcao, $saida, "erro");
-                $error_handling->execute();
+                mandaEmail_files_db($nome_funcao,$saida,$titulo);
                 echo "Não foi possivel adicionar comentario<br/>";
               }
             }
