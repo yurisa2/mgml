@@ -67,23 +67,26 @@ if ($MLB != 0){
   // Caso exista pedido sendo retornado entra no if
   if($listapedido == true)
   {
+    echo "<h2>Próximo Pedido: </h2>";
+    $mlb = proximoPedidoMLB();
+    var_dump($mlb);
     echo "<h2>Dados do pedido a ser cadastrado</h2>";
     echo "<br>";
     // Retorna um objeto com
-    $Magento_order = retornaObjMl();
+    $Magento_order = retornaObjMl($mlb);
     if($Magento_order == 0) return "Sem Novos Pedidos";
     var_dump($Magento_order);
     $nome = $Magento_order->nome_comprador;
     $id_shipping = $Magento_order->id_shipping;
 
-    echo "<h2>Próximo Pedido: </h2>";
-    $mlb = proximoPedidoMLB();
-    var_dump($mlb);
 
     $teste = new Magento_order($Magento_order);
 
     $pedidosFeitos = retornaPedidosfeitosMGML();
-    $string = implode(",",$mlb);
+
+    $string = $mlb;
+    if(gettype($mlb) == 'array') $string = implode(",",$mlb);
+
     if(!strpos($pedidosFeitos, $string)){
       echo "<h2>1 - Criação do customer</h2>";
       $id_customer = $teste->magento1_customerCustomerCreate();
@@ -99,7 +102,7 @@ if ($MLB != 0){
 
       echo "<br/><h2>4 - Adicionando os podutos no carrinho</h2>";
       $add_produto = $teste->magento4_shoppingCartProductAdd($id_carrinho);
-      var_dump($add_produto);
+      if($add_produto == 0) return escrevePedidoMLB($mlb);
 
       echo "<br/><h2>5 - Lista do podutos no carrinho</h2>";
       $produtos_carrinho = $teste->magento5_shoppingCartProductList($id_carrinho);
@@ -141,7 +144,6 @@ if ($MLB != 0){
       //   $error_handling->send_log_email();
       //   $error_handling->execute();
       // }
-      var_dump(escrevePedidoMLB($mlb));
     }
     else echo "Pedido já existente no MAGENTO";
 
