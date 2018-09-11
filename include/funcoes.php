@@ -471,8 +471,8 @@ $dadosVenda->apelido_comprador = $response['body']->buyer->nickname;
 $dadosVenda->email_comprador = $response['body']->buyer->email;
 $dadosVenda->cod_area_comprador = $response['body']->buyer->phone->area_code;
 $dadosVenda->telefone_comprador = $response['body']->buyer->phone->number;
-$dadosVenda->nome_comprador = "MLB-".$response['body']->buyer->first_name;
-$dadosVenda->sobrenome_comprador = $response['body']->buyer->last_name;
+$dadosVenda->nome_comprador = "MLB-".ucwords(strtolower($response['body']->buyer->first_name));
+$dadosVenda->sobrenome_comprador = ucwords(strtolower($response['body']->buyer->last_name));
 $dadosVenda->tipo_documento_comprador = $response['body']->buyer->billing_info->doc_type;
 $dadosVenda->numero_documento_comprador = $response['body']->buyer->billing_info->doc_number;
 
@@ -636,7 +636,7 @@ function retornaDadosOrders()
  *
  * @return object
  */
-function retornaObjMl()
+function retornaObjMl($mlb)
 {
   global $DEBUG;
 
@@ -646,7 +646,8 @@ function retornaObjMl()
   $Magento_order = new stdClass();
 
   foreach($dadosVenda as $key => $value){
-
+  if($mlb == $dadosVenda->$key->id_order)
+  {
     $Magento_order->order_id = $dadosVenda->$key->id_order;
     $Magento_order->mlb_produto = $dadosVenda->$key->mlb_produto;
     $Magento_order->sku_produto = $dadosVenda->$key->sku_produto;
@@ -684,6 +685,7 @@ function retornaObjMl()
     $Magento_order->numero_documento_comprador = $dadosVenda->$key->numero_documento_comprador;
 
   }
+}
   return $Magento_order;
   if($DEBUG == TRUE) {echo "Estrutura do OBJ Magento_order";var_dump($Magento_order);}
 }
@@ -757,7 +759,7 @@ function proximoPedidoMLB()
   $valor_proximo = $lista[$indice_proximo];
   $valor_zero = $lista["0"];
 
-  if($indice_proximo+1 < count($lista)) return $valor_proximo;
+  if($indice_proximo+1 <= count($lista)) return $valor_proximo;
   else return $valor_zero;
 }
 /**
@@ -837,6 +839,50 @@ function criaEtiqueta($shipment_ids, $mlb, $nome, $order_id)
   echo "Sucesso!!";
 
   return $nome_arquivo;
+}
+
+/**
+ * Manda email a cada uma hora com todos os erros e apaga logo apos
+ * Grava no json e no DB os erros durante uma hora
+ * Returns 0 pois esta função é de erro
+ *
+ * @param string $nome_funcao    Nome da função em que houve o erro
+ * @param string $saida          Saida de erro - o retorno da aplicação
+ * @param string $titulo         Titulo do email
+ *
+ * @return string
+ */
+function mandaEmail_files_db($nome_funcao,$saida,$titulo){
+//lê o json que contem o time() do ultimo email enviado
+if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
+$hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
+
+  //estancia a classe com os parametros
+  $error_handling = new error_handling($titulo, $nome_funcao, $saida, "erro");
+  //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
+  //atual significa que ja passou uma hora e pode mandar novamente email
+  if ($hora_email_enviado + 3600 <= time())
+  {
+    //estancia a função para criar a mensagem de corpo
+    $error_handling->send_error_email();
+    //estancia a função para executar as funções email()-db()-files() previamente
+    //por padrão, as propriedades error_db e error_files estão true
+    $error_handling->execute();
+    //atualiza o json para a hora em que é mandado o email
+    file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
+    return "0";
+  }
+  else
+  {
+    //Caso não tenha dado uma hora do ultimo email enviado, é gravado
+    //o erro no json de log  error_files/error_log.json
+    //executa a função para criar a mensagem de erro
+    $error_handling->send_errorlog_email();
+    //executa a função para atualizar o json com o novo erro
+    $error_handling->files();
+    return "0";
+  }
+
 }
 
 ?>
