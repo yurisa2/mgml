@@ -52,35 +52,10 @@ function lista_MLB() {
   // ele entra no bloco de código
   if($result["httpCode"] != 200)
   {
-    $nome_funcao = "atualizaProdMLB";
-    $saida = serialize($response);
+    $nome_funcao = "lista_MLB";
+    $saida = $response['body']->message;
     $titulo = "Erro no Script Mercado Livre";
-    $tipo = "Erro";
-    //estancia a classe com os parametros
-    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
-    //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
-    //atual significa que ja passou uma hora e pode mandar novamente email
-    if ($hora_email_enviado + 3600 <= time())
-    {
-      //estancia a função para criar a mensagem de corpo
-      $error_handling->send_error_email();
-      //estancia a função para executar as funções email()-db()-files() previamente
-      //por padrão, as propriedades error_db e error_files estão true
-      $error_handling->execute();
-      //atualiza o json para a hora em que é mandado o email
-      file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
-      return "0";
-    }
-    else
-    {
-      //Caso não tenha dado uma hora do ultimo email enviado, é gravado
-      //o erro no json de log  error_files/error_log.json
-      //executa a função para criar a mensagem de erro
-      $error_handling->send_errorlog_email();
-      //executa a função para atualizar o json com o novo erro
-      $error_handling->files();
-      return "0";
-    }
+    mandaEmail_files_db($nome_funcao,$saida,$titulo);
   }
 
   $limit = $result['body']->limit;
@@ -180,7 +155,7 @@ function atualizaProdMLB($SKU,$MLB)
 
   $response = $meli->put('/items/MLB'.$MLB, $body, $params);
 
-  if ($DEBUG == true) var_dump($response); //DEBUG
+  if ($DEBUG == true) var_dump($response['body']->message); //DEBUG
   //lê o json que contem o time() do ultimo email enviado
   if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
   $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
@@ -190,34 +165,9 @@ function atualizaProdMLB($SKU,$MLB)
   if($response["httpCode"] != 200)
   {
     $nome_funcao = "atualizaProdMLB";
-    $saida = serialize($response);
+    $saida = $response['body']->message;
     $titulo = "Erro no Script Mercado Livre";
-    $tipo = "Erro";
-    //estancia a classe com os parametros
-    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
-    //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
-    //atual significa que ja passou uma hora e pode mandar novamente email
-    if ($hora_email_enviado + 3600 <= time())
-    {
-      //estancia a função para criar a mensagem de corpo
-      $error_handling->send_error_email();
-      //estancia a função para executar as funções email()-db()-files() previamente
-      //por padrão, as propriedades error_db e error_files estão true
-      $error_handling->execute();
-      //atualiza o json para a hora em que é mandado o email
-      file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
-      return "0";
-    }
-    else
-    {
-      //Caso não tenha dado uma hora do ultimo email enviado, é gravado
-      //o erro no json de log  error_files/error_log.json
-      //executa a função para criar a mensagem de erro
-      $error_handling->send_errorlog_email();
-      //executa a função para atualizar o json com o novo erro
-      $error_handling->files();
-      return "0";
-    }
+    mandaEmail_files_db($nome_funcao,$saida,$titulo);
   }
   //caso não tenha dado problema com a atualização do PRODUTO retorna 1
   else return "1";
@@ -258,32 +208,7 @@ function atualizaDescricaoMLB($SKU,$MLB)
     $nome_funcao = "atualizaDescricaoMLB";
     $saida = serialize($response);
     $titulo = "Erro no Script Mercado Livre";
-    $tipo = "Erro";
-    //estancia a classe com os parametros
-    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
-    //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
-    //atual significa que ja passou uma hora e pode mandar novamente email
-    if ($hora_email_enviado + 3600 <= time())
-    {
-      //estancia a função para criar a mensagem de corpo
-      $error_handling->send_error_email();
-      //estancia a função para executar as funções email()-db()-files() previamente
-      //por padrão, as propriedades error_db e error_files estão true
-      $error_handling->execute();
-      //atualiza o json para a hora em que é mandado o email
-      file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
-      return "0";
-    }
-    else
-    {
-      //Caso não tenha dado uma hora do ultimo email enviado, é gravado
-      //o erro no json de log  error_files/error_log.json
-      //executa a função para criar a mensagem de erro
-      $error_handling->send_errorlog_email();
-      //executa a função para atualizar o json com o novo erro
-      $error_handling->files();
-      return "0";
-    }
+    mandaEmail_files_db($nome_funcao,$saida,$titulo);
   }
   else return 1;
 }
@@ -328,34 +253,9 @@ function retorna_SKU($MLB)
   if($response['httpCode'] != 200)
   {
     $nome_funcao = "retorna_SKU";
-    $saida = serialize($response);
+    $saida = $response['body']->message;
     $titulo = "Erro no Script Mercado Livre";
-    $tipo = "Erro";
-    //estancia a classe com os parametros
-    $error_handling = new error_handling($titulo, $nome_funcao, $saida, $tipo);
-    //Se o horario do json + 1 hora (3600 s) for menor ou igual ao horario
-    //atual significa que ja passou uma hora e pode mandar novamente email
-    if ($hora_email_enviado + 3600 <= time())
-    {
-      //estancia a função para criar a mensagem de corpo
-      $error_handling->send_error_email();
-      //estancia a função para executar as funções email()-db()-files() previamente
-      //por padrão, as propriedades error_db e error_files estão true
-      $error_handling->execute();
-      //atualiza o json para a hora em que é mandado o email
-      file_put_contents("include/files/ultimo_emailenviado.json", json_encode(time()));
-      return "0";
-    }
-    else
-    {
-      //Caso não tenha dado uma hora do ultimo email enviado, é gravado
-      //o erro no json de log  error_files/error_log.json
-      //executa a função para criar a mensagem de erro
-      $error_handling->send_errorlog_email();
-      //executa a função para atualizar o json com o novo erro
-      $error_handling->files();
-      return "0";
-    }
+    mandaEmail_files_db($nome_funcao,$saida,$titulo);
   }
   if ($DEBUG == true) var_dump($response['body']); //DEBUG
 
@@ -490,7 +390,7 @@ function retornaOrders(){
 
   $params = array('access_token' => token(),
   'seller' => $user_id, 'order.status' => "paid",
-  'order.date_created.from' => "2018-06-10T00:00:00.000-00:00"
+  'order.date_created.from' => "2018-08-10T00:00:00.000-00:00"
   );
 
   //BLOCO PARA USAR AS ORDERS DE TESTE----
@@ -695,7 +595,7 @@ function listaPedidoMLB()
   global $DEBUG;
   $Magento_order = retornaDadosOrders();
 
-  if ($Magento_order == 0) return "Não há Novos pedidos";
+  if ($Magento_order == 0){ echo "Não há Novos pedidos"; return 0;}
 
   foreach ($Magento_order as $key => $value) {
     $json[] = $Magento_order->$key->id_order;
