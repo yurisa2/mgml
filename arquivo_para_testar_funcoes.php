@@ -4,12 +4,14 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require "include/all_include.php";
-$DEBUG = false;
+$DEBUG = true;
 echo "<pre>";
 
+$teste = new error_handling("Teste Sendmail", "Testando Sendmail", "Sendmail", "Teste");
+$teste->send_error_email();
+$teste->email();
 
 
-var_dump(retornaDadosOrders());
 /**
  * Output debugging info via user-defined method.
  * Only generates output if SMTP debug output is enabled (@see SMTP::$do_debug).
