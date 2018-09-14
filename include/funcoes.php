@@ -785,4 +785,21 @@ $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emaile
 
 }
 
+function testmail(){
+
+  echo_debug('Iniciando testmail');
+  $error_handling = new error_handling("Testando Email", "testEmail", 'Saida Teste', "teste");
+  //estancia a função para criar a mensagem de corpo
+  $error_handling->send_error_email();
+  $error_handling->email();
+
+  return "Enviado com Sucesso";
+
+  }
+
+  function echo_debug($msg)
+    {
+      echo date('r',time()).' - '.$msg.'<br>';
+
+    }
 ?>
