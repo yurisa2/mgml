@@ -141,6 +141,7 @@ class event_base
     }
     else
     {
+      $from_name = 'BOT - Integração Mercado Livre Magento - SendMail';
       $mail->isSendmail();
       $mail->SMTPAuth = true;
       $mail->msgHTML($this->mensagem);
