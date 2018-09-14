@@ -164,7 +164,7 @@ function atualizaProdMLB($SKU,$MLB)
   // ele entra no bloco de código
   if($response["httpCode"] != 200)
   {
-    $nome_funcao = "atualizaProdMLB";
+    $nome_funcao = "atualizaProdMLB - SKU:$SKU - MLB:$MLB";
     $saida = $response['body']->message;
     $titulo = "Erro no Script Mercado Livre";
     mandaEmail_files_db($nome_funcao,$saida,$titulo);
@@ -205,8 +205,8 @@ function atualizaDescricaoMLB($SKU,$MLB)
   // ele entra no bloco de código
   if($response["httpCode"] != 200)
   {
-    $nome_funcao = "atualizaDescricaoMLB";
-    $saida = serialize($response);
+    $nome_funcao = "atualizaDescricaoMLB - SKU: $SKU - MLB: $MLB";
+    $saida = $response['body']->message;
     $titulo = "Erro no Script Mercado Livre";
     mandaEmail_files_db($nome_funcao,$saida,$titulo);
   }
@@ -252,7 +252,7 @@ function retorna_SKU($MLB)
   // ele entra no bloco de código
   if($response['httpCode'] != 200)
   {
-    $nome_funcao = "retorna_SKU";
+    $nome_funcao = "retorna_SKU - MLB: $MLB";
     $saida = $response['body']->message;
     $titulo = "Erro no Script Mercado Livre";
     mandaEmail_files_db($nome_funcao,$saida,$titulo);
