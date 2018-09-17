@@ -12,15 +12,15 @@
             <form method="get" action="manual_be.php">
                 <h3>Checagem manual</h3>
                <div class="row">
-                    <div class="col-md-5">
+                    <div class="col-md-6">
                         <div class="form-group">
-                            <input type="text" name="sku" class="form-control" placeholder="SKU" value="" />
+                            <input type="text" name="mlb" class="form-control" placeholder="MLB" value="" />
                         </div>
-                        <div class="radio">
+                        <div class="radio" class="col-md-4">
                           <label><input type="radio" name="optradio" value="Sinc">Atualizar Produto</label><br>
                           <label><input type="radio" name="optradio" value="setloop">Setar o começo do loop</label>
                           <label><input type="radio" name="optradio" value="listMgt">Listar produtos Magento</label>
-                          <label><input type="radio" name="optradio" value="listSky">Listar produtos SKYHUB</label>
+                          <label><input type="radio" name="optradio" value="listml">Listar produtos ML</label>
                           <label><input type="radio" name="optradio" value="mail">Testar eMail</label>
 
                         </div>

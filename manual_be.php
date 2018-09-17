@@ -3,12 +3,20 @@ ini_set("error_reporting",E_ALL);
 ini_set('display_errors', 1);
 require_once 'include/all_include.php';
 
-$sku = $_GET["sku"];
-$sku = strtoupper($sku);
-$sku = trim($sku);
-
 $acao = $_GET["optradio"];
 
+$mlb = $_GET["mlb"];
+
+if($mlb == ''){
+  if( ($acao == 'setloop') || ($acao == 'Sinc') ){
+    echo "Favor digite o MLB";
+    exit;
+  }
+}
+else{
+$mlb = strtoupper($mlb);
+$mlb = trim($mlb);
+}
 // var_dump($_GET);
 // exit;
 
@@ -25,12 +33,12 @@ $sec_ini = time();
 
 if($acao == "Sinc")
 {
-  atualizaProdB2w($sku);
+  var_dump(atualizaProdML($mlb));
 }
 
 if($acao == "setloop")
 {
-  var_dump(setarInicioLoop($sku));
+  var_dump(setarInicioLoop($mlb));
 }
 
 if($acao == "listMgt")
@@ -38,9 +46,9 @@ if($acao == "listMgt")
   var_dump(listaProdMgt());
 }
 
-if($acao == "listSky")
+if($acao == "listml")
 {
-  var_dump(listaProdSkyHub());
+  var_dump(listaProdML());
 }
 
 if($acao == "mail")
