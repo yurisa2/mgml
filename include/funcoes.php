@@ -121,7 +121,7 @@ function atualizaProdMLB($SKU,$MLB)
 
 
   $produto = magento_product_summary($SKU);
-
+echo "produto";var_dump($produto);
   if(!$produto) return 0;
   $title = $prefixo_prod.$produto['name'].$sufixo_prod;
 
@@ -130,7 +130,7 @@ function atualizaProdMLB($SKU,$MLB)
   $price = round(($produto['price'] * $ajuste_preco_multiplicacao)+$ajuste_preco_soma,2);
   $available_quantity = floor($produto['qty_in_stock'] + ($produto['qty_in_stock']*$ajuste_estoque));
 
-  if ($DEBUG == true) var_dump($produto); //DEBUG
+  echo "Price";var_dump($price); //DEBUG
 
   if($available_quantity < 0) $available_quantity = 0;
 
@@ -155,7 +155,7 @@ function atualizaProdMLB($SKU,$MLB)
 
   $response = $meli->put('/items/MLB'.$MLB, $body, $params);
 
-  if ($DEBUG == true) var_dump($response['body']->message); //DEBUG
+  echo "RESPONSE";var_dump($response['body']); //DEBUG
   //lê o json que contem o time() do ultimo email enviado
   if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
   $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
@@ -256,8 +256,9 @@ function retorna_SKU($MLB)
     $saida = $response['body']->message;
     $titulo = "Erro no Script Mercado Livre";
     mandaEmail_files_db($nome_funcao,$saida,$titulo);
+    return 0;
   }
-  if ($DEBUG == true) var_dump($response['body']); //DEBUG
+  if($DEBUG) var_dump($response); //DEBUG
 
   foreach ($response['body']->attributes as $key => $value) {
     if($value->name == "Modelo") return $value->value_name;
@@ -797,9 +798,123 @@ function testmail(){
 
   }
 
-  function echo_debug($msg)
-    {
-      echo date('r',time()).' - '.$msg.'<br>';
+function echo_debug($msg)
+{
+    echo date('r',time()).' - '.$msg.'<br>';
 
-    }
+}
+
+  function atualizaProdML($mlb)
+  {
+    global $app_Id;
+    global $secret_Key;
+    global $DEBUG;
+    global $ajuste_preco_multiplicacao;
+    global $ajuste_estoque;
+    global $ajuste_preco_soma;
+    global $sufixo_prod;
+    global $prefixo_prod;
+    global $marca;
+
+    echo_debug('Iniciando atualizaProdML');
+
+    if (is_null($mlb)) return "Campo MLB Vazio. Favor digitar MLB";
+
+    $sku = retorna_SKU($mlb);
+
+    $produto = magento_product_summary($sku);
+
+    if(!$produto) return "Não encontrado o produto $mlb no magento.";
+
+    $title = $prefixo_prod.$produto['name'].$sufixo_prod;
+
+    if (strlen($title) > 60) $title = $prefixo_prod.$produto['name'];
+
+    $price = round(($produto['price'] * $ajuste_preco_multiplicacao)+$ajuste_preco_soma,2);
+    $available_quantity = floor($produto['qty_in_stock'] + ($produto['qty_in_stock']*$ajuste_estoque));
+
+    if ($DEBUG == true) var_dump($produto); //DEBUG
+
+    if($available_quantity < 0) $available_quantity = 0;
+
+    $meli = new Meli($app_Id, $secret_Key);
+
+    $params = array('access_token' => token());
+
+    $body = array
+    (
+      'title' => $title,
+      'price' => $price,
+      'available_quantity' => $available_quantity,
+      'attributes' =>
+      array(
+        array('name' => "Marca",
+        'value_name' => $marca),
+        array('id' => "MODEL",
+        'value_name' => $sku)
+      )
+    );
+
+    $response = $meli->put('/items/MLB'.$mbl, $body, $params);
+
+    var_dump($response); //DEBUG
+
+    if($response['httpCode'] !== 200) return "Houve problemas com o produto $mlb";
+    else return "Produto $mlb foi atualizado com sucesso!";
+  }
+
+  function setarInicioLoop($mlb){
+
+    echo_debug('Iniciando setarInicioLoop');
+
+    if(is_null($mlb)) return "Campo MLB Vazio. Favor digitar MLB";
+    //pega todos os produtos no ML
+    $result = lista_MLB();
+
+    $ml = "MLB$mlb";
+    $indice_prod = array_search($ml, $result);
+
+    if(!$indice_prod) return "Não encontrado o produto $mlb.";
+
+    //seta no json o prod anterior ao sku passado por parametro
+    file_put_contents('include/files/ultimo_MLB.json', substr($result[$indice_prod], -10));
+
+    //
+    return "Setado produto $mlb como proximo da lista do loop";
+  }
+
+  function listaProdMgt(){
+
+    echo_debug('Iniciando listaProdMgt');
+    $result = magento_catalogProductList();
+    $array_skus = array();
+
+     foreach ($result as $key => $value)
+      $array_skus[] = array('SKU' => $value->sku,
+                      'NOME' => $value->name);
+
+    return $array_skus;
+  }
+
+  function listaProdML(){
+
+    echo_debug('Iniciando listaProdML');
+
+    global $app_Id;
+    global $secret_Key;
+    global $user_id;
+    global $DEBUG;
+
+    $meli = new Meli($app_Id, $secret_Key);
+    $url = '/users/' . $user_id . '/items/search';
+    $params = array(
+      'access_token' => token(),
+      'limit' => 100
+    );
+
+    $result = $meli->get($url, $params);
+
+    return $result['body']->results;
+
+  }
 ?>
