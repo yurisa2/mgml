@@ -206,7 +206,7 @@ class event_base
     //OBS: Pode até mandar o arquivo em anexo;
     if (count($mensagem) > 100)
     {
-      $this->titulo = "Erros sei lá";
+      $this->titulo = "100 Erros";
       foreach ($mensagem as $key => $value)
       {
         foreach ($mensagem[$key] as $i => $values) {
