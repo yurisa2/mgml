@@ -7,9 +7,8 @@ require "include/all_include.php";
 $DEBUG = true;
 echo "<pre>";
 
-$teste = new error_handling("Teste Sendmail", "Testando Sendmail", "Sendmail", "Teste");
-$teste->send_error_email();
-$teste->email();
+$sku = retorna_SKU('1040271008');
+var_dump(atualizaProdMLB($sku, '1040271008'));
 
 
 /**

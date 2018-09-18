@@ -250,6 +250,10 @@ function retorna_SKU($MLB)
 
   //Se na requisição para atualizar o produto houver problema (retorno dif de 200)
   // ele entra no bloco de código
+  if($response['body'] == '') {
+    echo "Este produto encontra-se para revisão devido nome/categoria do mesmo";
+    return false;
+  }
   if($response['httpCode'] != 200)
   {
     $nome_funcao = "retorna_SKU - MLB: $MLB";
@@ -821,7 +825,7 @@ function echo_debug($msg)
     if (is_null($mlb)) return "Campo MLB Vazio. Favor digitar MLB";
 
     $sku = retorna_SKU($mlb);
-
+    if(!$sku) return "Este produto está com problemas";
     $produto = magento_product_summary($sku);
 
     if(!$produto) return "Não encontrado o produto $mlb no magento.";
