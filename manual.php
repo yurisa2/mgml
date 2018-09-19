@@ -10,19 +10,19 @@
                 <img src="https://image.ibb.co/kUagtU/rocket_contact.png" alt="rocket_contact"/>
             </div>
             <form method="get" action="manual_be.php">
-                <h3>Checagem manual</h3>
+                <h3>Checagem manual - Mercado Livre - Magento</h3>
                <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-md-12">
                         <div class="form-group">
                             <input type="text" name="mlb" class="form-control" placeholder="MLB" value="" />
                         </div>
                         <div class="radio" class="col-md-4">
-                          <label><input type="radio" name="optradio" value="Sinc">Atualizar Produto</label><br>
-                          <label><input type="radio" name="optradio" value="setloop">Setar o começo do loop</label>
-                          <label><input type="radio" name="optradio" value="listMgt">Listar produtos Magento</label>
-                          <label><input type="radio" name="optradio" value="listml">Listar produtos ML</label>
-                          <label><input type="radio" name="optradio" value="mail">Testar eMail</label>
-
+                          <label><input type="radio" name="optradio" value="Sinc">Atualizar Produto - <small>atualizaProdML($mlb)</small></label><br>
+                          <label><input type="radio" name="optradio" value="Resumo">Resumo Gestão - <small>resumoProd($mlb)</small></label><br>
+                          <label><input type="radio" name="optradio" value="setloop">Setar o começo do loop - <small>setarInicioLoop($mlb)</small></label><br>
+                          <label><input type="radio" name="optradio" value="listMgt">Listar produtos Magento - <small>listaProdMgt()</small></label><br>
+                          <label><input type="radio" name="optradio" value="listml">Listar produtos ML - <small>listaProdML()</small></label><br>
+                          <label><input type="radio" name="optradio" value="mail">Testar eMail - <small>testmail()</small></label>
                         </div>
                         <div class="form-group">
                             <input type="submit" name="btnSubmit" class="btnContact" value="Acessar" />

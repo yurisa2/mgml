@@ -8,7 +8,7 @@ $acao = $_GET["optradio"];
 $mlb = $_GET["mlb"];
 
 if($mlb == ''){
-  if( ($acao == 'setloop') || ($acao == 'Sinc') ){
+  if( ($acao == 'setloop') || ($acao == 'Sinc') || ($acao == 'Resumo') ){
     echo "Favor digite o MLB";
     exit;
   }
@@ -20,7 +20,12 @@ $mlb = trim($mlb);
 // var_dump($_GET);
 // exit;
 
-echo '<pre>';
+echo '<head>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+</head>
+<pre style="padding:5px;">';
 
 $sec_ini = time();
 
@@ -34,6 +39,11 @@ $sec_ini = time();
 if($acao == "Sinc")
 {
   var_dump(atualizaProdML($mlb));
+}
+
+if($acao == "Resumo")
+{
+  var_dump(resumoProd($mlb));
 }
 
 if($acao == "setloop")
