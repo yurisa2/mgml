@@ -164,9 +164,9 @@ if ($MLB != 0){
         $error_handling = new log("Novo Pedido MAGENTO", "Numero do Pedido MGT: $order", "Comprador: $nome", "nova compra");
         $error_handling->log_email = true;
         $error_handling->mensagem_email = "Nova compra que entrou no magento";
-        $error_handling->etiqueta = $nome_arquivo;
+        $error_handling->log_etiqueta = $nome_arquivo;
         $error_handling->log_email = true;
-        $error_handling->dir_files = "log/log.json";
+        $error_handling->dir_file = "log/log.json";
         $error_handling->log_files = true;
         $error_handling->send_log_email();
         $error_handling->execute();
