@@ -867,6 +867,34 @@ function echo_debug($msg)
     else return "Produto $mlb foi atualizado com sucesso!";
   }
 
+function resumoProd($mlb){
+  global $app_Id;
+  global $secret_Key;
+  global $DEBUG;
+
+  echo_debug('Iniciando resumoProd');
+
+  $meli = new Meli($app_Id, $secret_Key);
+  $params = array('access_token' => token());
+
+  $response = $meli->get("/items/MLB$mlb", $params);
+  $array_produto;
+
+  $array_produto['nome'] = $response['body']->title;
+  $array_produto['preço'] = $response['body']->price;
+  $array_produto['estoque'] = $response['body']->available_quantity;
+foreach ($response['body']->attributes as $key => $value) {
+  if($value->name == "Marca") $array_produto['marca'] = $value->value_name;
+  if($value->name == "Modelo") $array_produto['SKU'] = $value->value_name;
+}
+  $array_produto['preço'] = $response['body']->price;
+
+$response = $meli->get("/items/MLB$mlb/description", $params);
+$array_produto['descrição'] = $response['body']->plain_text;
+
+return $array_produto;
+}
+
   function setarInicioLoop($mlb){
 
     echo_debug('Iniciando setarInicioLoop');
