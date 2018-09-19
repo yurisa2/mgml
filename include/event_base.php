@@ -212,6 +212,7 @@ class event_base
         foreach ($mensagem[$key] as $i => $values) {
           $this->mensagemHTML.= $i.": ".$values."<br>";
         }
+        $this->mensagemHTML.="<b>-------------------------------</b><br>";
       }
       $this->email();
       file_put_contents($this->dir_file, "");
