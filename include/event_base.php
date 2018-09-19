@@ -144,7 +144,7 @@ class event_base
       $from_name = 'BOT - Integração Mercado Livre Magento - SendMail';
       $mail->isSendmail();
       $mail->SMTPAuth = true;
-      $mail->msgHTML($this->mensagem);
+      $mail->msgHTML($this->mensagemHTML);
       $mail->SMTPDebug=1;
     }
 
@@ -206,7 +206,7 @@ class event_base
     //OBS: Pode até mandar o arquivo em anexo;
     if (count($mensagem) > 100)
     {
-      $this->titulo = "100 Erros";
+      $this->titulo = "100 Erros MGML";
       foreach ($mensagem as $key => $value)
       {
         foreach ($mensagem[$key] as $i => $values) {
