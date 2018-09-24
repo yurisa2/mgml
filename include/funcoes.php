@@ -859,7 +859,7 @@ function echo_debug($msg)
       )
     );
 
-    $response = $meli->put('/items/MLB'.$mbl, $body, $params);
+    $response = $meli->put("/items/MLB$mlb", $body, $params);
 
     var_dump($response); //DEBUG
 
@@ -946,7 +946,8 @@ return $array_produto;
 
     $result = $meli->get($url, $params);
 
-    return $result['body']->results;
+       $response = $meli->get("/items/$value", $params);
 
+     return $response['body']->results;
   }
 ?>
