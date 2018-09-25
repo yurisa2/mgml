@@ -88,7 +88,8 @@ if ($MLB != 0){
     if(gettype($mlb) == 'array') $string = implode(",",$mlb);
     // verifica se o pedido $string existe no arquivo json
     //se não existir ele entra no if para cadastrar o mesmo
-    if(!strpos($pedidosFeitos, $string)){
+    if(!strpos($pedidosFeitos, $string))
+    {
       echo "<h2>1 - Criação do customer</h2>";
       // cria cadastro do comprador no magento
       // se ja for cadastrado apenas recupera o id do comprador
