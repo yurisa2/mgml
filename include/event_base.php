@@ -120,6 +120,11 @@ class event_base
   {
     global $email_destinatario;
     global $SMTP;
+    global $Host;  // Specify main and backup SMTP servers
+    global $SMTPAuth;                               // Enable SMTP authentication
+    global $Username;                 // SMTP username
+    global $Password;                           // SMTP password
+    global $SMTPSecure;                            // Enable TLS encryption, `ssl` also accepted
 
     $e_mail = $email_destinatario[1];
     $from_mail = 'mercomagento@sa2.com.br';
@@ -131,11 +136,11 @@ class event_base
     if($SMTP == true)
     {
       $mail->isSMTP();                                      // Set mailer to use SMTP
-      $mail->Host = 'smtp.sendgrid.net';  // Specify main and backup SMTP servers
-      $mail->SMTPAuth = true;                               // Enable SMTP authentication
-      $mail->Username = 'mercomagento';                 // SMTP username
-      $mail->Password = '01merco02magento';                           // SMTP password
-      $mail->SMTPSecure = 'tls';                            // Enable TLS encryption, `ssl` also accepted
+      $mail->Host = $Host;  // Specify main and backup SMTP servers
+      $mail->SMTPAuth = $SMTPAuth;                               // Enable SMTP authentication
+      $mail->Username = $Username;                 // SMTP username
+      $mail->Password = $Password;                           // SMTP password
+      $mail->SMTPSecure = $SMTPSecure;                            // Enable TLS encryption, `ssl` also accepted
       $mail->Port = 587;
       $mail->Body    = $mensagem;
     }
