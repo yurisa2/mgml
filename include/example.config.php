@@ -22,4 +22,10 @@ $email_destinatario;
 
 // Ainda há problemas não encontrados para o uso do Sendmail
 $SMTP = false;              //se SMTP é false, sendmail será usado
+
+$Host = '';  // Specify main and backup SMTP servers
+$SMTPAuth = ;                               // Enable SMTP authentication
+$Username = '';                 // SMTP username
+$Password = '';                           // SMTP password
+$SMTPSecure = '';                            // Enable TLS encryption, `ssl` also accepted
 ?>
