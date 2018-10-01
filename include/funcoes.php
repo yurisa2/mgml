@@ -47,13 +47,12 @@ function lista_MLB() {
   //lê o json que contem o time() do ultimo email enviado
   if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
   $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
-
   //Se na requisição para atualizar o produto houver problema (retorno dif de 200)
   // ele entra no bloco de código
   if($result["httpCode"] != 200)
   {
     $nome_funcao = "lista_MLB";
-    $saida = $response['body']->message;
+    $saida = $result['body']->message;
     $titulo = "Erro no Script Mercado Livre";
     mandaEmail_files_db($nome_funcao,$saida,$titulo);
   }
