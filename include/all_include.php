@@ -19,7 +19,4 @@ require_once 'include/PHPMailer/src/Exception.php';
 require_once 'include/PHPMailer/src/PHPMailer.php';
 require_once 'include/PHPMailer/src/SMTP.php';
 
-require_once 'include/mail/mail.php';
-require_once 'include/mail/corpo_email.php';
-
  ?>
