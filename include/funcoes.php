@@ -120,7 +120,7 @@ function atualizaProdMLB($SKU,$MLB)
 
 
   $produto = magento_product_summary($SKU);
-echo "produto";var_dump($produto);
+  echo "produto";var_dump($produto);
   if(!$produto) return 0;
   $title = $prefixo_prod.$produto['name'].$sufixo_prod;
 
@@ -395,47 +395,47 @@ function retornaOrders(){
   $params = array('access_token' => token(),
   'seller' => $user_id, 'order.status' => "paid",
   'order.date_created.from' => "2018-08-10T00:00:00.000-00:00"
-  );
+);
 
-  //BLOCO PARA USAR AS ORDERS DE TESTE----
-  // global $DEBUG;
-  // $appId = "4946951783545211";
-  // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
-  // $accesstoken = "APP_USR-4946951783545211-082816-9f29ea4048643e00d0ada759e51e7e93-327485416";
-  // $userid = '327485416';
-  //
-  // $meli = new Meli($appId, $secretKey);
-  // $params = array('access_token' => $accesstoken,
-  // 'seller' => $userid, 'order.status' => "paid",
-  // 'order.date_created.from' => "2018-06-01T00:00:00.000-00:00"
-  // );
-  //--------------------------------------------------
-  $response = $meli->get("/orders/search", $params);
+//BLOCO PARA USAR AS ORDERS DE TESTE----
+// global $DEBUG;
+// $appId = "4946951783545211";
+// $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
+// $accesstoken = "APP_USR-4946951783545211-082816-9f29ea4048643e00d0ada759e51e7e93-327485416";
+// $userid = '327485416';
+//
+// $meli = new Meli($appId, $secretKey);
+// $params = array('access_token' => $accesstoken,
+// 'seller' => $userid, 'order.status' => "paid",
+// 'order.date_created.from' => "2018-06-01T00:00:00.000-00:00"
+// );
+//--------------------------------------------------
+$response = $meli->get("/orders/search", $params);
 
-  if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']);}
+if($DEBUG == true) {echo "<h1>DEBUG retornaOrders</h1><br>"; var_dump($response['body']);}
 
-  $idOrders = new stdClass;
+$idOrders = new stdClass;
 
-  foreach ($response['body']->results as $key => $value)
-  {
-    $idOrders->$key = $value->payments[0]->order_id;
-  }
+foreach ($response['body']->results as $key => $value)
+{
+  $idOrders->$key = $value->payments[0]->order_id;
+}
 
-  if(count($response['body']->results) < 1) return 0;
+if(count($response['body']->results) < 1) return 0;
 
-  return $idOrders;
+return $idOrders;
 }
 /**
- * Funçao para auxiliar no workflow da função
- * Obtem a data e o id do comprador do pedido
- * Returns se foi possivel ou não
- *
- * @param string $orders_id    id do pedido do Mercado Livre
- *
- * @throws Exception
- *
- * @return string
- */
+* Funçao para auxiliar no workflow da função
+* Obtem a data e o id do comprador do pedido
+* Returns se foi possivel ou não
+*
+* @param string $orders_id    id do pedido do Mercado Livre
+*
+* @throws Exception
+*
+* @return string
+*/
 function retorna_data_pedidos($orders_id)
 {
   $ml_data_pedido = new stdclass;
@@ -451,14 +451,14 @@ function retorna_data_pedidos($orders_id)
 }
 
 /**
- * Funçao que agrupa os pedidos do ML por comprador
- * Ao saber que um pedido é ligado a outro (compra com itens diferentes) o código os junta para ser uma compra somente
- * Returns o objeto criado :: Objeto->BuyerId->DadosDaCompra
- *
- * @throws Exception
- *
- * @return object
- */
+* Funçao que agrupa os pedidos do ML por comprador
+* Ao saber que um pedido é ligado a outro (compra com itens diferentes) o código os junta para ser uma compra somente
+* Returns o objeto criado :: Objeto->BuyerId->DadosDaCompra
+*
+* @throws Exception
+*
+* @return object
+*/
 function retornaDadosOrders()
 {
   $orders = retornaOrders();
@@ -532,14 +532,14 @@ function retornaDadosOrders()
 }
 
 /**
- * Funçao para transformar o objeto retornado pela função retornaDadosOrders()
- * Converte o objeto da função retornaDadosOrders em um novo objeto para facilitar
- * Returns o objeto criado
- *
- * @throws Exception
- *
- * @return object
- */
+* Funçao para transformar o objeto retornado pela função retornaDadosOrders()
+* Converte o objeto da função retornaDadosOrders em um novo objeto para facilitar
+* Returns o objeto criado
+*
+* @throws Exception
+*
+* @return object
+*/
 function retornaObjMl($mlb)
 {
   global $DEBUG;
@@ -550,46 +550,46 @@ function retornaObjMl($mlb)
   $Magento_order = new stdClass();
 
   foreach($dadosVenda as $key => $value){
-  if($mlb == $dadosVenda->$key->id_order)
-  {
-    $Magento_order->order_id = $dadosVenda->$key->id_order;
-    $Magento_order->mlb_produto = $dadosVenda->$key->mlb_produto;
-    $Magento_order->sku_produto = $dadosVenda->$key->sku_produto;
-    $Magento_order->nome_produto = $dadosVenda->$key->nome_produto;
-    $Magento_order->qtd_produto = $dadosVenda->$key->qtd_produto;
-    $Magento_order->preco_unidade_produto =$dadosVenda->$key->preco_unidade_produto;
-    $Magento_order->preco_total_produto = $dadosVenda->$key->preco_total_produto;
+    if($mlb == $dadosVenda->$key->id_order)
+    {
+      $Magento_order->order_id = $dadosVenda->$key->id_order;
+      $Magento_order->mlb_produto = $dadosVenda->$key->mlb_produto;
+      $Magento_order->sku_produto = $dadosVenda->$key->sku_produto;
+      $Magento_order->nome_produto = $dadosVenda->$key->nome_produto;
+      $Magento_order->qtd_produto = $dadosVenda->$key->qtd_produto;
+      $Magento_order->preco_unidade_produto =$dadosVenda->$key->preco_unidade_produto;
+      $Magento_order->preco_total_produto = $dadosVenda->$key->preco_total_produto;
 
-    //--------------PAGAMENTO---------
-    $Magento_order->id_meio_pagamento = $dadosVenda->$key->id_meio_pagamento;
-    $Magento_order->tipo_pagamento = $dadosVenda->$key->tipo_pagamento;
-    $Magento_order->custo_envio = $dadosVenda->$key->custo_envio;
-    $Magento_order->total_pagar = $dadosVenda->$key->total_pagar;
-    $Magento_order->status_pagamento = $dadosVenda->$key->status_pagamento;
+      //--------------PAGAMENTO---------
+      $Magento_order->id_meio_pagamento = $dadosVenda->$key->id_meio_pagamento;
+      $Magento_order->tipo_pagamento = $dadosVenda->$key->tipo_pagamento;
+      $Magento_order->custo_envio = $dadosVenda->$key->custo_envio;
+      $Magento_order->total_pagar = $dadosVenda->$key->total_pagar;
+      $Magento_order->status_pagamento = $dadosVenda->$key->status_pagamento;
 
-    //-----------ENDEREÇO---------
-    $Magento_order->id_shipping = $dadosVenda->$key->id_shipping;
-    $Magento_order->rua = $dadosVenda->$key->rua;
-    $Magento_order->numero = $dadosVenda->$key->numero;
-    $Magento_order->bairro = $dadosVenda->$key->bairro;
-    $Magento_order->cep = $dadosVenda->$key->cep;
-    $Magento_order->cidade = $dadosVenda->$key->cidade;
-    $Magento_order->estado = $dadosVenda->$key->estado;
-    $Magento_order->pais = $dadosVenda->$key->pais;
+      //-----------ENDEREÇO---------
+      $Magento_order->id_shipping = $dadosVenda->$key->id_shipping;
+      $Magento_order->rua = $dadosVenda->$key->rua;
+      $Magento_order->numero = $dadosVenda->$key->numero;
+      $Magento_order->bairro = $dadosVenda->$key->bairro;
+      $Magento_order->cep = $dadosVenda->$key->cep;
+      $Magento_order->cidade = $dadosVenda->$key->cidade;
+      $Magento_order->estado = $dadosVenda->$key->estado;
+      $Magento_order->pais = $dadosVenda->$key->pais;
 
-    // ---------USUARIO---------
-    $Magento_order->id_comprador = $dadosVenda->$key->id_comprador;
-    $Magento_order->apelido_comprador = $dadosVenda->$key->apelido_comprador;
-    $Magento_order->email_comprador = $dadosVenda->$key->email_comprador;
-    $Magento_order->cod_area_comprador = $dadosVenda->$key->cod_area_comprador;
-    $Magento_order->telefone_comprador = $dadosVenda->$key->telefone_comprador;
-    $Magento_order->nome_comprador = $dadosVenda->$key->nome_comprador;
-    $Magento_order->sobrenome_comprador = $dadosVenda->$key->sobrenome_comprador;
-    $Magento_order->tipo_documento_comprador = $dadosVenda->$key->tipo_documento_comprador;
-    $Magento_order->numero_documento_comprador = $dadosVenda->$key->numero_documento_comprador;
+      // ---------USUARIO---------
+      $Magento_order->id_comprador = $dadosVenda->$key->id_comprador;
+      $Magento_order->apelido_comprador = $dadosVenda->$key->apelido_comprador;
+      $Magento_order->email_comprador = $dadosVenda->$key->email_comprador;
+      $Magento_order->cod_area_comprador = $dadosVenda->$key->cod_area_comprador;
+      $Magento_order->telefone_comprador = $dadosVenda->$key->telefone_comprador;
+      $Magento_order->nome_comprador = $dadosVenda->$key->nome_comprador;
+      $Magento_order->sobrenome_comprador = $dadosVenda->$key->sobrenome_comprador;
+      $Magento_order->tipo_documento_comprador = $dadosVenda->$key->tipo_documento_comprador;
+      $Magento_order->numero_documento_comprador = $dadosVenda->$key->numero_documento_comprador;
 
+    }
   }
-}
   return $Magento_order;
   if($DEBUG == TRUE) {echo "Estrutura do OBJ Magento_order";var_dump($Magento_order);}
 }
@@ -667,14 +667,14 @@ function proximoPedidoMLB()
   else return $valor_zero;
 }
 /**
- * Funçao para controle dos pedidos ja existentes no Magento
- * Lê o json
- * Returns se a operação foi sucessida ou não
- *
- * @throws Exception
- *
- * @return string
- */
+* Funçao para controle dos pedidos ja existentes no Magento
+* Lê o json
+* Returns se a operação foi sucessida ou não
+*
+* @throws Exception
+*
+* @return string
+*/
 function retornaPedidosfeitosMGML()
 {
   if(!file_exists("include/files/PedidosFeitosMLB.json"))
@@ -690,16 +690,16 @@ function retornaPedidosfeitosMGML()
   }
 }
 /**
- * Funçao para controle dos pedidos ja existentes no Magento
- * Escreve no json o id do pedido criado no magento
- * Returns se a operação foi sucessida ou não
- *
- * @param string $mlb    id do pedido criado no magento
- *
- * @throws Exception
- *
- * @return string
- */
+* Funçao para controle dos pedidos ja existentes no Magento
+* Escreve no json o id do pedido criado no magento
+* Returns se a operação foi sucessida ou não
+*
+* @param string $mlb    id do pedido criado no magento
+*
+* @throws Exception
+*
+* @return string
+*/
 function escrevePedidoMGML($mlb)
 {
   $listapedido = retornaPedidosfeitosMGML();
@@ -716,16 +716,16 @@ function escrevePedidoMGML($mlb)
   }
 }
 /**
- * Cria a etiqueta da compra feita no mercado livre
- * Returns o nome do arquivo criado
- *
- * @param string $shipment_ids    id do envio (pode ser mais de um)
- * @param string $mlb             id do mercado livre
- * @param string $nome            nome do comprador
- * @param string $order_id        id do pedido no magento
- *
- * @return string
- */
+* Cria a etiqueta da compra feita no mercado livre
+* Returns o nome do arquivo criado
+*
+* @param string $shipment_ids    id do envio (pode ser mais de um)
+* @param string $mlb             id do mercado livre
+* @param string $nome            nome do comprador
+* @param string $order_id        id do pedido no magento
+*
+* @return string
+*/
 function criaEtiqueta($shipment_ids, $mlb, $nome, $order_id)
 {
   $token = token();
@@ -746,20 +746,20 @@ function criaEtiqueta($shipment_ids, $mlb, $nome, $order_id)
 }
 
 /**
- * Manda email a cada uma hora com todos os erros e apaga logo apos
- * Grava no json e no DB os erros durante uma hora
- * Returns 0 pois esta função é de erro
- *
- * @param string $nome_funcao    Nome da função em que houve o erro
- * @param string $saida          Saida de erro - o retorno da aplicação
- * @param string $titulo         Titulo do email
- *
- * @return string
- */
+* Manda email a cada uma hora com todos os erros e apaga logo apos
+* Grava no json e no DB os erros durante uma hora
+* Returns 0 pois esta função é de erro
+*
+* @param string $nome_funcao    Nome da função em que houve o erro
+* @param string $saida          Saida de erro - o retorno da aplicação
+* @param string $titulo         Titulo do email
+*
+* @return string
+*/
 function mandaEmail_files_db($nome_funcao,$saida,$titulo){
-//lê o json que contem o time() do ultimo email enviado
-if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
-$hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
+  //lê o json que contem o time() do ultimo email enviado
+  if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
+  $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
 
   //estancia a classe com os parametros
   $error_handling = new error_handling($titulo, $nome_funcao, $saida, "erro");
@@ -799,72 +799,72 @@ function testmail(){
 
   return "Enviado com Sucesso";
 
-  }
+}
 
 function echo_debug($msg)
 {
-    echo date('r',time()).' - '.$msg.'<br>';
+  echo date('r',time()).' - '.$msg.'<br>';
 
 }
 
-  function atualizaProdML($mlb)
-  {
-    global $app_Id;
-    global $secret_Key;
-    global $DEBUG;
-    global $ajuste_preco_multiplicacao;
-    global $ajuste_estoque;
-    global $ajuste_preco_soma;
-    global $sufixo_prod;
-    global $prefixo_prod;
-    global $marca;
+function atualizaProdML($mlb)
+{
+  global $app_Id;
+  global $secret_Key;
+  global $DEBUG;
+  global $ajuste_preco_multiplicacao;
+  global $ajuste_estoque;
+  global $ajuste_preco_soma;
+  global $sufixo_prod;
+  global $prefixo_prod;
+  global $marca;
 
-    echo_debug('Iniciando atualizaProdML');
+  echo_debug('Iniciando atualizaProdML');
 
-    if (is_null($mlb)) return "Campo MLB Vazio. Favor digitar MLB";
+  if (is_null($mlb)) return "Campo MLB Vazio. Favor digitar MLB";
 
-    $sku = retorna_SKU($mlb);
-    if(!$sku) return "Este produto está com problemas";
-    $produto = magento_product_summary($sku);
+  $sku = retorna_SKU($mlb);
+  if(!$sku) return "Este produto está com problemas";
+  $produto = magento_product_summary($sku);
 
-    if(!$produto) return "Não encontrado o produto $mlb no magento.";
+  if(!$produto) return "Não encontrado o produto $mlb no magento.";
 
-    $title = $prefixo_prod.$produto['name'].$sufixo_prod;
+  $title = $prefixo_prod.$produto['name'].$sufixo_prod;
 
-    if (strlen($title) > 60) $title = $prefixo_prod.$produto['name'];
+  if (strlen($title) > 60) $title = $prefixo_prod.$produto['name'];
 
-    $price = round(($produto['price'] * $ajuste_preco_multiplicacao)+$ajuste_preco_soma,2);
-    $available_quantity = floor($produto['qty_in_stock'] + ($produto['qty_in_stock']*$ajuste_estoque));
+  $price = round(($produto['price'] * $ajuste_preco_multiplicacao)+$ajuste_preco_soma,2);
+  $available_quantity = floor($produto['qty_in_stock'] + ($produto['qty_in_stock']*$ajuste_estoque));
 
-    if ($DEBUG == true) var_dump($produto); //DEBUG
+  if ($DEBUG == true) var_dump($produto); //DEBUG
 
-    if($available_quantity < 0) $available_quantity = 0;
+  if($available_quantity < 0) $available_quantity = 0;
 
-    $meli = new Meli($app_Id, $secret_Key);
+  $meli = new Meli($app_Id, $secret_Key);
 
-    $params = array('access_token' => token());
+  $params = array('access_token' => token());
 
-    $body = array
-    (
-      'title' => $title,
-      'price' => $price,
-      'available_quantity' => $available_quantity,
-      'attributes' =>
-      array(
-        array('name' => "Marca",
-        'value_name' => $marca),
-        array('id' => "MODEL",
-        'value_name' => $sku)
-      )
-    );
+  $body = array
+  (
+    'title' => $title,
+    'price' => $price,
+    'available_quantity' => $available_quantity,
+    'attributes' =>
+    array(
+      array('name' => "Marca",
+      'value_name' => $marca),
+      array('id' => "MODEL",
+      'value_name' => $sku)
+    )
+  );
 
-    $response = $meli->put("/items/MLB$mlb", $body, $params);
+  $response = $meli->put("/items/MLB$mlb", $body, $params);
 
-    var_dump($response); //DEBUG
+  var_dump($response); //DEBUG
 
-    if($response['httpCode'] !== 200) return "Houve problemas com o produto $mlb";
-    else return "Produto $mlb foi atualizado com sucesso!";
-  }
+  if($response['httpCode'] !== 200) return "Houve problemas com o produto $mlb";
+  else return "Produto $mlb foi atualizado com sucesso!";
+}
 
 function resumoProd($mlb){
   global $app_Id;
@@ -882,71 +882,72 @@ function resumoProd($mlb){
   $array_produto['nome'] = $response['body']->title;
   $array_produto['preço'] = $response['body']->price;
   $array_produto['estoque'] = $response['body']->available_quantity;
-foreach ($response['body']->attributes as $key => $value) {
-  if($value->name == "Marca") $array_produto['marca'] = $value->value_name;
-  if($value->name == "Modelo") $array_produto['SKU'] = $value->value_name;
-}
+  foreach ($response['body']->attributes as $key => $value) {
+    if($value->name == "Marca") $array_produto['marca'] = $value->value_name;
+    if($value->name == "Modelo") $array_produto['SKU'] = $value->value_name;
+  }
   $array_produto['preço'] = $response['body']->price;
 
-$response = $meli->get("/items/MLB$mlb/description", $params);
-$array_produto['descrição'] = $response['body']->plain_text;
+  $response = $meli->get("/items/MLB$mlb/description", $params);
+  $array_produto['descrição'] = $response['body']->plain_text;
 
-return $array_produto;
+  return $array_produto;
 }
 
-  function setarInicioLoop($mlb){
+function setarInicioLoop($mlb){
 
-    echo_debug('Iniciando setarInicioLoop');
+  echo_debug('Iniciando setarInicioLoop');
 
-    if(is_null($mlb)) return "Campo MLB Vazio. Favor digitar MLB";
-    //pega todos os produtos no ML
-    $result = lista_MLB();
+  if(is_null($mlb)) return "Campo MLB Vazio. Favor digitar MLB";
+  //pega todos os produtos no ML
+  $result = lista_MLB();
 
-    $ml = "MLB$mlb";
-    $indice_prod = array_search($ml, $result);
+  $ml = "MLB$mlb";
+  $indice_prod = array_search($ml, $result);
 
-    if(!$indice_prod) return "Não encontrado o produto $mlb.";
+  if(!$indice_prod) return "Não encontrado o produto $mlb.";
 
-    //seta no json o prod anterior ao sku passado por parametro
-    file_put_contents('include/files/ultimo_MLB.json', substr($result[$indice_prod], -10));
+  //seta no json o prod anterior ao sku passado por parametro
+  //ou seja o sku passado será o proximo a ser atualizado no ciclo
+  file_put_contents('include/files/ultimo_MLB.json', substr($result[$indice_prod], -10));
 
-    //
-    return "Setado produto $mlb como proximo da lista do loop";
-  }
+  //
+  return "Setado produto $mlb como proximo da lista do loop";
+}
 
-  function listaProdMgt(){
+function listaProdMgt(){
 
-    echo_debug('Iniciando listaProdMgt');
-    $result = magento_catalogProductList();
-    $array_skus = array();
+  echo_debug('Iniciando listaProdMgt');
+  $result = magento_catalogProductList();
+  $array_skus = array();
 
-     foreach ($result as $key => $value)
-      $array_skus[] = array('SKU' => $value->sku,
-                      'NOME' => $value->name);
+  foreach ($result as $key => $value)
+  $array_skus[] = array('SKU' => $value->sku,
+  'NOME' => $value->name);
 
-    return $array_skus;
-  }
+  return $array_skus;
+}
 
-  function listaProdML(){
+function listaProdML(){
 
-    echo_debug('Iniciando listaProdML');
+  echo_debug('Iniciando listaProdML');
 
-    global $app_Id;
-    global $secret_Key;
-    global $user_id;
-    global $DEBUG;
+  global $app_Id;
+  global $secret_Key;
+  global $user_id;
+  global $DEBUG;
 
-    $meli = new Meli($app_Id, $secret_Key);
-    $url = '/users/' . $user_id . '/items/search';
-    $params = array(
-      'access_token' => token(),
-      'limit' => 100
-    );
+  $meli = new Meli($app_Id, $secret_Key);
+  $url = '/users/' . $user_id . '/items/search';
+  $params = array(
+    'access_token' => token(),
+    'limit' => 100
+  );
 
-    $result = $meli->get($url, $params);
+  $result = $meli->get($url, $params);
 
-       $response = $meli->get("/items/$value", $params);
+  $response = $meli->get("/items/$value", $params);
 
-     return $response['body']->results;
-  }
+  return $response['body']->results;
+}
 ?>

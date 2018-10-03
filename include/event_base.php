@@ -120,11 +120,11 @@ class event_base
   {
     global $email_destinatario;
     global $SMTP;
-    global $Host;  // Specify main and backup SMTP servers
-    global $SMTPAuth;                               // Enable SMTP authentication
-    global $Username;                 // SMTP username
-    global $Password;                           // SMTP password
-    global $SMTPSecure;                            // Enable TLS encryption, `ssl` also accepted
+    global $Host;                       // Specify main and backup SMTP servers
+    global $SMTPAuth;                   // Enable SMTP authentication
+    global $Username;                   // SMTP username
+    global $Password;                   // SMTP password
+    global $SMTPSecure;                 // Enable TLS encryption, `ssl` also accepted
 
     $e_mail = $email_destinatario[1];
     $from_mail = 'mercomagento@sa2.com.br';
@@ -135,12 +135,12 @@ class event_base
     $mail->IsHTML(true);
     if($SMTP == true)
     {
-      $mail->isSMTP();                                      // Set mailer to use SMTP
-      $mail->Host = $Host;  // Specify main and backup SMTP servers
-      $mail->SMTPAuth = $SMTPAuth;                               // Enable SMTP authentication
-      $mail->Username = $Username;                 // SMTP username
-      $mail->Password = $Password;                           // SMTP password
-      $mail->SMTPSecure = $SMTPSecure;                            // Enable TLS encryption, `ssl` also accepted
+      $mail->isSMTP();                  // Set mailer to use SMTP
+      $mail->Host = $Host;              // Specify main and backup SMTP servers
+      $mail->SMTPAuth = $SMTPAuth;      // Enable SMTP authentication
+      $mail->Username = $Username;      // SMTP username
+      $mail->Password = $Password;      // SMTP password
+      $mail->SMTPSecure = $SMTPSecure;  // Enable TLS encryption, `ssl` also accepted
       $mail->Port = 587;
       $mail->Body    = $mensagem;
     }
@@ -168,7 +168,7 @@ class event_base
     }
     else{ echo "e-mail enviado com sucesso!<br>";
 
-}
+    }
   }
   /**
   * Function responsible to save data on DB
@@ -205,7 +205,7 @@ class event_base
   public function files()
   {
     $mensagem = json_decode(file_get_contents($this->dir_file));
-    $mensagem[] = $this->mensagem; //incluir opção no encode para caracteres especiais como ç´^~
+    $mensagem[] = $this->mensagem; //JSON_UNESCAPED_UNICODE opção aparecer caracteres especiais como ç´^~
     $resultado = file_put_contents($this->dir_file, json_encode($mensagem, JSON_UNESCAPED_UNICODE));
     //caso exista + de 100 erros no json manda email com todos.
     //OBS: Pode até mandar o arquivo em anexo;
@@ -229,7 +229,7 @@ class event_base
   /**
   * Function Para executar as funções
   *
-  * @param    $configmail   Variavel global para o envio de email
+  * @param    $configmail   Variavel global para o envio de email da classe ERROR_HANDLING
   * @property $log_email    Propriedade da classe para restringir o envio do email na Classe filha LOG
   * @property $log_db       Propriedade da classe para restringir a gravação no DB na Classe filha LOG
   * @property $log_files    Propriedade da classe para restringir a gravação no json na Classe filha LOG
