@@ -52,7 +52,7 @@ function lista_MLB() {
   if($result["httpCode"] != 200)
   {
     $nome_funcao = "lista_MLB";
-    $saida = $result['body']->message;
+    $saida = $result['body']->message."['httpCode']".$response["httpCode"];
     $titulo = "Erro no Script Mercado Livre";
     mandaEmail_files_db($nome_funcao,$saida,$titulo);
   }
@@ -154,7 +154,7 @@ echo "produto";var_dump($produto);
 
   $response = $meli->put('/items/MLB'.$MLB, $body, $params);
 
-  echo "RESPONSE";var_dump($response['body']); //DEBUG
+  echo "RESPONSE<br>";var_dump($response['body']); //DEBUG
   //lê o json que contem o time() do ultimo email enviado
   if(!file_exists("include/files/ultimo_emailenviado.json")) return "Arquivo ultimo_emailenviado.json não existente!";
   $hora_email_enviado = json_decode(file_get_contents("include/files/ultimo_emailenviado.json"));
@@ -164,7 +164,7 @@ echo "produto";var_dump($produto);
   if($response["httpCode"] != 200)
   {
     $nome_funcao = "atualizaProdMLB - SKU:$SKU - MLB:$MLB";
-    $saida = $response['body']->message;
+    $saida = $response['body']->message."['httpCode']".$response["httpCode"];
     $titulo = "Erro no Script Mercado Livre";
     mandaEmail_files_db($nome_funcao,$saida,$titulo);
   }
@@ -205,7 +205,7 @@ function atualizaDescricaoMLB($SKU,$MLB)
   if($response["httpCode"] != 200)
   {
     $nome_funcao = "atualizaDescricaoMLB - SKU: $SKU - MLB: $MLB";
-    $saida = $response['body']->message;
+    $saida = $response['body']->message."['httpCode']".$response["httpCode"];
     $titulo = "Erro no Script Mercado Livre";
     mandaEmail_files_db($nome_funcao,$saida,$titulo);
   }
