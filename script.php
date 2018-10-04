@@ -11,7 +11,6 @@ require 'include/all_include.php';
 // 5 - Escrever o ultimo no json
 //
 // $lista_produto = lista_MLB();
-
 $DEBUG = false;
 
 $time_inicial = time();
@@ -63,23 +62,11 @@ if ($MLB != 0){
   echo "<h2>JUNÇÃO ML MG SCRIPT PARA POR O PEDIDO DO ML NO Magento</h2><br/>Lista de Pedidos MLB<br/>";
   // 1 Lista os pedidos existentes no Mercado Livre
   $listapedido = listaPedidoMLB();
-
   // Caso exista pedido sendo retornado entra no if
   if($listapedido == true)
   {
     echo "<h2>Próximo Pedido: </h2>";
     $mlb = proximoPedidoMLB();
-    echo "<h2>Dados do pedido a ser cadastrado</h2>";
-    echo "<br>";
-    // Retorna um objeto com os dados do pedido a ser inserido no magento
-    $Magento_order = retornaObjMl($mlb);
-    if($Magento_order == 0) return "Sem Novos Pedidos";
-    // pega o nome do comprador
-    $nome = $Magento_order->nome_comprador;
-    // pega o id d entrega
-    $id_shipping = $Magento_order->id_shipping;
-    // instancia a classe responsavel pela inserção dos pedidos no magento
-    $teste = new Magento_order($Magento_order);
     // recupera atraves do .json os pedidos que já foram cadastrados no magento
     $pedidosFeitos = retornaPedidosfeitosMGML();
     // codifica o id do pedido e verifica se é um array
@@ -90,6 +77,18 @@ if ($MLB != 0){
     //se não existir ele entra no if para cadastrar o mesmo
     if(!strpos($pedidosFeitos, $string))
     {
+      echo "<h2>Dados do pedido a ser cadastrado</h2>";
+      echo "<br>";
+      // Retorna um objeto com os dados do pedido a ser inserido no magento
+      $Magento_order = retornaObjMl($mlb);
+      if($Magento_order == false) return "Sem Novos Pedidos";
+      // pega o nome do comprador
+      $nome = $Magento_order->nome_comprador;
+      // pega o id d entrega
+      $id_shipping = $Magento_order->id_shipping;
+      // instancia a classe responsavel pela inserção dos pedidos no magento
+      $teste = new Magento_order($Magento_order);
+
       echo "<h2>1 - Criação do customer</h2>";
       // cria cadastro do comprador no magento
       // se ja for cadastrado apenas recupera o id do comprador
