@@ -9,7 +9,7 @@ require_once 'include/log.php';
 require_once 'include/ml/php-sdk/Meli/meli.php';
 require_once 'include/ml/php-sdk/configApp.php';
 
- 'include/apimagentophp/include/all_include.php';
+require_once 'include/apimagentophp/include/all_include.php';
 
 //COM AUTOLOAD
 // require 'include/PHPMailer/vendor/autoload.php';
