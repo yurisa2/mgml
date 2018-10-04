@@ -52,7 +52,7 @@ function lista_MLB() {
   if($result["httpCode"] != 200)
   {
     $nome_funcao = "lista_MLB";
-    $saida = $result['body']->message."['httpCode']".$response["httpCode"];
+    $saida = $result["body"]->message ."['httpCode']: ".$response["httpCode"];
     $titulo = "Erro no Script Mercado Livre";
     mandaEmail_files_db($nome_funcao,$saida,$titulo);
   }
@@ -394,7 +394,7 @@ function retornaOrders(){
 
   $params = array('access_token' => token(),
   'seller' => $user_id, 'order.status' => "paid",
-  'order.date_created.from' => "2018-08-10T00:00:00.000-00:00"
+  'order.date_created.from' => "2018-8-10T00:00:00.000-00:00"
 );
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
@@ -421,7 +421,7 @@ foreach ($response['body']->results as $key => $value)
   $idOrders->$key = $value->payments[0]->order_id;
 }
 
-if(count($response['body']->results) < 1) return 0;
+if(count($response['body']->results) < 1) return false;
 
 return $idOrders;
 }
@@ -462,15 +462,22 @@ function retorna_data_pedidos($orders_id)
 function retornaDadosOrders()
 {
   $orders = retornaOrders();
-  if ($orders == 0) return 0;
+  if ($orders == false) return false;
   retorna_data_pedidos($orders);
   $magento_orders = new stdClass;
   foreach ($orders as $key => $value)
   {
     $dados_order = retornaDadosVenda($value);
+    if (count($orders) == 1){
+      $magento_orders->$key = $dados_order;
+      return $magento_orders;
+    }
     $lastdatecreate = json_decode(file_get_contents("include/files/orderdate_create.json"));
     $aux = $key+1;
     $aux1 = $key-1;
+    if($key == 0) $aux1 = null;
+    if(count($orders) == $key+1) $aux = null;
+
     $buyerid = json_decode(file_get_contents("include/files/idbuyers.json"));
     if(($buyerid[$aux1] == $dados_order->id_comprador)
     || ($buyerid[$aux] == $dados_order->id_comprador))
@@ -545,7 +552,7 @@ function retornaObjMl($mlb)
   global $DEBUG;
 
   $dadosVenda = retornaDadosOrders();
-  if($dadosVenda == '') return 0;
+  if($dadosVenda == false) return false;
 
   $Magento_order = new stdClass();
 
@@ -599,7 +606,7 @@ function listaPedidoMLB()
   global $DEBUG;
   $Magento_order = retornaDadosOrders();
 
-  if ($Magento_order == 0){ echo "Não há Novos pedidos"; return 0;}
+  if ($Magento_order == false){ echo "Não há Novos pedidos"; return false;}
 
   foreach ($Magento_order as $key => $value) {
     $json[] = $Magento_order->$key->id_order;
@@ -659,8 +666,8 @@ function proximoPedidoMLB()
 
   $indice_ultimo = array_search($ultimo, $lista);
   $indice_proximo = $indice_ultimo+1;
-
-  $valor_proximo = $lista[$indice_proximo];
+  if($indice_proximo < count($lista)) $valor_proximo = $lista[$indice_proximo];
+  
   $valor_zero = $lista["0"];
 
   if($indice_proximo+1 <= count($lista)) return $valor_proximo;
