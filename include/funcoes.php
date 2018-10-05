@@ -394,7 +394,7 @@ function retornaOrders(){
 
   $params = array('access_token' => token(),
   'seller' => $user_id, 'order.status' => "paid",
-  'order.date_created.from' => "2018-8-10T00:00:00.000-00:00"
+  'order.date_created.from' => "2018-10-10T00:00:00.000-00:00"
 );
 
 //BLOCO PARA USAR AS ORDERS DE TESTE----
@@ -468,16 +468,10 @@ function retornaDadosOrders()
   foreach ($orders as $key => $value)
   {
     $dados_order = retornaDadosVenda($value);
-    if (count($orders) == 1){
-      $magento_orders->$key = $dados_order;
-      return $magento_orders;
-    }
     $lastdatecreate = json_decode(file_get_contents("include/files/orderdate_create.json"));
     $aux = $key+1;
     $aux1 = $key-1;
-    if($key == 0) $aux1 = null;
-    if(count($orders) == $key+1) $aux = null;
-
+    if($key == 0) $aux1 = $key;
     $buyerid = json_decode(file_get_contents("include/files/idbuyers.json"));
     if(($buyerid[$aux1] == $dados_order->id_comprador)
     || ($buyerid[$aux] == $dados_order->id_comprador))
@@ -616,7 +610,7 @@ function listaPedidoMLB()
 
   if (!isset($listaPedido)) return 0;
   $listagem = json_encode($listaPedido);
-
+var_dump($listaPedido);
   if($DEBUG == true) var_dump($listagem);
 
   $conteudo_arquivo = file_put_contents("include/files/listaPedidoMLB.json", $listagem);
@@ -667,7 +661,7 @@ function proximoPedidoMLB()
   $indice_ultimo = array_search($ultimo, $lista);
   $indice_proximo = $indice_ultimo+1;
   if($indice_proximo < count($lista)) $valor_proximo = $lista[$indice_proximo];
-  
+
   $valor_zero = $lista["0"];
 
   if($indice_proximo+1 <= count($lista)) return $valor_proximo;
