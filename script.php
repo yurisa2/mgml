@@ -25,8 +25,8 @@ echo "<h2>2 - Localizar ultimo (json) e o próximo da lista (array que vem do li
 echo "<br>";
 $MLB = proximo_MLB(); // 2 - Localizar ultimo (json) e o próximo da lista (array que vem do list)
 
-if ($MLB != 0){
-
+if ($MLB != 0)
+{
   $ultimo_MLB = ultimo_MLB();
   echo "<h2>ANTERIOR MLBATUAL MLB: $MLB<BR>ATUAL MLB: $ultimo_MLB  <BR>";
   echo "TEMPO:". (time() - $time_inicial);
@@ -39,13 +39,13 @@ if ($MLB != 0){
   echo "TEMPO: ". (time() - $time_inicial);
   echo "<br><br><br></h2>";
 
-  // if((isset($MLB) && isset($SKU)) || ($MLB != 0 && $SKU != 0))
-  // {
-  //   echo "<h2>4 - Rodar a função de atualização com os dois dados</h2>";
-  //   echo "<br>";
-  //   $atualiza = atualizaMLB($SKU,$MLB); // 4 - Rodar a função de atualização com os dois dados
-  //   echo "<h2>atualiza: $atualiza<br>";
-  // }
+  if((isset($MLB) && isset($SKU)) || ($MLB != 0 && $SKU != 0))
+  {
+    echo "<h2>4 - Rodar a função de atualização com os dois dados</h2>";
+    echo "<br>";
+    $atualiza = atualizaMLB($SKU,$MLB); // 4 - Rodar a função de atualização com os dois dados
+    echo "<h2>atualiza: $atualiza<br>";
+  }
   echo "TEMPO: ". (time() - $time_inicial);
   echo "<br><br><br></h2>";
   // if($atualiza)
@@ -95,83 +95,83 @@ if ($MLB != 0){
       // se ja for cadastrado apenas recupera o id do comprador
       // cria tbm o cadastro do endereço do comprador no magento
       // se for cadastrado recupera as informações
-      // $id_customer = $teste->magento1_customerCustomerCreate();
-      // var_dump($id_customer);
-      // if($id_customer == 0) return escrevePedidoMLB($mlb);
+      $id_customer = $teste->magento1_customerCustomerCreate();
+      var_dump($id_customer);
+      if($id_customer == 0) return escrevePedidoMLB($mlb);
       //
-      // echo "<br/><h2>2 - Criação do endereço do customer</h2>";
-      // // Apenas cria um array com os dados do comprador
-      // $customer_address = $teste->magento2_customerAddressCreate($id_customer);
-      // var_dump($customer_address);
-      // if($customer_address == 0) return escrevePedidoMLB($mlb);
-      //
-      // echo "<br/><h2>3 - Criação do carrinho de compras</h2>";
-      // // cria o carrinho de compras, retorna o id do carrinho
-      // $id_carrinho = $teste->magento3_shoppingCartCreate();
-      // var_dump($id_carrinho);
-      // if($id_carrinho == 0) return escrevePedidoMLB($mlb);
-      //
-      // echo "<br/><h2>4 - Adicionando os podutos no carrinho</h2>";
-      // // adiciona os produtos no carrinho
-      // $add_produto = $teste->magento4_shoppingCartProductAdd($id_carrinho);
-      // if($add_produto == 0) return escrevePedidoMLB($mlb);
-      //
-      // echo "<br/><h2>5 - Lista do podutos no carrinho</h2>";
-      // // lista os produtos no carrinho
-      // $produtos_carrinho = $teste->magento5_shoppingCartProductList($id_carrinho);
-      // var_dump($produtos_carrinho);
-      // if($produtos_carrinho === 0) return escrevePedidoMLB($mlb);
-      //
-      // echo "<br/><h2>6 - Inicializando o customer (shoppingCartCustomerSet)</h2>";
-      // //seta o comprador com o carrinho
-      // $customerSet = $teste->magento6_shoppingCartCustomerSet($id_carrinho,$id_customer);
-      // var_dump($customerSet);
-      // if($customerSet === 0) return escrevePedidoMLB($mlb);
-      //
-      // echo "<br/><h2>7 - Iniciando o endereço do customer no carrinho</h2>";
-      // //seta o endereço do comprador com o carrinho
-      // $customerAddressSet = $teste->magento7_shoppingCartCustomerAddresses($id_carrinho);
-      // var_dump($customerAddressSet);
-      // if($customerAddressSet === 0) return escrevePedidoMLB($mlb);
-      //
-      // echo "<br/><h2>8 - Setando o método de entrega</h2>";
-      // //seta o meio de pagamento com o carrinho
-      // $customerEntregaSet = $teste->magento8_shoppingCartShippingMethod($id_carrinho);
-      // var_dump($customerEntregaSet);
-      // if($customerEntregaSet === 0) return escrevePedidoMLB($mlb);
-      //
-      // echo "<br/><h2>9 - Setando o método de pagamento</h2>";
-      // //seta o meio de pagamento com o carrinho
-      // $customerPagamentoSet = $teste->magento9_shoppingCartPaymentMethod($id_carrinho);
-      // var_dump($customerPagamentoSet);
-      // if($customerPagamentoSet === 0) return escrevePedidoMLB($mlb);
-      //
-      // echo "<br/><h2>7 - Finalização da compra</h2>";
-      // // Finaliza a compra
-      // $order = $teste->magento10_shoppingCartOrder($id_carrinho);
-      // var_dump($order);
-      // if($order == 0) return escrevePedidoMLB($mlb);
-      //
-      // // se der certo ele entra aqui e cria criaEtiqueta
-      // // a classe log faz o serviço
-      // // o nome do arquivo é um compilado de
-      // //  id do mercado livre-nome do comprador-id do pedido no magento
-      // if($order != 0)
-      // {
-      //   var_dump(escrevePedidoMGML($mlb));
-      //
-      //   $nome_arquivo = criaEtiqueta($id_shipping, $mlb, $nome, $order);
-      //
-      //   $error_handling = new log("Novo Pedido MAGENTO", "Numero do Pedido MGT: $order", "Comprador: $nome", "nova compra");
-      //   $error_handling->log_email = true;
-      //   $error_handling->mensagem_email = "Nova compra que entrou no magento";
-      //   $error_handling->log_etiqueta = $nome_arquivo;
-      //   $error_handling->log_email = true;
-      //   $error_handling->dir_file = "log/log.json";
-      //   $error_handling->log_files = true;
-      //   $error_handling->send_log_email();
-      //   $error_handling->execute();
-      // }
+      echo "<br/><h2>2 - Criação do endereço do customer</h2>";
+      // Apenas cria um array com os dados do comprador
+      $customer_address = $teste->magento2_customerAddressCreate($id_customer);
+      var_dump($customer_address);
+      if($customer_address == 0) return escrevePedidoMLB($mlb);
+
+      echo "<br/><h2>3 - Criação do carrinho de compras</h2>";
+      // cria o carrinho de compras, retorna o id do carrinho
+      $id_carrinho = $teste->magento3_shoppingCartCreate();
+      var_dump($id_carrinho);
+      if($id_carrinho == 0) return escrevePedidoMLB($mlb);
+
+      echo "<br/><h2>4 - Adicionando os podutos no carrinho</h2>";
+      // adiciona os produtos no carrinho
+      $add_produto = $teste->magento4_shoppingCartProductAdd($id_carrinho);
+      if($add_produto == 0) return escrevePedidoMLB($mlb);
+
+      echo "<br/><h2>5 - Lista do podutos no carrinho</h2>";
+      // lista os produtos no carrinho
+      $produtos_carrinho = $teste->magento5_shoppingCartProductList($id_carrinho);
+      var_dump($produtos_carrinho);
+      if($produtos_carrinho === 0) return escrevePedidoMLB($mlb);
+
+      echo "<br/><h2>6 - Inicializando o customer (shoppingCartCustomerSet)</h2>";
+      //seta o comprador com o carrinho
+      $customerSet = $teste->magento6_shoppingCartCustomerSet($id_carrinho,$id_customer);
+      var_dump($customerSet);
+      if($customerSet === 0) return escrevePedidoMLB($mlb);
+
+      echo "<br/><h2>7 - Iniciando o endereço do customer no carrinho</h2>";
+      //seta o endereço do comprador com o carrinho
+      $customerAddressSet = $teste->magento7_shoppingCartCustomerAddresses($id_carrinho);
+      var_dump($customerAddressSet);
+      if($customerAddressSet === 0) return escrevePedidoMLB($mlb);
+
+      echo "<br/><h2>8 - Setando o método de entrega</h2>";
+      //seta o meio de pagamento com o carrinho
+      $customerEntregaSet = $teste->magento8_shoppingCartShippingMethod($id_carrinho);
+      var_dump($customerEntregaSet);
+      if($customerEntregaSet === 0) return escrevePedidoMLB($mlb);
+
+      echo "<br/><h2>9 - Setando o método de pagamento</h2>";
+      //seta o meio de pagamento com o carrinho
+      $customerPagamentoSet = $teste->magento9_shoppingCartPaymentMethod($id_carrinho);
+      var_dump($customerPagamentoSet);
+      if($customerPagamentoSet === 0) return escrevePedidoMLB($mlb);
+
+      echo "<br/><h2>7 - Finalização da compra</h2>";
+      // Finaliza a compra
+      $order = $teste->magento10_shoppingCartOrder($id_carrinho);
+      var_dump($order);
+      if($order == 0) return escrevePedidoMLB($mlb);
+
+      // se der certo ele entra aqui e cria criaEtiqueta
+      // a classe log faz o serviço
+      // o nome do arquivo é um compilado de
+      //  id do mercado livre-nome do comprador-id do pedido no magento
+      if($order != 0)
+      {
+        var_dump(escrevePedidoMGML($mlb));
+
+        $nome_arquivo = criaEtiqueta($id_shipping, $mlb, $nome, $order);
+
+        $error_handling = new log("Novo Pedido MAGENTO", "Numero do Pedido MGT: $order", "Comprador: $nome", "nova compra");
+        $error_handling->log_email = true;
+        $error_handling->mensagem_email = "Nova compra que entrou no magento";
+        $error_handling->log_etiqueta = $nome_arquivo;
+        $error_handling->log_email = true;
+        $error_handling->dir_file = "log/log.json";
+        $error_handling->log_files = true;
+        $error_handling->send_log_email();
+        $error_handling->execute();
+      }
     }//caso o strpos retorne a posição - encontre o pedido ja cadastrado retorna aqui
     else echo "<h3>Pedido já existente no MAGENTO</h3><br><br>";
     // escreve o pedido mlb no json ultimomlb para fazer o ciclo de checagem
@@ -185,3 +185,16 @@ if ($MLB != 0){
     echo "TEMPO Final: ". (time() - $time_inicial);
   }
 }
+  $perg = new perguntas_respostas;
+  $id = $perg->retorna_idPerguntas();
+  if($id != false){
+    $error_handling = new log("Nova Pergunta Mercado Livre", "Há nova(s) pergunta(s) no mercado livre<br> ", "Link Abaixo: https://easypath.com.br/conectores/mgml/perguntas_respostas.php", "nova pergunta");
+    $error_handling->log_email = true;
+    $error_handling->mensagem_email = "Nova Pergunta Mercado Livre";
+    $error_handling->log_email = true;
+    $error_handling->dir_file = "log/log.json";
+    $error_handling->log_files = true;
+    $error_handling->email_pergunta = true;
+    $error_handling->send_log_email();
+    $error_handling->execute();
+  }else echo "<b>Sem novas perguntas<b>";
