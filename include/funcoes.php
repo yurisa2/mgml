@@ -55,6 +55,7 @@ function lista_MLB() {
     $saida = $result["body"]->message ."['httpCode']: ".$response["httpCode"];
     $titulo = "Erro no Script Mercado Livre";
     mandaEmail_files_db($nome_funcao,$saida,$titulo);
+    return 0;
   }
 
   $limit = $result['body']->limit;
