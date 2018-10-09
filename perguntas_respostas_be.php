@@ -19,18 +19,8 @@ echo '<head>
 
 $perg = new perguntas_respostas;
 
-echo $perg->respondePergunta($id, $resposta);
-
-
-
-$secs = time() - $sec_ini;
-
-echo '<br>'.$secs;
-echo '<br>';
-
-
-$secs = time() - $sec_ini;
-
-echo '<br>'.$secs .' Seg';
-
+$resposta = $perg->respondePergunta($id, $resposta);
+wait(5);
+if($resposta) header('Location: perguntas_respostas.php?sucesso');
+else header('Location: perguntas_respostas.php?problema');
 ?>
