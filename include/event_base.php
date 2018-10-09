@@ -12,6 +12,12 @@ class event_base
     global $configmail;
 
     /**
+    * @property $email_pergunta O(s) destinatario(s) do email para responder as perguntas do mercado livre
+    *
+    */
+    $this->email_pergunta = false;
+
+    /**
     * @property $titulo O assunto do email
     *
     */
@@ -118,6 +124,7 @@ class event_base
   */
   public function email()
   {
+    global $email_pergunta;
     global $email_destinatario;
     global $SMTP;
     global $Host;                       // Specify main and backup SMTP servers
@@ -155,8 +162,14 @@ class event_base
 
     $mail->CharSet = 'utf-8';  //Arrumar acentuação
     $mail->setFrom($from_mail, $from_name);
-    foreach ($email_destinatario as $key => $value) {
-      $mail->addAddress($value);
+    if($this->email_pergunta == false){
+      foreach ($email_destinatario as $key => $value) {
+        $mail->addAddress($value);
+      }
+    }else {
+      foreach ($email_pergunta as $key => $value) {
+        $mail->addAddress($value);
+      }
     }
     $mail->Subject = $titulo;
     if($this->log_etiqueta !== null) $mail->addAttachment($this->log_etiqueta);
