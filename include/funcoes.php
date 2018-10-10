@@ -228,6 +228,89 @@ function atualizaMLB($SKU,$MLB)
   }
 }
 
+// ------------ CÓDIGO PARA RODAR LOCAL DEVIDO A PROBLEMA COM A FUNCAO SESSION DO APIMAGENTOPHP
+// global $magento_soap_user;
+// global $magento_soap_password;
+//
+// $filename = 'include/apimagentophp/magento_session.json';
+//
+// if(!file_exists($filename))
+// {
+//   $session = magento_obj()->login($magento_soap_user,$magento_soap_password);
+//
+//   $mag_ses = array(
+//   'session' => $session,
+//   'time' => time()
+//   );
+//   file_put_contents($filename, json_encode($mag_ses));
+// }
+//
+// $file = file_get_contents($filename);
+// $file_array = json_decode($file);
+//
+// // var_dump($file_array); //DEBUG
+//
+// if($file_array->time < time() - 3000) //Default value for Magento API session is 3600 - I should put that as a config... Think about it
+// {
+//   $session = magento_obj()->login($magento_soap_user,$magento_soap_password);
+//
+//   $mag_ses = array(
+//   'session' => $session,
+//   'time' => time()
+//   );
+//   file_put_contents($filename, json_encode($mag_ses));
+// }
+//
+// $file = file_get_contents($filename);
+// $file_array = json_decode($file);
+//
+// $session = $file_array->session;
+//
+// $obj_magento = magento_obj();
+//
+// $medialist = $obj_magento->catalogProductAttributeMediaList($session,$SKU);
+// $media_array = array();
+// foreach ($medialist as $key => $value) {
+//   $media_array[] = array(
+//     'url' => $value->url,
+//   );
+// }
+// -------------------------FIM
+function atualizaImg($SKU,$MLB)
+{
+  global $app_Id;
+  global $secret_Key;
+
+  $obj_magento = magento_obj();
+  $session = magento_session();
+
+  $medialist = $obj_magento->catalogProductAttributeMediaList($session,$SKU);
+  $media_array = array();
+  foreach ($medialist as $key => $value)
+  {
+    $media_array[] = array(
+      'url' => $value->url,
+    );
+  }
+
+  // ATUALIZAR IMAGENS VINCULADAS COM PRODUTO
+  $meli = new Meli($app_Id, $secret_Key);
+
+  $params = array('access_token' => token());
+
+  foreach ($media_array as $key => $value)
+  {
+    $array[] = array('source' => $value['url']);
+
+    $params = array('access_token' => token());
+    $body = array('pictures' => $array);
+  }
+  $response = $meli->put("/items/MLB$MLB", $body, $params);
+
+  if(substr($response['httpCode'],0,-1) == 20) echo "A imagem foi vinculada com sucesso com o produto $MLB<br>";
+  else echo "Erro ao vincular imagem com produto $MLB<br>";
+}
+
 function retorna_SKU($MLB)
 {
   global $app_Id;
