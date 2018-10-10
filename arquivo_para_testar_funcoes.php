@@ -7,36 +7,10 @@ require "include/all_include.php";
 $DEBUG = true;
 echo "<pre>";
 
-$sku = retorna_SKU('1040271008');
-var_dump(atualizaProdMLB($sku, '1040271008'));
-
-
-/**
- * Output debugging info via user-defined method.
- * Only generates output if SMTP debug output is enabled (@see SMTP::$do_debug).
- *
- * @see PHPMailer::$Debugoutput
- * @see PHPMailer::$SMTPDebug
- *
- * @param string $str
- */
+atualizaImg('EP-51-40733','1039710397');
 
 
 
-// $mensagem = file_get_contents('error_files/error_log.json');
-// var_dump($mensagem);
-// if (count($mensagem) < 100)
-// {
-//   $titulo = "Erros sei lá";
-//   $corpo_email = '';
-//   foreach ($mensagem as $key => $value) {
-//     foreach ($mensagem[$key] as $i => $values) {
-//       $corpo_email.= $i.": ".$values."<br>";
-//     }
-//   }
-//   // var_dump($corpo_email);
-//
-// }else echo "ainda não";
 // $appId = "4946951783545211";
 // $secretKey = "2tCb5gts3uK8Llf9DQoiSVXnxTKyGuEk";
 // $accesstoken = "APP_USR-4946951783545211-062613-e512bd2717f82eb16eb143eb18085bfe-327485416";
