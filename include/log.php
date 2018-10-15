@@ -30,11 +30,11 @@ class log extends event_base
 
   function send_log_email()
   {
-    $this->mensagem = array('Nome Funcao' =>$this->nome_funcao ,
+    $this->mensagem = json_encode(array('Nome Funcao' =>$this->nome_funcao ,
     'Msg de Erro' =>$this->saida ,
     'Titulo' =>$this->titulo ,
-    'Tipo do Erro' =>$this->tipo );
-
+    'Tipo do Erro' =>$this->tipo ));
+var_dump($this->mensagem);
     if($this->log_email)
     {
       $this->mensagemHTML  ='
@@ -145,7 +145,7 @@ class log extends event_base
       '.$this->mensagem_email.'
       </p>
       <br>
-      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td width="100%" bgcolor="#f5f5f5" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding: 9px; border: 1px solid #e3e3e3; background-color: #f5f5f5;" valign="top" align="left"><b>'.$this->nome_funcao--.'</b>'.$this->saida.'</td></tr></tbody></table>
+      <table width="100%" cellspacing="0" cellpadding="0" border="0" style="table-layout: fixed;"><tbody><tr><td width="100%" bgcolor="#f5f5f5" style="font-family: Arial, sans-serif; line-height: 19px; color: #444444; font-size: 13px; font-weight: normal; padding: 9px; border: 1px solid #e3e3e3; background-color: #f5f5f5;" valign="top" align="left"><b>'.$this->nome_funcao.'<br></b>'.$this->saida.'</td></tr></tbody></table>
       <br>
 
       <br>
