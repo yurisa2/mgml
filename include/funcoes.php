@@ -77,11 +77,57 @@ function lista_MLB() {
 
 function ultimo_MLB()
 {
-  if(!file_exists("include/files/ultimo_MLB.json")) return false;
+  if(!file_exists("include/files/ultimo_MLB.json")) file_put_contents("include/files/ultimo_MLB.json", "");
   else {
     $conteudo_arquivo = file_get_contents("include/files/ultimo_MLB.json");
     $retorno = json_decode($conteudo_arquivo);
     return $retorno;
+  }
+}
+
+function ultimo_MLBimg()
+{
+  if(!file_exists("include/files/ultimo_MLBimg.json")) file_put_contents("include/files/ultimo_MLBimg.json", "");
+  else {
+    $conteudo_arquivo = file_get_contents("include/files/ultimo_MLB.json");
+    $retorno = json_decode($conteudo_arquivo);
+    return $retorno;
+  }
+}
+
+function proximo_MLBimg()
+{
+  global $DEBUG;
+  $ultimo = ultimo_MLBimg();
+  $ultimo = "MLB".$ultimo;
+  $lista = lista_MLB();
+
+  if($lista == 0){return 0;}
+
+  $indice_ultimo = array_search($ultimo, $lista);
+  $indice_proximo = $indice_ultimo+1;
+
+  $valor_proximo = substr($lista[$indice_proximo], 3);
+  $valor_zero = substr($lista["0"], 3);
+
+  if ($DEBUG == true) var_dump($valor_zero); //$DEBUG
+  if ($DEBUG == true) var_dump($valor_proximo); //$DEBUG
+
+  if($indice_proximo+1 > count($lista)) return $valor_zero;
+  else return $valor_proximo;
+}
+
+function escreve_MLBimg($MLB)
+{
+  $conteudo_arquivo = file_put_contents("include/files/ultimo_MLBimg.json", json_encode($MLB));
+
+  if(!$conteudo_arquivo)
+  {
+    return "0";
+  }
+  else
+  {
+    return "1";
   }
 }
 
@@ -228,7 +274,11 @@ function atualizaMLB($SKU,$MLB)
   }
 }
 
-// ------------ CÓDIGO PARA RODAR LOCAL DEVIDO A PROBLEMA COM A FUNCAO SESSION DO APIMAGENTOPHP
+// // ------------ CÓDIGO PARA RODAR LOCAL DEVIDO A PROBLEMA COM A FUNCAO SESSION DO APIMAGENTOPHP
+// function atualizaImg($SKU,$MLB)
+// {
+// global $app_Id;
+// global $secret_Key;
 // global $magento_soap_user;
 // global $magento_soap_password;
 //
@@ -275,7 +325,25 @@ function atualizaMLB($SKU,$MLB)
 //     'url' => $value->url,
 //   );
 // }
-// -------------------------FIM
+// //ATUALIZAR IMAGENS VINCULADAS COM PRODUTO
+// $meli = new Meli($app_Id, $secret_Key);
+//
+// $params = array('access_token' => token());
+//
+// foreach ($media_array as $key => $value)
+// {
+//   $array[] = array('source' => $value['url']);
+//
+//   $params = array('access_token' => token());
+//   $body = array('pictures' => $array);
+// }
+// $response = $meli->put("/items/MLB$MLB", $body, $params);
+// var_dump($response);
+// if(substr($response['httpCode'],0,-1) == 20) echo "A imagem foi vinculada com sucesso com o produto $MLB<br>";
+// else echo "Erro ao vincular imagem com produto $MLB<br>";
+// }
+// //-------------------------FIM
+
 function atualizaImg($SKU,$MLB)
 {
   global $app_Id;
