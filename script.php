@@ -28,7 +28,7 @@ $MLB = proximo_MLB(); // 2 - Localizar ultimo (json) e o próximo da lista (arra
 if ($MLB != 0)
 {
   $ultimo_MLB = ultimo_MLB();
-  echo "<h2>ANTERIOR MLBATUAL MLB: $MLB<BR>ATUAL MLB: $ultimo_MLB  <BR>";
+  echo "<h2>ANTERIOR MLB ATUAL MLB: $MLB<BR>ATUAL MLB: $ultimo_MLB  <BR>";
   echo "TEMPO:". (time() - $time_inicial);
   echo "<br><br><br></h2>";
 
@@ -185,16 +185,40 @@ if ($MLB != 0)
     echo "TEMPO Final: ". (time() - $time_inicial);
   }
 }
+  global $tempo_pergunta;
+  $tempopergunta = 'include/files/tempo_pergunta.json';
+  if(!file_exists($tempopergunta)) file_put_contents($tempopergunta, "");
+  $ultimo_emailpergunta = file_get_contents($tempopergunta);
   $perg = new perguntas_respostas;
   $id = $perg->retorna_idPerguntas();
   if($id != false){
-    $error_handling = new log("Nova Pergunta Mercado Livre", "Há nova(s) pergunta(s) no mercado livre<br> ", "Link Abaixo: https://easypath.com.br/conectores/mgml/perguntas_respostas.php", "nova pergunta");
-    $error_handling->log_email = true;
-    $error_handling->mensagem_email = "Nova Pergunta Mercado Livre";
-    $error_handling->log_email = true;
-    $error_handling->dir_file = "log/log.json";
-    $error_handling->log_files = true;
-    $error_handling->email_pergunta = true;
-    $error_handling->send_log_email();
-    $error_handling->execute();
+    if(($ultimo_emailpergunta + $tempo_pergunta) >= time())
+    {
+
+      $error_handling = new log("Nova Pergunta Mercado Livre", "Há nova(s) pergunta(s) no mercado livre ", "Link Abaixo: https://easypath.com.br/conectores/mgml/perguntas_respostas.php", "nova pergunta");
+      $error_handling->log_email = true;
+      $error_handling->mensagem_email = "Nova Pergunta Mercado Livre";
+      $error_handling->log_email = true;
+      $error_handling->dir_file = "log/log.json";
+      $error_handling->log_files = true;
+      $error_handling->email_pergunta = true;
+      $error_handling->send_log_email();
+      $error_handling->execute();
+      file_put_contents($tempopergunta, time());
+    }
   }else echo "<b>Sem novas perguntas<b>";
+
+  $cont_script = file_get_contents('include/files/cont_script.json');
+
+  if($cont_script >= 1440)
+  {
+    $MLB = proximo_MLBimg();
+    $ultimo_MLB = ultimo_MLBimg();
+    retorna_SKU($MLB);
+    atualizaImg($SKU, $MLB);
+    file_put_contents('include/files/cont_script.json',"");
+    escreve_MLBimg($MLB);
+  }
+
+  $cont_script++;
+  file_put_contents('include/files/cont_script.json',$cont_script);
