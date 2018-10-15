@@ -20,7 +20,7 @@ echo '<head>
 $perg = new perguntas_respostas;
 
 $resposta = $perg->respondePergunta($id, $resposta);
-wait(5);
+sleep(5);
 if($resposta) header('Location: perguntas_respostas.php?sucesso');
 else header('Location: perguntas_respostas.php?problema');
 ?>
