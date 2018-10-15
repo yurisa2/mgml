@@ -40,10 +40,10 @@ class error_handling extends event_base
   */
   function send_error_email()
   {
-    $this->mensagem = array('Nome Funcao' =>$this->nome_funcao ,
+    $this->mensagem = json_encode(array('Nome Funcao' =>$this->nome_funcao ,
     'Msg de Erro' =>$this->saida ,
     'Titulo' =>$this->titulo ,
-    'Tipo do Erro' =>$this->tipo);
+    'Tipo do Erro' =>$this->tipo));
     if($this->flag_HTML)
     {
       $this->mensagemHTML  ='
