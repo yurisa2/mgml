@@ -218,7 +218,8 @@ class event_base
   public function files()
   {
     $mensagem = json_decode(file_get_contents($this->dir_file));
-    $mensagem[] = $this->mensagem; //JSON_UNESCAPED_UNICODE opção aparecer caracteres especiais como ç´^~
+
+    $mensagem[] = json_decode($this->mensagem); //JSON_UNESCAPED_UNICODE opção aparecer caracteres especiais como ç´^~
     $resultado = file_put_contents($this->dir_file, json_encode($mensagem, JSON_UNESCAPED_UNICODE));
     //caso exista + de 100 erros no json manda email com todos.
     //OBS: Pode até mandar o arquivo em anexo;
