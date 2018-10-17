@@ -216,9 +216,9 @@ if ($MLB != 0)
     $ultimo_MLB = ultimo_MLBimg();
     retorna_SKU($MLB);
     atualizaImg($SKU, $MLB);
-    file_put_contents('include/files/cont_script.json',"");
-    escreve_MLBimg($MLB);
+    var_dump(file_put_contents('include/files/cont_script.json', 0));
+    var_dump(escreve_MLBimg($MLB));
+  }else{
+    $cont_script++;
+    file_put_contents('include/files/cont_script.json',$cont_script);
   }
-
-  $cont_script++;
-  file_put_contents('include/files/cont_script.json',$cont_script);
