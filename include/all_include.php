@@ -15,6 +15,7 @@ require_once 'include/apimagentophp/include/all_include.php';
 // require 'include/PHPMailer/vendor/autoload.php';
 
 require_once 'include/class_perguntas_respostas.php';
+require_once 'include/class_perguntasposvenda.php';
 
 // SEM AUTOLOAD
 require_once 'include/PHPMailer/src/Exception.php';
